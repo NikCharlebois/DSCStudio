@@ -5,6 +5,7 @@
   "main": "source/main.js",
   "author": "Brian Farnhill",
   "scripts": {
+    "prestart": "gulp build-app",
     "start": "electron ."
   },
   "devDependencies": {
