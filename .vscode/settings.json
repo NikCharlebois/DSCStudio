@@ -6,6 +6,6 @@
         "**/.svn": true,
         "**/.hg": true,
         "**/.DS_Store": true,
-        "source/**.js": true
+        "source/**/**.js": true
     }
 }

@@ -32,30 +32,32 @@ gulp.task("build-app", function() {
         .js.pipe(gulp.dest("source/"));
 });
 
-gulp.task("bundle", function() {
+gulp.task("bundle", ["copyCoreScripts"], function() {
+    var libraryName = "athena";
+    var outputFolder   = "dist/js";
+    var outputFileName = libraryName + ".min.js";
 
-    // var libraryName = "athena";
-    // var mainTsFilePath = "source/main.js";
-    var outputFolder   = "dist/";
-    // var outputFileName = libraryName + ".min.js";
+    var bundler = browserify({
+        debug: true,
+        standalone : libraryName
+    });
 
+    return bundler
+        .add("source/app.js")
+        .add("source/Components/AthenaApp.react.js")
+        .bundle()
+        .pipe(source(outputFileName))
+        .pipe(buffer())
+//        .pipe(sourcemaps.init({ loadMaps: true }))
+//        .pipe(uglify())
+//        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(outputFolder));
+});
+
+gulp.task("copyCoreScripts", function() {
     return gulp.src([
         'source/**/**.html',
         'source/electron.js'
         ])
-        .pipe(gulp.dest(outputFolder));
-
-    // var bundler = browserify({
-    //     debug: true,
-    //     standalone : libraryName
-    // });
-
-    // return bundler.add(mainTsFilePath)
-    //     .bundle()
-    //     .pipe(source(outputFileName))
-    //     .pipe(buffer())ru
-    //     .pipe(sourcemaps.init({ loadMaps: true }))
-    //     .pipe(uglify())
-    //     .pipe(sourcemaps.write('./'))
-    //     .pipe(gulp.dest(outputFolder));
+        .pipe(gulp.dest("dist/"));
 });
