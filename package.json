@@ -1,0 +1,13 @@
+{
+  "name": "project-athena",
+  "version": "0.1.0",
+  "description": "PowerShell DSC Configuration Template Enginer",
+  "main": "main.js",
+  "author": "Brian Farnhill",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^1.4.1"
+  }
+}
