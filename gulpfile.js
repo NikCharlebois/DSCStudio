@@ -34,22 +34,28 @@ gulp.task("build-app", function() {
 
 gulp.task("bundle", function() {
 
-    var libraryName = "myapp";
-    var mainTsFilePath = "source/main.js";
+    // var libraryName = "athena";
+    // var mainTsFilePath = "source/main.js";
     var outputFolder   = "dist/";
-    var outputFileName = libraryName + ".min.js";
+    // var outputFileName = libraryName + ".min.js";
 
-    var bundler = browserify({
-        debug: true,
-        standalone : libraryName
-    });
-
-    return bundler.add(mainTsFilePath)
-        .bundle()
-        .pipe(source(outputFileName))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
+    return gulp.src([
+        'source/**/**.html',
+        'source/electron.js'
+        ])
         .pipe(gulp.dest(outputFolder));
+
+    // var bundler = browserify({
+    //     debug: true,
+    //     standalone : libraryName
+    // });
+
+    // return bundler.add(mainTsFilePath)
+    //     .bundle()
+    //     .pipe(source(outputFileName))
+    //     .pipe(buffer())ru
+    //     .pipe(sourcemaps.init({ loadMaps: true }))
+    //     .pipe(uglify())
+    //     .pipe(sourcemaps.write('./'))
+    //     .pipe(gulp.dest(outputFolder));
 });

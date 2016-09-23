@@ -2,10 +2,10 @@
   "name": "project-athena",
   "version": "0.1.0",
   "description": "PowerShell DSC Configuration Template Enginer",
-  "main": "source/main.js",
+  "main": "dist/electron.js",
   "author": "Brian Farnhill",
   "scripts": {
-    "prestart": "gulp build-app",
+    "prestart": "gulp build-app bundle",
     "start": "electron ."
   },
   "devDependencies": {

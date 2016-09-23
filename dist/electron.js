@@ -3,7 +3,6 @@ var win;
 function createWindow() {
     win = new BrowserWindow({ height: 600, width: 800 });
     win.loadURL("file://" + __dirname + "/index.html");
-    win.webContents.openDevTools();
     win.on("closed", function () {
         win = null;
     });
