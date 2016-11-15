@@ -61,9 +61,7 @@
                         "description": "The type of question to show to the user",
                         "enum": [
                             "text",
-                            "number",
-                            "multieChoice",
-                            "multiSelect"
+                            "number"
                         ]
                     }
                 },

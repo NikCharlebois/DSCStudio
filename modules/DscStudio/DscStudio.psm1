@@ -1,4 +1,4 @@
-function Start-DscTemplateBuilder
+function Start-DscStudio
 {
     param()
 

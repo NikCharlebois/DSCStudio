@@ -14,6 +14,12 @@ $(document).ready(function(){
         readTemplate(this);
     });
 
+    $("#goBackToFormLink").on('click', function() {
+        $("#templateStart").hide();
+        $("#templateResponse").show();
+        $("#templateOutput").hide();
+    });
+
     updateStyles();
 
     $("#templateStart").show();
@@ -213,6 +219,9 @@ function generateConfig()
     $("#scriptContent").text(configText);
 
     updateStyles();
+
+    SyntaxHighlighter.highlight();
+    
     $("#templateStart").hide();
     $("#templateResponse").hide();
     $("#templateOutput").show();
