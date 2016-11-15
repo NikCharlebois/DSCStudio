@@ -85,7 +85,7 @@ function loadTemplate() {
         questionCount++;
     }, this);
 
-    $("#templateQuestions").append("<hr /><input type=\"submit\" value=\"Generate Config\" id=\"GenerateConfig\" />");
+    $("#templateQuestions").append("<hr /><input type=\"submit\" value=\"Generate Config\" id=\"GenerateConfig\" class=\"ms-Button\" />");
 
     var rulesObject = JSON.parse("{" + inputValidationRules + "}");
     $("#templateQuestions").validate({
