@@ -43,11 +43,31 @@
                 <hr />
             </div>
         </div>
-        <div class="ms-Grid-row" id="templateResponse">
-            <div class="ms-Grid-col ms-u-sm6">
-                <form id="templateQuestions">
-                    <div class="error"></div>
-                </form>
+
+        <div id="templateResponse">
+            <div class="ms-Grid-row">
+                <div class="ms-Grid-col ms-u-sm6">
+                    <h2>Configuration data</h2>
+                    <div id="certificateDetails">
+                        <div class="ms-TextField">
+                            <label for="CertPath" class="ms-Label">Path the CER certificate file used to encrypt credentials</label>
+                            <input type="text" name="CertPath" id="CertPath" class="ms-TextField-field" />
+                        </div>
+                        <div class="ms-TextField">
+                            <label for="CertThumbprint" class="ms-Label">Thumbprint of the certificate uesd to decrypt credentials</label>
+                            <input type="text" name="CertThumbprint" id="CertThumbprint" class="ms-TextField-field" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="ms-Grid-row">
+                <div class="ms-Grid-col ms-u-sm6">
+                    <h2>Additional configuration details</h2>
+                    <form id="templateQuestions">
+                        <div class="error"></div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

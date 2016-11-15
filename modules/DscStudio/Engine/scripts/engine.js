@@ -69,6 +69,10 @@ function loadTemplate() {
         $("#templateDescription").hide();    
     }
 
+    if (currentTemplate.configDataSettings.certificateDetails == null || currentTemplate.configDataSettings.certificateDetails == true) {} else {
+        $("#certificateDetails").remove();
+    }
+
     var questionCount = 0;
     currentTemplate.questions.forEach(function(element) {
         switch (element.type) {
@@ -122,7 +126,7 @@ function GetTextQuestionRender(question, questionCount) {
     
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
     output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + (questionCount + 1) + ". " + question.title + "</label>"
-    output += "<input class=\"ms-TextField-field ruleRequired\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
     output += "</div>" 
     return output;
 }
@@ -137,7 +141,7 @@ function GetNumberQuestionRender(question, questionCount) {
     
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
     output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + (questionCount + 1) + ". " + question.title + "</label>"
-    output += "<input class=\"ms-TextField-field ruleRequired\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
     output += "</div>" 
     return output;
 }
