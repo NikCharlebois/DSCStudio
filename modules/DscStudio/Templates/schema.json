@@ -67,6 +67,10 @@
                                     "number",
                                     "boolean"
                                 ]
+                            },
+                            "minOccurences": {
+                                "type": "integer",
+                                "description": "For boolean properties - the minimum number of nodes that must have this set to 'true' for a configuration to be valid"
                             }
                         },
                         "required": [
