@@ -82,7 +82,8 @@
                 },
                 "certificateDetails": {
                     "type": "boolean",
-                    "description": "Ask for a certificate thumbprint and path to CER file to allow for encryption of credentials"
+                    "description": "Ask for a certificate thumbprint and path to CER file to allow for encryption of credentials, setting to false will configure DSC to allow plain text passwords (NOT RECOMMENDED)",
+                    "default": true
                 }
             }
         },
