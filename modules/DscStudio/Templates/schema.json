@@ -113,7 +113,12 @@
                         "type": "string",
                         "description": "The DependsOn value for this resource"
                     }
-                }
+                },
+                "required": [
+                    "resourceType",
+                    "resourceName",
+                    "resourceProperties"
+                ]
             }    
         }
     }
