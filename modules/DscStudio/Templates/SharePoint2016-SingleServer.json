@@ -53,6 +53,35 @@
             "type": "text"
         }
     ],
+    "configDataSettings": {
+        "certificateDetails": true,
+        "nodeSettings": [
+            {
+                "displayName": "Web Front End Server",
+                "powershellName": "WebFrontEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "Search Front End Server",
+                "powershellName": "SearchFrontEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "Search Back End Server",
+                "powershellName": "SearchBackEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "App Server",
+                "powershellName": "AppServer",
+                "valueType": "boolean",
+                "minOccurences": 1
+            }
+        ]
+    },
     "inputParameters": [
         {
             "name": "FarmAccount",
