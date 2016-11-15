@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "metadata": {
+            "type": "object",
+            "description": "Metadata to describe this template",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "The display name of the template"
+                },
+                "configurationName": {
+                    "type": "string",
+                    "description": "The name of the configuration that will be generated with this template"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A description of the template"
+                }
+            },
+            "required": [
+                "title",
+                "configurationName"
+            ]
+        },
+        "dscModules": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the DSC module as it appears on the PowerShell gallery"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "The version number of the module that is used for this template"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            }
+        },
+        "questions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "An internal ID for this question to use when refering to it in resource values"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The name of the question to show to the user"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "The type of question to show to the user",
+                        "enum": [
+                            "text",
+                            "number",
+                            "multieChoice",
+                            "multiSelect"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "type"
+                ]
+            }
+        },
+        "inputParameters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the parameter to add to the configuration"
+                    },
+                    "parameterType": {
+                        "type": "string",
+                        "description": "The object type in PowerShell for this parameter"
+                    }
+                }
+            }
+        },
+        "outputResources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "resourceType": {
+                        "type": "string",
+                        "description": "The name of the DSC resource to include"
+                    },
+                    "resourceName": {
+                        "type": "string",
+                        "description": "The friendly name to put on to this resource"
+                    },
+                    "resourceProperties": {
+                        "type": "object",
+                        "description": "A list of the properties and values to include on this resource"
+                    },
+                    "dependsOn": {
+                        "type": "string",
+                        "description": "The DependsOn value for this resource"
+                    }
+                }
+            }    
+        }
+    }
+}

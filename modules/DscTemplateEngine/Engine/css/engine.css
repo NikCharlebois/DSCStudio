@@ -1,0 +1,15 @@
+.navBar {
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding-top: 15px;
+    padding-left: 30px;
+}
+
+body {
+    margin: 0px;
+}
+
+body div {
+    margin: 5px;
+}

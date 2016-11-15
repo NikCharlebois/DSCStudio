@@ -1,0 +1,319 @@
+{
+    "$schema": "./schema.json",
+    "metadata": {
+        "title": "SharePoint Server 2016 (Single Server)",
+        "description": "Used to create a SharePoint Server 2016 deployment on a single server",
+        "configurationName": "SharePointSingleServer"
+    },
+    "dscModules": [
+        {
+            "name": "SharePointDsc",
+            "version": "1.4.0.0"
+        }
+    ],
+    "questions": [
+        {
+            "id": "BINARYPATH",
+            "title": "Where are the SharePoint installation files stored on the local server?",
+            "type": "text"
+        },
+        {
+            "id": "PRODUCTKEY",
+            "title": "What is your SharePoint 2016 product key?",
+            "type": "text"
+        },
+        {
+            "id": "SQLSERVERNAME",
+            "title": "What is the name of the SQL server that will host your databases?",
+            "type": "text"
+        },
+        {
+            "id": "LOGPATH",
+            "title": "Where should ULS and usage logs be stored?",
+            "type": "text"
+        },
+        {
+            "id": "CACHESIZE",
+            "title": "How many MB of memory should be allocated to the distributed cache service?",
+            "type": "number"
+        },
+        {
+            "id": "WEBAPPDOMAIN",
+            "title": "What will the domain name be that hosts SharePoint sites? (eg. sharepoint.contoso.com)",
+            "type": "text"
+        },
+        {
+            "id": "SUPERUSER",
+            "title": "The username of the super user account (formatted as DOMAIN\\USER)",
+            "type": "text"
+        },
+        {
+            "id": "SUPERREADER",
+            "title": "The username of the super reader account (formatted as DOMAIN\\USER)",
+            "type": "text"
+        }
+    ],
+    "inputParameters": [
+        {
+            "name": "FarmAccount",
+            "parameterType": "PSCredential"
+        },
+        {
+            "name": "SetupAccount",
+            "parameterType": "PSCredential"
+        },
+        {
+            "name": "WebPoolManagedAccount",
+            "parameterType": "PSCredential"
+        },
+        {
+            "name": "ServicePoolManagedAccount",
+            "parameterType": "PSCredential"
+        },
+        {
+            "name": "Passphrase",
+            "parameterType": "PSCredential"
+        }
+    ],
+    "outputResources": [
+        {
+            "resourceType": "SPInstallPrereqs",
+            "resourceName": "InstallPrereqs",
+            "resourceProperties": {
+                "Ensure": "Present",
+                "InstallerPath": "[BINARYPATH]\\prerequisiteinstaller.exe",
+                "OnlineMode": "$true"
+            }
+        },
+        {
+            "resourceType": "SPInstall",
+            "resourceName": "InstallSharePoint",
+            "resourceProperties": {
+                "Ensure": "Present",
+                "InstallerPath": "[BINARYPATH]",
+                "ProductKey": "[PRODUCTKEY]"
+            },
+            "dependsOn": "[SPInstallPrereqs]InstallPrereqs"
+        },
+        {
+            "resourceType": "SPCreateFarm",
+            "resourceName": "CreateNewFarm",
+            "resourceProperties": {
+                "DatabaseServer": "[SQLSERVERNAME]",
+                "FarmConfigDatabaseName": "SP_Config",
+                "AdminContentDatabaseName": "SP_AdminContent",
+                "Passphrase": "$Passphrase",
+                "FarmAccount": "$FarmAccount",
+                "PsDscRunAsCredential": "$SetupAccount"
+            },
+            "dependsOn": "[SPInstall]InstallSharePoint"
+        },
+        {
+            "resourceType": "SPManagedAccount",
+            "resourceName": "ServicePoolManagedAccount",
+            "resourceProperties": {
+                "AccountName": "$ServicePoolManagedAccount.UserName",
+                "Account": "$ServicePoolManagedAccount",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPManagedAccount",
+            "resourceName": "WebPoolManagedAccount",
+            "resourceProperties": {
+                "AccountName": "$WebPoolManagedAccount.UserName",
+                "Account": "$WebPoolManagedAccount",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPDiagnosticLoggingSettings",
+            "resourceName": "ApplyDiagnosticLogSettings",
+            "resourceProperties": {
+                "PsDscRunAsCredential": "$SPSetupAccount",
+                "LogPath": "[LOGPATH]"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPUsageApplication",
+            "resourceName": "UsageApplication",
+            "resourceProperties": {
+                "Name": "Usage Service Application",
+                "DatabaseName": "SP_Usage",
+                "UsageLogLocation": "[LOGPATH]",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPStateServiceApp",
+            "resourceName": "StateServiceApp",
+            "resourceProperties": {
+                "Name": "State Service Application",
+                "DatabaseName": "SP_State",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPDistributedCacheService",
+            "resourceName": "EnableDistributedCache",
+            "resourceProperties": {
+                "Name": "AppFabricCachingService",
+                "Ensure": "Present",
+                "CacheSizeInMB": "[CACHESIZE]",
+                "ServiceAccount": "$ServicePoolManagedAccount.UserName",
+                "CreateFirewallRules": "$true",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPWebApplication",
+            "resourceName": "SharePointSites",
+            "resourceProperties": {
+                "Name": "SharePoint Sites",
+                "ApplicationPool": "SharePoint Sites",
+                "ApplicationPoolAccount": "$WebPoolManagedAccount.UserName",
+                "DatabaseName": "SP_Content",
+                "Url": "http://[WEBAPPDOMAIN]",
+                "HostHeader": "[WEBAPPDOMAIN]",
+                "Port": "80",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPManagedAccount]WebPoolManagedAccount"
+        },
+        {
+            "resourceType": "SPCacheAccounts",
+            "resourceName": "WebAppCacheAccounts",
+            "resourceProperties": {
+                "WebAppUrl": "http://[WEBAPPDOMAIN]",
+                "SuperUserAlias": "[SUPERUSER]",
+                "SuperReaderAlias": "[SUPERREADER]",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPWebApplication]SharePointSites"
+        },
+        {
+            "resourceType": "SPSite",
+            "resourceName": "TeamSite",
+            "resourceProperties": {
+                "Url": "http://[WEBAPPDOMAIN]",
+                "OwnerAlias": "$FarmAccount",
+                "Name": "DSC Demo Site",
+                "Template": "STS#0",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPWebApplication]SharePointSites"
+        },
+        {
+            "resourceType": "SPServiceInstance",
+            "resourceName": "ClaimsToWindowsTokenServiceInstance",
+            "resourceProperties": {
+                "Name": "Claims to Windows Token Service",
+                "Ensure": "Present",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPServiceInstance",
+            "resourceName": "SecureStoreServiceInstance",
+            "resourceProperties": {
+                "Name": "Secure Store Service",
+                "Ensure": "Present",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPServiceInstance",
+            "resourceName": "ManagedMetadataServiceInstance",
+            "resourceProperties": {
+                "Name": "Managed Metadata Web Service",
+                "Ensure": "Present",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPServiceInstance",
+            "resourceName": "BCSServiceInstance",
+            "resourceProperties": {
+                "Name": "Business Data Connectivity Service",
+                "Ensure": "Present",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPServiceInstance",
+            "resourceName": "SearchServiceInstance",
+            "resourceProperties": {
+                "Name": "SharePoint Server Search",
+                "Ensure": "Present",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPServiceAppPool",
+            "resourceName": "MainServiceAppPool",
+            "resourceProperties": {
+                "Name": "SharePoint Service Applications",
+                "ServiceAccount": "$ServicePoolManagedAccount.UserName",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+        },
+        {
+            "resourceType": "SPSecureStoreServiceApp",
+            "resourceName": "SecureStoreServiceApp",
+            "resourceProperties": {
+                "Name": "Secure Store Service Application",
+                "ApplicationPool": "SharePoint Service Applications",
+                "AuditingEnabled": "$true",
+                "AuditlogMaxSize": "30",
+                "DatabaseName": "SP_SecureStore",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+        },
+        {
+            "resourceType": "SPManagedMetaDataServiceApp",
+            "resourceName": "ManagedMetadataServiceApp",
+            "resourceProperties": {
+                "Name": "Managed Metadata Service Application",
+                "ApplicationPool": "SharePoint Service Applications",
+                "DatabaseName": "SP_ManagedMetadata",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+        },
+        {
+            "resourceType": "SPBCSServiceApp",
+            "resourceName": "BCSServiceApp",
+            "resourceProperties": {
+                "Name": "BCS Service Application",
+                "ApplicationPool": "SharePoint Service Applications",
+                "DatabaseName": "SP_BCS",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+        },
+        {
+            "resourceType": "SPSearchServiceApp",
+            "resourceName": "SearchServiceApp",
+            "resourceProperties": {
+                "Name": "Search Service Application",
+                "ApplicationPool": "SharePoint Service Applications",
+                "DatabaseName": "SP_Search",
+                "PsDscRunAsCredential": "$SPSetupAccount"
+            },
+            "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+        }
+    ]
+}

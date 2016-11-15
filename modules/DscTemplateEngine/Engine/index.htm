@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DSC Template Builder</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="stylesheet" href="officefabric/css/fabric.min.css" />
+    <link rel="stylesheet" href="officefabric/css/fabric.components.min.css" />
+    <link rel="stylesheet" href="css/engine.css" />
+</head>
+<body>
+    <header class="ms-bgColor-neutralDark navBar">
+        <img src="img/powershell-logo.png" style="float:left; padding-right: 20px;" />
+        <div class="ms-font-xl ms-fontColor-white">
+            PowerShell DSC Studio
+        </div>
+    </header>
+
+    <div class="ms-Grid">
+        <div class="ms-Grid-row" id="templateStart">
+            <div class="ms-Grid-col ms-u-sm12">
+                <h1>Welcome to the DSC Studio!</h1>
+                <p>
+                    Begin by selecting the template you wish to start with. You can select from existing templates by
+                    browsing to the "templates" directory in the path where you saved this PowerShell module.
+                </p>
+                <input type="file" id="templateSelector" />
+            </div>
+        </div>
+    </div>
+
+    <div class="ms-Grid">
+        <div class="ms-Grid-row">
+            <div class="ms-Grid-col ms-u-sm12">
+                <h1 id="templateNameHeader"></h1>
+                <p id="templateDescription"></p>
+
+                <hr />
+            </div>
+        </div>
+        <div class="ms-Grid-row" id="templateResponse">
+            <div class="ms-Grid-col ms-u-sm6">
+                <form id="templateQuestions">
+                    <div class="error"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="ms-Grid">
+        <div class="ms-Grid-row" id="templateOutput">
+            <div class="ms-Grid-col ms-u-sm12">
+                <h2>Your configuration</h2>
+                <div class="ms-Pivot">
+                    <ul class="ms-Pivot-links">
+                        <li class="ms-Pivot-link is-selected" data-content="files" title="My files" tabindex="1">
+                            PowerShell Script
+                        </li>
+                        <li class="ms-Pivot-link " data-content="recent" title="Recent" tabindex="1">
+                            Instructions
+                        </li>
+                    </ul>
+                        <div class="ms-Pivot-content" data-content="files">
+                            <pre id="scriptContent">
+
+                            </pre>
+                        </div>
+                        <div class="ms-Pivot-content" data-content="recent">
+                            <p>The instructions would go here</p>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="scripts/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="scripts/additional-methods.min.js"></script>
+    <script type="text/javascript" src="officefabric/js/fabric.min.js" ></script>
+    <script type="text/javascript" src="scripts/engine.js"></script>
+</body>
+</html>
