@@ -85,7 +85,11 @@
                         "type": "string",
                         "description": "The object type in PowerShell for this parameter"
                     }
-                }
+                },
+                "required": [
+                    "name",
+                    "parameterType"
+                ]
             }
         },
         "outputResources": {
