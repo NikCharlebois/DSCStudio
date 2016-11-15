@@ -43,6 +43,45 @@
                 ]
             }
         },
+        "configDataSettings": {
+            "type": "object",
+            "properties": {
+                "nodeSettings": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "powershellName": {
+                                "type": "string",
+                                "description": "The name of this property to be used in PowerShell scripts"
+                            },
+                            "displayName": {
+                                "type": "string",
+                                "description": "The name of the property as shown in the DSC Studio UI"
+                            },
+                            "valueType": {
+                                "type": "string",
+                                "description": "The type of this property to ask the user for",
+                                "enum": [
+                                    "text",
+                                    "number",
+                                    "boolean"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "powershellName",
+                            "displayName",
+                            "valueType"
+                        ]
+                    }
+                },
+                "certificateDetails": {
+                    "type": "boolean",
+                    "description": "Ask for a certificate thumbprint and path to CER file to allow for encryption of credentials"
+                }
+            }
+        },
         "questions": {
             "type": "array",
             "items": {
