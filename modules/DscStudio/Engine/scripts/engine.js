@@ -250,9 +250,11 @@ function NewNodeAdded(event) {
             case "text":
             case "number":
                 internalValue = $("#nodeSetting-" + setting.powershellName + "-value").val();
+                $("#nodeSetting-" + setting.powershellName + "-value").val("");
                 break;
             case "boolean":
-                internalValue = $("#nodeSetting-" + setting.powershellName + " label").hasClass("is-selected")
+                internalValue = $("#nodeSetting-" + setting.powershellName + " label").hasClass("is-selected");
+                $("#nodeSetting-" + setting.powershellName + " label").removeClass("is-selected");
             break; 
         }
 
@@ -267,6 +269,8 @@ function NewNodeAdded(event) {
         name: $("#NewNodeName").val(),
         additionalProperties: additionalProperties
     });
+
+    $("#NewNodeName").val("");
     RenderNodeListDetails();
 }
 
