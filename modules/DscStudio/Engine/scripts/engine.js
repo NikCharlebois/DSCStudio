@@ -4,8 +4,6 @@ var responses;
 var inputValidationRules = "";
 var nodes = [];
 
-var errorTextTemplate = "<div class=\"ms-MessageBar ms-MessageBar--error\"><div class=\"ms-MessageBar-content\"><div class=\"ms-MessageBar-icon\"><i class=\"ms-Icon ms-Icon--Error\"></i></div><div class=\"ms-MessageBar-text\"></div></div></div>";
-
 $(document).ready(function(){
     if (checkFileAPI() == false) {
         return;
@@ -103,7 +101,9 @@ function loadTemplate() {
     var rulesObject = JSON.parse("{" + inputValidationRules + "}");
     $("#templateQuestions").validate({
         submitHandler: function(form) {
-            generateConfig();
+            if (ValidateNodeParameters()) {
+                generateConfig();
+            }
         },
         rules: rulesObject,
         errorClass: "ms-MessageBar ms-MessageBar--error ms-MessageBar-text",
@@ -113,6 +113,7 @@ function loadTemplate() {
     UpdateNewNodeDialog();
     updateStyles();
     prepareFabricComponents();
+    CheckMinNodeCount();
 
     $("#templateStart").hide();
     $("#templateResponse").show();
@@ -169,10 +170,8 @@ function UpdateNewNodeDialog() {
                 alert("not a supported type")
                 break;
         }
-    });
-    
+    });   
 }
-
 
 function RenderNewNodeDialogTextBox(nodeSetting) {
     var fieldName = "nodeSetting-" + nodeSetting.powershellName;
@@ -202,8 +201,37 @@ function RenderNewNodeDialogBoolean(nodeSetting) {
     return output;
 }
 
+function CheckMinNodeCount() {
+    var minCount = 1;
+    if (currentTemplate.configDataSettings.minNodeCount != null) {
+        minCount = currentTemplate.configDataSettings.minNodeCount
+    }
+
+    if (nodes.length < minCount) {
+        $("#minNodeCountMessage").show();
+        $("#minNodeCountNumber").text(minCount);
+    } else {
+        $("#minNodeCountMessage").hide()
+    }
+}
+
+function ValidateNodeParameters() {
+    var minCount = 1;
+    if (currentTemplate.configDataSettings.minNodeCount != null) {
+        minCount = currentTemplate.configDataSettings.minNodeCount
+    }
+
+    if (nodes.length < minCount) {
+        return false;
+    } 
+    if (currentTemplate.configDataSettings.maxNodeCount != null && nodes.length > currentTemplate.configDataSettings.maxNodeCount) {
+        return false;
+    }
+    return true;
+}
+
 function OpenNewNodeDialog() {
-    if (nodes.length >= currentTemplate.configDataSettings.maxNodeCount) {
+    if (currentTemplate.configDataSettings.maxNodeCount != null && nodes.length >= currentTemplate.configDataSettings.maxNodeCount) {
         alert('This template supports a maximum of ' + currentTemplate.configDataSettings.maxNodeCount + ' nodes, please remove a node before adding a new one.');
     } else {
         var dialog = document.getElementById("newNodeDialog");
@@ -218,6 +246,7 @@ function removeNode(nodeName) {
             return item.name !== nodeName;
         });
         RenderNodeListDetails();
+        CheckMinNodeCount();
     }
 }
 
@@ -277,6 +306,7 @@ function NewNodeAdded(event) {
 
     $("#NewNodeName").val("");
     RenderNodeListDetails();
+    CheckMinNodeCount();
 }
 
 function GetTextQuestionRender(question, questionCount) {
