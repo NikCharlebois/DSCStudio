@@ -227,7 +227,37 @@ function ValidateNodeParameters() {
     if (currentTemplate.configDataSettings.maxNodeCount != null && nodes.length > currentTemplate.configDataSettings.maxNodeCount) {
         return false;
     }
-    return true;
+
+    var result = true;
+    currentTemplate.configDataSettings.nodeSettings.forEach(function(nodeSetting) {
+        if (nodeSetting.minOccurences != null) {
+            var occurences = 0;
+            nodes.forEach(function(node) {
+                node.additionalProperties.forEach(function(additionalProp) {
+                    if (additionalProp.powershellName == nodeSetting.powershellName) {
+                        switch(nodeSetting.valueType) {
+                            case "text":
+                            case "number":
+                                if (additionalProp.value.toString() != null && additionalProp.value.toString() != "") {
+                                    occurences++;
+                                }
+                                break;
+                            case "boolean":
+                                if (additionalProp.value == true) {
+                                    occurences++;
+                                }
+                            break;
+                        }
+                    }
+                });
+            });
+            if (occurences < nodeSetting.minOccurences) {
+                result = false;
+            }
+        }
+    });
+
+    return result;
 }
 
 function OpenNewNodeDialog() {
