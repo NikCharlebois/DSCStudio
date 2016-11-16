@@ -261,6 +261,7 @@ function NewNodeAdded(event) {
         additionalProperties.push({
             powershellName: setting.powershellName,
             displayName: setting.displayName,
+            valueType: setting.valueType,
             value: internalValue
         });
     });
@@ -324,6 +325,51 @@ function generateConfig()
 
     var configText = ""
 
+    // build the config data
+    
+    configText += "$configData = @{\r\n";
+    configText += "    AllNodes = @(\r\n";
+    configText += "        @{\r\n";
+    configText += "            NodeName = \"*\"\r\n";
+
+    if (currentTemplate.configDataSettings.certificateDetails == null || currentTemplate.configDataSettings.certificateDetails == true) {
+        configText += "            CertificateFile = \"" + $("#CertPath").val() + "\"\r\n";
+        configText += "            Thumbprint = \"" + $("#CertThumbprint").val() + "\"\r\n";
+        configText += "            PSDscAllowPlainTextPassword = $false\r\n";
+    } else {
+        configText += "            PSDscAllowPlainTextPassword = $true\r\n";
+    }
+    
+    configText += "        }";
+    if (nodes.length == 0) {
+        configText += "\r\n";
+    } else {
+        nodes.forEach(function(node) {
+            configText += ",\r\n";
+            configText += "        @{\r\n";
+            configText += "            NodeName = \"" + node.name + "\"\r\n";
+            node.additionalProperties.forEach(function(prop) {
+                switch(prop.valueType) {
+                    case "text":
+                        configText += "            " + prop.powershellName + " = \"" + prop.value + "\"\r\n";
+                        break;
+                    case "number":
+                        configText += "            " + prop.powershellName + " = " + prop.value + "\r\n";
+                        break;
+                    case "boolean":
+                        configText += "            " + prop.powershellName + " = $" + prop.value + "\r\n";
+                        break;
+                }
+            });
+            configText += "        }";
+        });
+        configText += "\r\n";
+    }
+    configText += "    )\r\n";
+    configText += "}\r\n\r\n";
+
+    // build the main configuration
+
     configText += "Configuration " + currentTemplate.metadata.configurationName + "\r\n"
     configText += "{\r\n"
 
@@ -351,7 +397,7 @@ function generateConfig()
     
     configText += "\r\n"
 
-    configText += "    node localhost\r\n"
+    configText += "    node $AllNodes.NodeName\r\n"
     configText += "    {\r\n"
 
     currentTemplate.outputResources.forEach(function(resource) {
