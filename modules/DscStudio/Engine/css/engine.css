@@ -10,6 +10,10 @@ body {
     margin: 0px;
 }
 
-body div {
-    margin: 5px;
+div.ms-Grid {
+    margin: 15px;
+}
+
+#additionalNodeDetails {
+    margin-right: 24px;
 }

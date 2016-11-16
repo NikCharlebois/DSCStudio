@@ -80,7 +80,8 @@
                 "valueType": "boolean",
                 "minOccurences": 1
             }
-        ]
+        ],
+        "maxNodeCount": 1
     },
     "inputParameters": [
         {

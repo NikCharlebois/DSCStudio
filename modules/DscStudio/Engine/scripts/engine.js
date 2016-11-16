@@ -2,6 +2,7 @@ var reader;
 var currentTemplate;
 var responses;
 var inputValidationRules = "";
+var nodes = [];
 
 var errorTextTemplate = "<div class=\"ms-MessageBar ms-MessageBar--error\"><div class=\"ms-MessageBar-content\"><div class=\"ms-MessageBar-icon\"><i class=\"ms-Icon ms-Icon--Error\"></i></div><div class=\"ms-MessageBar-text\"></div></div></div>";
 
@@ -20,6 +21,13 @@ $(document).ready(function(){
         $("#templateOutput").hide();
     });
 
+    $("#newNodeCommand").on('click', function() {
+        OpenNewNodeDialog();
+    });
+
+
+    new fabric['Button'](document.querySelector("#addNewNode"), NewNodeAdded);
+
     updateStyles();
 
     $("#templateStart").show();
@@ -30,6 +38,7 @@ $(document).ready(function(){
 function updateStyles() {
     $("h1").addClass("ms-font-su");
     $("h2").addClass("ms-font-xxl");
+    $("h3").addClass("ms-font-xl");
     $("p").addClass("ms-font-m");
 }
 
@@ -101,19 +110,164 @@ function loadTemplate() {
         debug: true
     });
 
+    UpdateNewNodeDialog();
     updateStyles();
-    preparePivots();
+    prepareFabricComponents();
 
     $("#templateStart").hide();
     $("#templateResponse").show();
     $("#templateOutput").hide();
 }
 
-function preparePivots() {
+function prepareFabricComponents(specificParent) {
     var PivotElements = document.querySelectorAll(".ms-Pivot");
     for(var i = 0; i < PivotElements.length; i++) {
         new fabric['Pivot'](PivotElements[i]);
     }
+
+    var CommandBarElements = document.querySelectorAll(".ms-CommandBar");
+    for(var i = 0; i < CommandBarElements.length; i++) {
+        new fabric['CommandBar'](CommandBarElements[i]);
+    }
+
+    var ListElements = document.querySelectorAll(".ms-List");
+    for(var i = 0; i < ListElements.length; i++) {
+        new fabric['List'](ListElements[i]);
+    }
+
+    var DialogElements = document.querySelectorAll(".ms-Dialog");
+    var DialogComponents = [];
+    for (var i = 0; i < DialogElements.length; i++) {
+        (function(){
+            DialogComponents[i] = new fabric['Dialog'](DialogElements[i]);
+        }());
+    }
+
+    var ToggleElements = document.querySelectorAll(".ms-Toggle");
+    for(var i = 0; i < ToggleElements.length; i++) {
+        new fabric['Toggle'](ToggleElements[i]);
+    }
+}
+
+function UpdateNewNodeDialog() {
+    currentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
+        switch (setting.valueType) {
+            case "text":
+                $("#additionalNodeDetails").append(RenderNewNodeDialogTextBox(setting));
+                break;
+            case "number":
+                $("#additionalNodeDetails").append(RenderNewNodeDialogNumber(setting));
+                break;
+            case "boolean":
+                $("#additionalNodeDetails").append(RenderNewNodeDialogBoolean(setting));
+                var ToggleElements = document.getElementById("nodeSetting-" + setting.powershellName);
+                for (var i = 0; i < ToggleElements.length; i++) {
+                    new fabric['Toggle'](ToggleElements[i]);
+                }
+                break;
+            default:
+                alert("not a supported type")
+                break;
+        }
+    });
+    
+}
+
+
+function RenderNewNodeDialogTextBox(nodeSetting) {
+    var fieldName = "nodeSetting-" + nodeSetting.powershellName;
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + nodeSetting.displayName + "</label>"
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
+    output += "</div>" 
+    return output;
+}
+
+function RenderNewNodeDialogNumber(nodeSetting) {
+    var fieldName = "nodeSetting-" + nodeSetting.powershellName;
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + nodeSetting.displayName + "</label>"
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
+    output += "</div>" 
+    return output;
+}
+
+function RenderNewNodeDialogBoolean(nodeSetting) {
+    var fieldName = "nodeSetting-" + nodeSetting.powershellName;
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-Toggle  ms-Toggle--textLeft\">";
+    output += "<span class=\"ms-Toggle-description\">" + nodeSetting.displayName + "</span>";
+    output += "<input class=\"ms-Toggle-input\"  type=\"checkbox\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
+    output += "<label class=\"ms-Toggle-field\" for=\"" + fieldName + "-value\"><span class=\"ms-Label ms-Label--off\">No</span><span class=\"ms-Label ms-Label--on\">Yes</span></label>";
+    output += "</div>" 
+    return output;
+}
+
+function OpenNewNodeDialog() {
+    var dialog = document.getElementById("newNodeDialog");
+    var dialogComponent = new fabric['Dialog'](dialog);
+    dialogComponent.open();
+}
+
+function removeNode(nodeName) {
+    if (window.confirm("Are you sure you wish to remove '" + nodeName + "'?")) {
+        nodes = nodes.filter(function(item) {
+            return item.name !== nodeName;
+        });
+        RenderNodeListDetails();
+    }
+}
+
+function RenderNodeListDetails() {
+    $("#nodeList").empty();
+    nodes.forEach(function(node) {
+
+        var additionalDetails = "";
+
+        node.additionalProperties.forEach(function(prop) {
+            additionalDetails += prop.displayName + ": " + prop.value + "<br />"
+        });
+
+        var output = "";
+        output += "<li class=\"ms-ListItem\" tabindex=\"0\">";
+        output += "<span class=\"ms-ListItem-primaryText\">" + node.name + "</span>";
+        output += "<span class=\"ms-ListItem-tertiaryText\">" + additionalDetails + "</span>";
+        output += "<div class=\"ms-ListItem-selectionTarget\"></div>";
+        output += "<div class=\"ms-ListItem-actions\">";
+        output += "<div class=\"ms-ListItem-action\"><i class=\"ms-Icon ms-Icon--Delete\" onclick=\"removeNode('" + node.name +"')\"></i></div>";
+        output += "</div>";
+        output += "</li>";
+
+        $("#nodeList").append(output);
+    });
+}
+
+function NewNodeAdded(event) {
+
+    var additionalProperties = [];
+    currentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
+        var internalValue;
+        switch(setting.valueType) {
+            case "text":
+            case "number":
+                internalValue = $("#nodeSetting-" + setting.powershellName + "-value").val();
+                break;
+            case "boolean":
+                internalValue = $("#nodeSetting-" + setting.powershellName + " label").hasClass("is-selected")
+            break; 
+        }
+
+        additionalProperties.push({
+            powershellName: setting.powershellName,
+            displayName: setting.displayName,
+            value: internalValue
+        });
+    });
+
+    nodes.push({
+        name: $("#NewNodeName").val(),
+        additionalProperties: additionalProperties
+    });
+    RenderNodeListDetails();
 }
 
 function GetTextQuestionRender(question, questionCount) {
