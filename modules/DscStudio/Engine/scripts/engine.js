@@ -203,9 +203,13 @@ function RenderNewNodeDialogBoolean(nodeSetting) {
 }
 
 function OpenNewNodeDialog() {
-    var dialog = document.getElementById("newNodeDialog");
-    var dialogComponent = new fabric['Dialog'](dialog);
-    dialogComponent.open();
+    if (nodes.length >= currentTemplate.configDataSettings.maxNodeCount) {
+        alert('This template supports a maximum of ' + currentTemplate.configDataSettings.maxNodeCount + ' nodes, please remove a node before adding a new one.');
+    } else {
+        var dialog = document.getElementById("newNodeDialog");
+        var dialogComponent = new fabric['Dialog'](dialog);
+        dialogComponent.open();
+    }
 }
 
 function removeNode(nodeName) {
