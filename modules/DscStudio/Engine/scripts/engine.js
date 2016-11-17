@@ -1,8 +1,10 @@
 var reader;
 var currentTemplate;
 var responses;
-var inputValidationRules = "";
 var nodes = [];
+var currentScript = "";
+
+var errorTemplate = "<div class=\"ms-MessageBar ms-MessageBar--error\" style=\"display: none;\" id=\"{1}\"><div class=\"ms-MessageBar-content\"><div class=\"ms-MessageBar-icon\"><i class=\"ms-Icon ms-Icon--ErrorBadge\"></i></div><div class=\"ms-MessageBar-text\">{0}</div></div></div>";
 
 $(document).ready(function(){
     if (checkFileAPI() == false) {
@@ -23,6 +25,15 @@ $(document).ready(function(){
         OpenNewNodeDialog();
     });
 
+    $("#GenerateConfig").on('click', function() {
+        ValidateAndSubmitForm();
+    });
+
+    $("#saveScriptFile").on('click', function() {
+        var blob = new Blob([currentScript], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "DSCScript.ps1");
+    });
+
 
     new fabric['Button'](document.querySelector("#addNewNode"), NewNodeAdded);
 
@@ -31,6 +42,11 @@ $(document).ready(function(){
     $("#templateStart").show();
     $("#templateResponse").hide();
     $("#templateOutput").hide();
+
+    $("#questionErrorFlag").hide();
+    $("#configErrorFlag").hide();
+    $("#globalValidationMessage").hide();
+    
 });
 
 function updateStyles() {
@@ -110,18 +126,6 @@ function loadTemplate() {
                 break;
         }
         });
-    });
-
-    var rulesObject = JSON.parse("{" + inputValidationRules + "}");
-    $("#questionSection").validate({
-        submitHandler: function(form) {
-            if (ValidateNodeParameters()) {
-                generateConfig();
-            }
-        },
-        rules: rulesObject,
-        errorClass: "ms-MessageBar ms-MessageBar--error ms-MessageBar-text",
-        debug: true
     });
 
     UpdateNewNodeDialog();
@@ -345,38 +349,87 @@ function NewNodeAdded(event) {
     $("#NewNodeName").val("");
     RenderNodeListDetails();
     ValidateNodeParameters();
+    return false;
+}
+function GetErrorTagForQuestion(message, elementId) {
+    return errorTemplate.replace("{0}", message).replace("{1}", elementId);
 }
 
 function GetTextQuestionRender(question) {
     var fieldName = "question-" + question.id;
-    if (inputValidationRules == "") {
-        inputValidationRules += "\"" + fieldName + "-value\": { \"required\": true }"
-    } else {
-        inputValidationRules += ",\"" + fieldName + "-value\": { \"required\": true }"
-    }
-    
-    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>"
-    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
-    output += "</div>" 
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">";
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>";
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
+    output += GetErrorTagForQuestion("This field is required", fieldName + "-error");
+    output += "</div>";
     return output;
 }
 
 function GetNumberQuestionRender(question) {
     var fieldName = "question-" + question.id;
-    if (inputValidationRules == "") {
-        inputValidationRules += "\"" + fieldName + "-value\": { \"required\": true, \"number\": true }"
-    } else {
-        inputValidationRules += ",\"" + fieldName + "-value\": { \"required\": true, \"number\": true }"
-    }
-    
-    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>"
-    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
-    output += "</div>" 
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">";
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>";
+    output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
+    output += GetErrorTagForQuestion("This field is required and must be a number", fieldName + "-error");
+    output += "</div>"; 
     return output;
 }
 
+function ValidateAndSubmitForm() {
+
+    // validate config data
+    var configValid = true;
+
+
+
+    if (configValid == true) {
+        $("#configErrorFlag").hide()
+    } else {
+        $("#configErrorFlag").show()
+    }
+
+    // validate question responses
+    var questionsValid = true;
+    currentTemplate.questions.forEach(function(question) {
+        switch (question.type) {
+            case "text":
+                var value = $("#question-" + question.id + "-value")[0].value;
+                if (value == null || value == "") {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    $("#question-" + question.id + "-error").hide();
+                }
+                break;
+            case "number":
+                var value = $("#question-" + question.id + "-value")[0].value;
+                if (value == null || value == "" || isNaN(value)) {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    $("#question-" + question.id + "-error").hide();
+                }
+                break;
+            
+            default:
+                alert("not text")
+                break;
+        }
+    });
+
+    if (questionsValid == true) {
+        $("#questionErrorFlag").hide()
+    } else {
+        $("#questionErrorFlag").show()
+    }
+
+    if (questionsValid == false || configValid == false) {
+        $("#globalValidationMessage").show();
+    } else {
+        $("#globalValidationMessage").hide();
+        generateConfig();
+    }
+}
 
 function generateConfig()
 {
@@ -495,6 +548,9 @@ function generateConfig()
 
     configText += "    }\r\n"
     configText += "}\r\n"
+
+
+    currentScript = configText;
 
     $("#scriptContentParent").empty();
     $("#scriptContentParent").html("<pre id=\"scriptContent\" class=\"brush: powershell\">" + configText + "</pre>");
