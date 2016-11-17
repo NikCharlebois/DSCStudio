@@ -482,7 +482,8 @@ function generateConfig()
     configText += "    }\r\n"
     configText += "}\r\n"
 
-    $("#scriptContent").text(configText);
+    $("#scriptContentParent").empty();
+    $("#scriptContentParent").html("<pre id=\"scriptContent\" class=\"brush: powershell\">" + configText + "</pre>");
 
     updateStyles();
 
