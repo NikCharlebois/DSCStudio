@@ -112,10 +112,8 @@ function loadTemplate() {
         });
     });
 
-    $("#templateQuestions").append("<hr /><input type=\"submit\" value=\"Generate Config\" id=\"GenerateConfig\" class=\"ms-Button\" />");
-
     var rulesObject = JSON.parse("{" + inputValidationRules + "}");
-    $("#templateQuestions").validate({
+    $("#questionSection").validate({
         submitHandler: function(form) {
             if (ValidateNodeParameters()) {
                 generateConfig();
