@@ -15,42 +15,50 @@
         {
             "id": "BINARYPATH",
             "title": "Where are the SharePoint installation files stored on the local server?",
-            "type": "text"
+            "type": "text",
+            "group": "File paths"
         },
         {
             "id": "PRODUCTKEY",
             "title": "What is your SharePoint 2016 product key?",
-            "type": "text"
+            "type": "text",
+            "group": "Farm configuration"
         },
         {
             "id": "SQLSERVERNAME",
             "title": "What is the name of the SQL server that will host your databases?",
-            "type": "text"
+            "type": "text",
+            "group": "Database details"
         },
         {
             "id": "LOGPATH",
             "title": "Where should ULS and usage logs be stored?",
-            "type": "text"
+            "type": "text",
+            "group": "File paths"
         },
         {
             "id": "CACHESIZE",
             "title": "How many MB of memory should be allocated to the distributed cache service?",
-            "type": "number"
+            "type": "number",
+            "group": "Farm configuration"
         },
         {
             "id": "WEBAPPDOMAIN",
             "title": "What will the domain name be that hosts SharePoint sites? (eg. sharepoint.contoso.com)",
-            "type": "text"
+            "type": "text",
+            "group": "Web application details"
         },
         {
             "id": "SUPERUSER",
             "title": "The username of the super user account (formatted as DOMAIN\\USER)",
-            "type": "text"
+            "type": "text",
+            "group": "Web application details"
         },
         {
             "id": "SUPERREADER",
             "title": "The username of the super reader account (formatted as DOMAIN\\USER)",
-            "type": "text"
+            "type": "text",
+            "group": "Web application details"
         }
     ],
     "configDataSettings": {

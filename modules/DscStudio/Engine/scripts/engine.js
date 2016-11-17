@@ -80,21 +80,37 @@ function loadTemplate() {
         $("#certificateDetails").remove();
     }
 
-    var questionCount = 0;
-    currentTemplate.questions.forEach(function(element) {
-        switch (element.type) {
+    var questionGroups = {};
+    currentTemplate.questions.forEach(function(question) {
+        if (question.group != null) {
+            if (questionGroups.hasOwnProperty(question.group) == false) {
+                questionGroups[question.group] = [];
+            }
+            questionGroups[question.group].push(question);
+        } else {
+            if (questionGroups.hasOwnProperty("Other questions") == false) {
+                questionGroups["Other questions"] = [];
+            }
+            questionGroups["Other questions"].push(question);
+        }
+    });
+
+    Object.keys(questionGroups).forEach(function(groupName) {
+        $("#templateQuestions").append("<h3>" + groupName + "</h3>");
+        questionGroups[groupName].forEach(function(question) {
+            switch (question.type) {
             case "text":
-                $("#templateQuestions").append(GetTextQuestionRender(element,questionCount));
+                $("#templateQuestions").append(GetTextQuestionRender(question));
                 break;
             case "number":
-                $("#templateQuestions").append(GetNumberQuestionRender(element,questionCount));
+                $("#templateQuestions").append(GetNumberQuestionRender(question));
                 break;
             default:
-                alert("not text")
+                alert("Field type not supported");
                 break;
         }
-        questionCount++;
-    }, this);
+        });
+    });
 
     $("#templateQuestions").append("<hr /><input type=\"submit\" value=\"Generate Config\" id=\"GenerateConfig\" class=\"ms-Button\" />");
 
@@ -333,7 +349,7 @@ function NewNodeAdded(event) {
     ValidateNodeParameters();
 }
 
-function GetTextQuestionRender(question, questionCount) {
+function GetTextQuestionRender(question) {
     var fieldName = "question-" + question.id;
     if (inputValidationRules == "") {
         inputValidationRules += "\"" + fieldName + "-value\": { \"required\": true }"
@@ -342,13 +358,13 @@ function GetTextQuestionRender(question, questionCount) {
     }
     
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + (questionCount + 1) + ". " + question.title + "</label>"
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>"
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
     output += "</div>" 
     return output;
 }
 
-function GetNumberQuestionRender(question, questionCount) {
+function GetNumberQuestionRender(question) {
     var fieldName = "question-" + question.id;
     if (inputValidationRules == "") {
         inputValidationRules += "\"" + fieldName + "-value\": { \"required\": true, \"number\": true }"
@@ -357,7 +373,7 @@ function GetNumberQuestionRender(question, questionCount) {
     }
     
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">"
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + (questionCount + 1) + ". " + question.title + "</label>"
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>"
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />"
     output += "</div>" 
     return output;
