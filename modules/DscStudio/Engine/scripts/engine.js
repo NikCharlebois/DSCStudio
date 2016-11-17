@@ -380,7 +380,23 @@ function ValidateAndSubmitForm() {
     // validate config data
     var configValid = true;
 
+    if ($("#CertPath").val() == null || $("#CertPath").val() == "") {
+        $("#CertPath-Error").show();
+        configValid = false;
+    } else {
+        $("#CertPath-Error").hide();
+    }
 
+    if ($("#CertThumbprint").val() == null || $("#CertThumbprint").val() == "") {
+        $("#CertThumbprint-Error").show();
+        configValid = false;
+    } else {
+        $("#CertThumbprint-Error").hide();
+    }
+
+    if (ValidateNodeParameters() == false) {
+        configValid = false;
+    }
 
     if (configValid == true) {
         $("#configErrorFlag").hide()
@@ -412,7 +428,7 @@ function ValidateAndSubmitForm() {
                 break;
             
             default:
-                alert("not text")
+                alert("not text or number")
                 break;
         }
     });

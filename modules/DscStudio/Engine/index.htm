@@ -64,10 +64,30 @@
                                 <div class="ms-TextField">
                                     <label for="CertPath" class="ms-Label">Path the CER certificate file used to encrypt credentials</label>
                                     <input type="text" name="CertPath" id="CertPath" class="ms-TextField-field" />
+                                    <div class="ms-MessageBar ms-MessageBar--error" id="CertPath-Error" style="display: none;">
+                                        <div class="ms-MessageBar-content">
+                                            <div class="ms-MessageBar-icon">
+                                                <i class="ms-Icon ms-Icon--ErrorBadge"></i>
+                                            </div>
+                                            <div class="ms-MessageBar-text">
+                                                This field is required.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="ms-TextField">
                                     <label for="CertThumbprint" class="ms-Label">Thumbprint of the certificate uesd to decrypt credentials</label>
                                     <input type="text" name="CertThumbprint" id="CertThumbprint" class="ms-TextField-field" />
+                                    <div class="ms-MessageBar ms-MessageBar--error" id="CertThumbprint-Error" style="display: none;">
+                                        <div class="ms-MessageBar-content">
+                                            <div class="ms-MessageBar-icon">
+                                                <i class="ms-Icon ms-Icon--ErrorBadge"></i>
+                                            </div>
+                                            <div class="ms-MessageBar-text">
+                                                This field is required.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <h3>Computers to configure</h3>
