@@ -113,7 +113,7 @@ function loadTemplate() {
     UpdateNewNodeDialog();
     updateStyles();
     prepareFabricComponents();
-    CheckMinNodeCount();
+    ValidateNodeParameters();
 
     $("#templateStart").hide();
     $("#templateResponse").show();
@@ -201,27 +201,19 @@ function RenderNewNodeDialogBoolean(nodeSetting) {
     return output;
 }
 
-function CheckMinNodeCount() {
-    var minCount = 1;
-    if (currentTemplate.configDataSettings.minNodeCount != null) {
-        minCount = currentTemplate.configDataSettings.minNodeCount
-    }
-
-    if (nodes.length < minCount) {
-        $("#minNodeCountMessage").show();
-        $("#minNodeCountNumber").text(minCount);
-    } else {
-        $("#minNodeCountMessage").hide()
-    }
-}
-
 function ValidateNodeParameters() {
     var minCount = 1;
     if (currentTemplate.configDataSettings.minNodeCount != null) {
         minCount = currentTemplate.configDataSettings.minNodeCount
     }
 
+    $("#minNodeCountMessage").hide()
+    $("#nodeOptionsNotValidMessage").hide();
+    $("#nodeOptionsNotValidContent").empty();
+
     if (nodes.length < minCount) {
+        $("#minNodeCountMessage").show();
+        $("#minNodeCountNumber").text(minCount);
         return false;
     } 
     if (currentTemplate.configDataSettings.maxNodeCount != null && nodes.length > currentTemplate.configDataSettings.maxNodeCount) {
@@ -252,6 +244,8 @@ function ValidateNodeParameters() {
                 });
             });
             if (occurences < nodeSetting.minOccurences) {
+                $("#nodeOptionsNotValidMessage").show();
+                $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "'option <br/>")
                 result = false;
             }
         }
@@ -276,7 +270,7 @@ function removeNode(nodeName) {
             return item.name !== nodeName;
         });
         RenderNodeListDetails();
-        CheckMinNodeCount();
+        ValidateNodeParameters();
     }
 }
 
@@ -336,7 +330,7 @@ function NewNodeAdded(event) {
 
     $("#NewNodeName").val("");
     RenderNodeListDetails();
-    CheckMinNodeCount();
+    ValidateNodeParameters();
 }
 
 function GetTextQuestionRender(question, questionCount) {
