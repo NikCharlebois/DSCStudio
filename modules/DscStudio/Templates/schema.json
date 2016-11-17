@@ -116,6 +116,10 @@
                             "text",
                             "number"
                         ]
+                    },
+                    "group": {
+                        "type": "string",
+                        "description": "A group heading to put this question in to"
                     }
                 },
                 "required": [
