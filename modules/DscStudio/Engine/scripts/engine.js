@@ -50,6 +50,17 @@ $(document).ready(function(){
         saveAs(blob, "DSCScript.ps1");
     });
 
+    $("#code-expandButton").on('click', function() {
+        if ($("#code-minimise-button").attr('class') == "ms-Icon ms-Icon--ChevronDown") {
+            // expand 
+            $("#code-minimise-button").attr('class', "ms-Icon ms-Icon--ChevronUp");
+            $("#scriptContentParent").attr('class', "code-expanded");
+        } else {
+            // collapse
+            $("#code-minimise-button").attr('class', "ms-Icon ms-Icon--ChevronDown");
+            $("#scriptContentParent").attr('class', "code-minimise");
+        }
+    });
 
     new fabric['Button'](document.querySelector("#addNewNode"), NewNodeAdded);
 

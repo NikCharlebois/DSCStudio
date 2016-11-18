@@ -17,3 +17,22 @@ div.ms-Grid {
 #additionalNodeDetails {
     margin-right: 24px;
 }
+
+
+.code-minimise {
+    height: 250px;
+    overflow-y: scroll;
+    border: 1px solid black;
+}
+
+.code-expanded {
+    border: 1px solid black;
+}
+
+#code-expandButton {
+    border: 1px solid black;
+    border-top: none;
+    width: 100%;
+    text-align: center;
+    padding-top: 8px;
+}
