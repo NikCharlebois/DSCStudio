@@ -25,8 +25,24 @@ $(document).ready(function(){
         OpenNewNodeDialog();
     });
 
+    $("#switchView-Config").on('click', function() {
+        $("#configDataEditor").show();
+        $("#switchView-Config").parent().addClass("ms-bgColor-themeLight");
+
+        $("#QuestionnaireEditor").hide();
+        $("#switchView-Questions").parent().removeClass("ms-bgColor-themeLight");
+    });
+
+    $("#switchView-Questions").on('click', function() {
+        $("#configDataEditor").hide();
+        $("#switchView-Config").parent().removeClass("ms-bgColor-themeLight");
+
+        $("#QuestionnaireEditor").show();
+        $("#switchView-Questions").parent().addClass("ms-bgColor-themeLight");
+    });
+
     $("#GenerateConfig").on('click', function() {
-        ValidateAndSubmitForm();
+        ValidateForm(true);
     });
 
     $("#saveScriptFile").on('click', function() {
@@ -46,6 +62,7 @@ $(document).ready(function(){
     $("#questionErrorFlag").hide();
     $("#configErrorFlag").hide();
     $("#globalValidationMessage").hide();
+    $("#QuestionnaireEditor").hide();
     
 });
 
@@ -375,7 +392,9 @@ function GetNumberQuestionRender(question) {
     return output;
 }
 
-function ValidateAndSubmitForm() {
+function ValidateForm(submitAfterValidate) {
+
+    updateStyles();
 
     // validate config data
     var configValid = true;
@@ -443,7 +462,9 @@ function ValidateAndSubmitForm() {
         $("#globalValidationMessage").show();
     } else {
         $("#globalValidationMessage").hide();
-        generateConfig();
+        if (submitAfterValidate == true) {
+            generateConfig();
+        }
     }
 }
 
