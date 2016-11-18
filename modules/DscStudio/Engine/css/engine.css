@@ -36,3 +36,7 @@ div.ms-Grid {
     text-align: center;
     padding-top: 8px;
 }
+
+.ms-TextField-field {
+    max-width: 650px;
+}
