@@ -280,7 +280,7 @@ function ValidateNodeParameters() {
             });
             if (occurences < nodeSetting.minOccurences) {
                 $("#nodeOptionsNotValidMessage").show();
-                $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "'option <br/>")
+                $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>")
                 result = false;
             }
         }
@@ -552,7 +552,7 @@ function generateConfig()
     currentTemplate.dscModules.forEach(function(element){
         configText += "    Import-DscResource -ModuleName " + element.name
         if (element.version != null) {
-            configText += " -Version " + element.version
+            configText += " -ModuleVersion " + element.version
         }
         configText += "\r\n"
     });
@@ -571,7 +571,7 @@ function generateConfig()
             {
                 outputValue = getQuestionResponse(outputValue);
             }
-            if (outputValue.startsWith('$') == true) {
+            if (outputValue.startsWith('$') == true || isNaN(outputValue) == false) {
                 configText += "            " + resourceProperty + " = " + outputValue + "\r\n"
             } else {
                 configText += "            " + resourceProperty + " = \"" + outputValue + "\"\r\n"

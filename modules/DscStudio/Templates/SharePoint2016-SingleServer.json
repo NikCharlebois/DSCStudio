@@ -16,7 +16,7 @@
             "id": "BINARYPATH",
             "title": "Where are the SharePoint installation files stored on the local server?",
             "type": "text",
-            "group": "File paths"
+            "group": "Installation"
         },
         {
             "id": "PRODUCTKEY",
@@ -34,7 +34,13 @@
             "id": "LOGPATH",
             "title": "Where should ULS and usage logs be stored?",
             "type": "text",
-            "group": "File paths"
+            "group": "Logging"
+        },
+        {
+            "id": "LOGSIZE",
+            "title": "Size (in GB) to allow for storing ULS logs",
+            "type": "number",
+            "group": "Logging"
         },
         {
             "id": "CACHESIZE",
@@ -128,7 +134,7 @@
             "resourceName": "InstallSharePoint",
             "resourceProperties": {
                 "Ensure": "Present",
-                "InstallerPath": "[BINARYPATH]",
+                "BinaryDir": "[BINARYPATH]",
                 "ProductKey": "[PRODUCTKEY]"
             },
             "dependsOn": "[SPInstallPrereqs]InstallPrereqs"
@@ -171,6 +177,7 @@
             "resourceName": "ApplyDiagnosticLogSettings",
             "resourceProperties": {
                 "PsDscRunAsCredential": "$SPSetupAccount",
+                "LogSpaceInGB": "[LOGSIZE]",
                 "LogPath": "[LOGPATH]"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm"
