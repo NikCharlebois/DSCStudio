@@ -189,12 +189,28 @@
     <div class="ms-Grid">
         <div class="ms-Grid-row" id="templateOutput">
             <div class="ms-Grid-col ms-u-sm12">
-                <div class="ms-font-m">
-                    <a href="#" id="goBackToFormLink" class="ms-link">Go back to edit your responses</a>
-                </div>
                 <h2>Your configuration</h2>
+                <div class="ms-CommandBar">
+                    <div class="ms-CommandBar-mainArea">
+                        <div class="ms-CommandButton">
+                            <button class="ms-CommandButton-button" id="saveConfig">
+                                <span class="ms-CommandButton-icon ms-fontColor-themePrimary">
+                                    <i class="ms-Icon ms-Icon--Save"></i>
+                                </span>
+                                <span class="ms-CommandButton-label">Save your script</span>
+                                </button>
+                        </div>
+                        <div class="ms-CommandButton">
+                            <button class="ms-CommandButton-button" id="goBackToResponses">
+                                <span class="ms-CommandButton-icon ms-fontColor-themePrimary">
+                                    <i class="ms-Icon ms-Icon--EditNote"></i>
+                                </span>
+                                <span class="ms-CommandButton-label">Edit your info</span>
+                                </button>
+                        </div>
+                    </div>
+                </div>
                 <h3>How to use this script</h3>
-                <p><a href="#" id="saveScriptFile">Save this script</a></p>
                 <p>Begin by saving the script locally somewhere that you can trigger your configuration. 
                     You will require local administration rights on each server that was specified in
                     the configuration. Next you will need to distribute the DSC modules that are required

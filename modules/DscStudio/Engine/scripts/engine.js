@@ -15,7 +15,7 @@ $(document).ready(function(){
         readTemplate(this);
     });
 
-    $("#goBackToFormLink").on('click', function() {
+    $("#goBackToResponses").on('click', function() {
         $("#templateStart").hide();
         $("#templateResponse").show();
         $("#templateOutput").hide();
@@ -45,7 +45,7 @@ $(document).ready(function(){
         ValidateForm(true);
     });
 
-    $("#saveScriptFile").on('click', function() {
+    $("#saveConfig").on('click', function() {
         var blob = new Blob([currentScript], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "DSCScript.ps1");
     });
