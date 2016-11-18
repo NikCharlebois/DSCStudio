@@ -193,28 +193,25 @@
                     <a href="#" id="goBackToFormLink" class="ms-link">Go back to edit your responses</a>
                 </div>
                 <h2>Your configuration</h2>
-                <div class="ms-Pivot  ms-Pivot--large ms-Pivot--tabs">
-                    <ul class="ms-Pivot-links">
-                        <li class="ms-Pivot-link is-selected" data-content="files" title="My files" tabindex="1">
-                            PowerShell Script
-                        </li>
-                        <li class="ms-Pivot-link " data-content="recent" title="Recent" tabindex="1">
-                            Instructions
-                        </li>
-                    </ul>
-                    <div class="ms-Pivot-content" data-content="files">
-                        <p><a href="#" id="saveScriptFile">Save this script</a></p>
-                        <div id="scriptContentParent" class="code-minimise">
-                            <pre id="scriptContent" class="brush: powershell"></pre>
-                        </div>
-                        <button id="code-expandButton" class="ms-Button">
-                            <i id="code-minimise-button" class="ms-Icon ms-Icon--ChevronDown"></i>
-                        </button>
-                    </div>
-                    <div class="ms-Pivot-content" data-content="recent">
-                        <p>The instructions would go here</p>
-                    </div>
+                <h3>How to use this script</h3>
+                <p><a href="#" id="saveScriptFile">Save this script</a></p>
+                <p>Begin by saving the script locally somewhere that you can trigger your configuration. 
+                    You will require local administration rights on each server that was specified in
+                    the configuration. Next you will need to distribute the DSC modules that are required
+                    for this confiugration to each node. If they are running PowerShell 5 and are internet
+                    connected you can achieve this with the following script:</p>
+                <pre id="moduleDownloadScript"></pre>
+                <p>When this has been done, run the script you have saved with the below command to begin.</p>
+                <pre>. .\DSCScript.ps1</pre>
+                <p>This will prompt you for any required credentials and other variables before generating 
+                    the MOF files and begining the apply configurations to each node. Configurations will begin
+                    in the background on each machine.</p>
+                <div id="scriptContentParent" class="code-minimise">
+                    <pre id="scriptContent" class="brush: powershell"></pre>
                 </div>
+                <button id="code-expandButton" class="ms-Button">
+                    <i id="code-minimise-button" class="ms-Icon ms-Icon--ChevronDown"></i>
+                </button>
             </div>
         </div>
     </div>

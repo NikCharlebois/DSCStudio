@@ -103,6 +103,15 @@ function readTemplate(filePath) {
             loadTemplate();
         };
         reader.readAsText(filePath.files[0]);
+
+        var markdownReader = new FileReader();
+        markdownReader.onload = function(e) {
+            raw = e.target.result;
+            var converter = new showdown.Converter();
+            instructions = converter.makeHtml(raw);
+            $("#instructionContent").html(instructions);
+        }
+        markdownReader.readAsText(filePath.files[0].replace(".json", ".md"));
     }
     else 
     {
@@ -560,13 +569,18 @@ function generateConfig()
     });
     configText += "\r\n    )\r\n"
 
+    var downloadScript = "";
     currentTemplate.dscModules.forEach(function(element){
         configText += "    Import-DscResource -ModuleName " + element.name
+        downloadScript += "Find-Module -Name \"" + element.name + "\""
         if (element.version != null) {
             configText += " -ModuleVersion " + element.version
+            downloadScript += " -RequiredVersion \"" + element.version + "\""
         }
         configText += "\r\n"
+        downloadScript += " | Install-Module \r\n"
     });
+    $("#moduleDownloadScript").text(downloadScript);
     
     configText += "\r\n"
 
