@@ -398,8 +398,8 @@ function GetQuestionHelpText(fieldName, question) {
     var output = "";
     if (question.helpText != null && question.helpText != "") {
         output += "<span class=\"ms-PanelDefaultExample ms-PanelExample helpIcon\">";
-        output += "<button class=\"ms-Button ms-bgColor-white\" id=\"" + fieldName + "-helpbutton\">";
-        output += "<span class=\"ms-Button-label\"><i class=\"ms-Icon ms-Icon--Help\"></i></span>";
+        output += "<button class=\"ms-Button\" style=\"background-color:white; border: none;\" id=\"" + fieldName + "-helpbutton\">";
+        output += "<span class=\"ms-Button-label\"><i class=\"ms-Icon ms-Icon--Info ms-fontColor-blue\"></i></span>";
         output += "</button>";
         output += "<div class=\"ms-Panel\">";
         output += "<button class=\"ms-Panel-closeButton ms-PanelAction-close\">";
