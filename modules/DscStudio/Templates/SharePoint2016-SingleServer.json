@@ -40,7 +40,9 @@
             "id": "LOGSIZE",
             "title": "Size (in GB) to allow for storing ULS logs",
             "type": "number",
-            "group": "Logging"
+            "group": "Logging",
+            "minValue": 1,
+            "validationMessage": "This field must be a valid number above 0"
         },
         {
             "id": "CACHESIZE",
