@@ -47,7 +47,10 @@
             "title": "How many MB of memory should be allocated to the distributed cache service?",
             "type": "number",
             "group": "Farm configuration",
-            "helpText": "Distributed cache needs to have a maximum amount of memory set on the the servers running this role. The maximum support is 16384 (16GB) however the amount you select will vary based on available memory and workloads on each server."
+            "helpText": "Distributed cache needs to have a maximum amount of memory set on the the servers running this role. The maximum support is 16384 (16GB) however the amount you select will vary based on available memory and workloads on each server.",
+            "minValue": 1,
+            "maxValue": 16384,
+            "validationMessage": "This field must be a valid number between 1 and 16384"
         },
         {
             "id": "WEBAPPDOMAIN",

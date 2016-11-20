@@ -124,6 +124,18 @@
                     "helpText": {
                         "type": "string",
                         "description": "Additional help text that can be shown for a specific question."
+                    },
+                    "validationMessage": {
+                        "type": "string",
+                        "description": "The validation error message to be shown to the user"
+                    },
+                    "minValue": {
+                        "type": "integer",
+                        "description": "The minimum value of this field (for number fields only)"
+                    },
+                    "maxValue": {
+                        "type": "integer",
+                        "description": "The minimum value of this field (for number fields only)"
                     }
                 },
                 "required": [
