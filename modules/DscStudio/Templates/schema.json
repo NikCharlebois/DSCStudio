@@ -114,7 +114,8 @@
                         "description": "The type of question to show to the user",
                         "enum": [
                             "text",
-                            "number"
+                            "number",
+                            "boolean"
                         ]
                     },
                     "group": {

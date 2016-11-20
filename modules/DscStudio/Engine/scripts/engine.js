@@ -149,6 +149,9 @@ function loadTemplate() {
                 case "number":
                     $("#templateQuestions").append(GetNumberQuestionRender(question));
                     break;
+                case "boolean":
+                    $("#templateQuestions").append(GetBooleanQuestionRender(question));
+                    break;
                 default:
                     alert("Field type not supported");
                     break;
@@ -447,6 +450,22 @@ function GetNumberQuestionRender(question) {
     return output;
 }
 
+function GetBooleanQuestionRender(question) {
+    var fieldName = "question-" + question.id;
+    var output = "<div id=\"" + fieldName + "\" class=\"ms-Toggle  ms-Toggle--textLeft\">";
+    output += "<span class=\"ms-Toggle-description\">" + question.title;
+    output += GetQuestionHelpText(fieldName, question) + "</span>";
+    output += "<input class=\"ms-Toggle-input\"  type=\"checkbox\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
+    output += "<label class=\"ms-Toggle-field\" for=\"" + fieldName + "-value\"><span class=\"ms-Label ms-Label--off\">No</span><span class=\"ms-Label ms-Label--on\">Yes</span></label>";
+    if (question.validationMessage != null || question.validationMessage == "") {
+        output += GetErrorTagForQuestion(question.validationMessage, fieldName + "-error");
+    } else {
+        output += GetErrorTagForQuestion("This field is required", fieldName + "-error");
+    }
+    output += "</div>" 
+    return output;
+}
+
 function ValidateForm(submitAfterValidate) {
 
     updateStyles();
@@ -507,7 +526,9 @@ function ValidateForm(submitAfterValidate) {
                     }
                 }
                 break;
-            
+            case "boolean":
+                
+                break;
             default:
                 alert("not text or number")
                 break;
@@ -540,7 +561,10 @@ function generateConfig()
             case "number":
                 responses[question.id] = $("#question-" + question.id + "-value")[0].value;
                 break;
-            
+            case "boolean":
+                internalValue = $("#question-" + question.id + " label").hasClass("is-selected");
+                responses[question.id] = internalValue;
+                break;
             default:
                 alert("not text")
                 break;
