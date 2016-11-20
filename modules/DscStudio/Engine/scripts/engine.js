@@ -423,7 +423,11 @@ function GetTextQuestionRender(question) {
     output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title;
     output += GetQuestionHelpText(fieldName, question) + "</label>";
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
-    output += GetErrorTagForQuestion("This field is required", fieldName + "-error");
+    if (question.validationMessage != null || question.validationMessage == "") {
+        output += GetErrorTagForQuestion(question.validationMessage, fieldName + "-error");
+    } else {
+        output += GetErrorTagForQuestion("This field is required", fieldName + "-error");
+    }
     output += "</div>";
     return output;
 }
@@ -434,7 +438,11 @@ function GetNumberQuestionRender(question) {
     output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title;
     output += GetQuestionHelpText(fieldName, question) + "</label>";
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
-    output += GetErrorTagForQuestion("This field is required and must be a number", fieldName + "-error");
+    if (question.validationMessage != null || question.validationMessage == "") {
+        output += GetErrorTagForQuestion(question.validationMessage, fieldName + "-error");
+    } else {
+        output += GetErrorTagForQuestion("This field is required and must be a number", fieldName + "-error");
+    }
     output += "</div>"; 
     return output;
 }
@@ -489,7 +497,14 @@ function ValidateForm(submitAfterValidate) {
                     questionsValid = false;
                     $("#question-" + question.id + "-error").show();
                 } else {
-                    $("#question-" + question.id + "-error").hide();
+                    if (question.minValue != null && value < question.minValue) {
+                        questionsValid = false;
+                        $("#question-" + question.id + "-error").show();
+                    } else if(question.maxValue != null && value > question.maxValue) {
+
+                    }else {
+                        $("#question-" + question.id + "-error").hide();
+                    }
                 }
                 break;
             
