@@ -103,15 +103,6 @@ function readTemplate(filePath) {
             loadTemplate();
         };
         reader.readAsText(filePath.files[0]);
-
-        var markdownReader = new FileReader();
-        markdownReader.onload = function(e) {
-            raw = e.target.result;
-            var converter = new showdown.Converter();
-            instructions = converter.makeHtml(raw);
-            $("#instructionContent").html(instructions);
-        }
-        markdownReader.readAsText(filePath.files[0].replace(".json", ".md"));
     }
     else 
     {
@@ -152,18 +143,29 @@ function loadTemplate() {
         $("#templateQuestions").append("<h3>" + groupName + "</h3>");
         questionGroups[groupName].forEach(function(question) {
             switch (question.type) {
-            case "text":
-                $("#templateQuestions").append(GetTextQuestionRender(question));
-                break;
-            case "number":
-                $("#templateQuestions").append(GetNumberQuestionRender(question));
-                break;
-            default:
-                alert("Field type not supported");
-                break;
-        }
+                case "text":
+                    $("#templateQuestions").append(GetTextQuestionRender(question));
+                    break;
+                case "number":
+                    $("#templateQuestions").append(GetNumberQuestionRender(question));
+                    break;
+                default:
+                    alert("Field type not supported");
+                    break;
+            }
         });
     });
+
+    var PanelExamples = document.getElementsByClassName("ms-PanelExample");
+    for (var i = 0; i < PanelExamples.length; i++) {
+        (function() {
+            var PanelExampleButton = PanelExamples[i].querySelector(".ms-Button");
+            var PanelExamplePanel = PanelExamples[i].querySelector(".ms-Panel");
+            PanelExampleButton.addEventListener("click", function(i) {
+                new fabric['Panel'](PanelExamplePanel);
+            });
+        }());
+    }
 
     UpdateNewNodeDialog();
     updateStyles();
@@ -392,10 +394,34 @@ function GetErrorTagForQuestion(message, elementId) {
     return errorTemplate.replace("{0}", message).replace("{1}", elementId);
 }
 
+function GetQuestionHelpText(fieldName, question) {
+    var output = "";
+    if (question.helpText != null && question.helpText != "") {
+        output += "<span class=\"ms-PanelDefaultExample ms-PanelExample helpIcon\">";
+        output += "<button class=\"ms-Button ms-bgColor-white\" id=\"" + fieldName + "-helpbutton\">";
+        output += "<span class=\"ms-Button-label\"><i class=\"ms-Icon ms-Icon--Help\"></i></span>";
+        output += "</button>";
+        output += "<div class=\"ms-Panel\">";
+        output += "<button class=\"ms-Panel-closeButton ms-PanelAction-close\">";
+        output += "<i class=\"ms-Panel-closeIcon ms-Icon ms-Icon--Cancel\"></i>";
+        output += "</button>";
+        output += "<div class=\"ms-Panel-contentInner\">";
+        output += "<p class=\"ms-Panel-headerText\">" + question.title + "</p>";
+        output += "<div class=\"ms-Panel-content\">";
+        output += "<span class=\"ms-font-m\">" + question.helpText + "</span>";
+        output += "</div>";
+        output += "</div>";
+        output += "</div>";
+        output += "</span>";
+    }
+    return output;
+}
+
 function GetTextQuestionRender(question) {
     var fieldName = "question-" + question.id;
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">";
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>";
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title;
+    output += GetQuestionHelpText(fieldName, question) + "</label>";
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
     output += GetErrorTagForQuestion("This field is required", fieldName + "-error");
     output += "</div>";
@@ -405,7 +431,8 @@ function GetTextQuestionRender(question) {
 function GetNumberQuestionRender(question) {
     var fieldName = "question-" + question.id;
     var output = "<div id=\"" + fieldName + "\" class=\"ms-TextField \">";
-    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title + "</label>";
+    output += "<label class=\"ms-Label\" for=\"" + fieldName + "-value\">" + question.title;
+    output += GetQuestionHelpText(fieldName, question) + "</label>";
     output += "<input class=\"ms-TextField-field\"  type=\"text\" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />";
     output += GetErrorTagForQuestion("This field is required and must be a number", fieldName + "-error");
     output += "</div>"; 

@@ -46,13 +46,15 @@
             "id": "CACHESIZE",
             "title": "How many MB of memory should be allocated to the distributed cache service?",
             "type": "number",
-            "group": "Farm configuration"
+            "group": "Farm configuration",
+            "helpText": "Distributed cache needs to have a maximum amount of memory set on the the servers running this role. The maximum support is 16384 (16GB) however the amount you select will vary based on available memory and workloads on each server."
         },
         {
             "id": "WEBAPPDOMAIN",
             "title": "What will the domain name be that hosts SharePoint sites? (eg. sharepoint.contoso.com)",
             "type": "text",
-            "group": "Web application details"
+            "group": "Web application details",
+            "helpText": "The domain name that will be used for the main web application (note: do not include the 'http://' at the start, just use the domain name)"
         },
         {
             "id": "SUPERUSER",

@@ -120,6 +120,10 @@
                     "group": {
                         "type": "string",
                         "description": "A group heading to put this question in to"
+                    },
+                    "helpText": {
+                        "type": "string",
+                        "description": "Additional help text that can be shown for a specific question."
                     }
                 },
                 "required": [
