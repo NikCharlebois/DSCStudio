@@ -481,7 +481,7 @@ function ValidateForm(submitAfterValidate) {
         $("#CertPath-Error").hide();
     }
 
-    if ($("#CertThumbprint").val() == null || $("#CertThumbprint").val() == "") {
+    if ($("#CertThumbprint").val() == null || $("#CertThumbprint").val() == "" || $("#CertThumbprint").val().match(/^[A-Fa-f0-9]{40}/g) == null) {
         $("#CertThumbprint-Error").show();
         configValid = false;
     } else {
