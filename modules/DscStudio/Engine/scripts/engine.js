@@ -145,6 +145,7 @@ function loadTemplate() {
             switch (question.type) {
                 case "text":
                 case "filepath":
+                case "regex":
                     $("#templateQuestions").append(GetTextQuestionRender(question));
                     break;
                 case "number":
@@ -534,6 +535,20 @@ function ValidateForm(submitAfterValidate) {
                     $("#question-" + question.id + "-error").show();
                 } else {
                     if (value.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) == null) {
+                        questionsValid = false;
+                        $("#question-" + question.id + "-error").show();
+                    } else {
+                        $("#question-" + question.id + "-error").hide();
+                    }
+                }
+                break;
+            case "regex":
+                var value = $("#question-" + question.id + "-value")[0].value;
+                if (value == null || value == "") {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    if (value.match(eval(question.pattern)) == null) {
                         questionsValid = false;
                         $("#question-" + question.id + "-error").show();
                     } else {

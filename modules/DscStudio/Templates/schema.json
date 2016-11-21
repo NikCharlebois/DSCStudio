@@ -116,7 +116,8 @@
                             "text",
                             "number",
                             "boolean",
-                            "filepath"
+                            "filepath",
+                            "regex"
                         ]
                     },
                     "group": {
@@ -138,6 +139,10 @@
                     "maxValue": {
                         "type": "integer",
                         "description": "The minimum value of this field (for number fields only)"
+                    },
+                    "pattern": {
+                        "type": "string",
+                        "description": "The regular expression to validate this field with (for regex fields only)"
                     }
                 },
                 "required": [

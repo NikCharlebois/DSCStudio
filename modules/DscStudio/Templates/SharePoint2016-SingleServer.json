@@ -22,8 +22,10 @@
         {
             "id": "PRODUCTKEY",
             "title": "What is your SharePoint 2016 product key?",
-            "type": "text",
-            "group": "Farm configuration"
+            "type": "regex",
+            "group": "Farm configuration",
+            "pattern": "/^[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}/g",
+            "validationMessage": "Must be a valid product key, formatted as XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
         },
         {
             "id": "SQLSERVERNAME",
