@@ -704,9 +704,15 @@ function generateConfig()
                 return;
             }
         }
-        
-        configText += "        " + resource.resourceType + " " + resource.resourceName + "\r\n"
-        configText += "        {\r\n"
+
+        var s = "";
+        if (resource.includeNodeDataProperty != null && resource.includeNodeDataProperty != "") {
+            configText += "        if ($node." + resource.includeNodeDataProperty + " -eq $true)\r\n        {\r\n";
+            s = "    ";
+        }
+
+        configText += s + "        " + resource.resourceType + " " + resource.resourceName + "\r\n"
+        configText += s + "        {\r\n"
         Object.keys(resource.resourceProperties).forEach(function(resourceProperty) {
             var outputValue = resource.resourceProperties[resourceProperty]
             if (outputValue.match(/^[\[].+[\]]/g) != null)
@@ -714,15 +720,20 @@ function generateConfig()
                 outputValue = getQuestionResponse(outputValue);
             }
             if (outputValue.startsWith('$') == true || isNaN(outputValue) == false) {
-                configText += "            " + resourceProperty + " = " + outputValue + "\r\n"
+                configText += s + "            " + resourceProperty + " = " + outputValue + "\r\n"
             } else {
-                configText += "            " + resourceProperty + " = \"" + outputValue + "\"\r\n"
+                configText += s + "            " + resourceProperty + " = \"" + outputValue + "\"\r\n"
             }
         });
         if (resource.dependsOn != null) {
-            configText += "            DependsOn = \"" + resource.dependsOn + "\"\r\n"
+            configText += s + "            DependsOn = \"" + resource.dependsOn + "\"\r\n"
         }
-        configText += "        }\r\n\r\n"
+
+        configText += s + "        }\r\n"
+        if (resource.includeNodeDataProperty != null && resource.includeNodeDataProperty != "") {
+            configText += "        }\r\n";
+        }
+        configText += "\r\n";
     });
 
     configText += "    }\r\n"

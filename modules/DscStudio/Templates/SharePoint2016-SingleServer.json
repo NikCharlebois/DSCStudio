@@ -307,7 +307,8 @@
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm",
-            "includeQuestion": "PROVISION-MMS"
+            "includeQuestion": "PROVISION-MMS",
+            "includeNodeDataProperty": "WebFrontEnd"
         },
         {
             "resourceType": "SPServiceInstance",
@@ -391,14 +392,14 @@
             "resourceName": "SearchTopology",
             "resourceProperties": {
                 "ServiceAppName": "Search Service Application",
-                "Admin": "$AllNodes.NodeName",
-                "Crawler": "$AllNodes.NodeName",
-                "ContentProcessing": "$AllNodes.NodeName",
-                "AnalyticsProcessing": "$AllNodes.NodeName",
-                "QueryProcessing": "$AllNodes.NodeName",
-                "PsDscRunAsCredential": "$AllNodes.NodeName",
+                "Admin": "$AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true } | ",
+                "Crawler": "$AllNodes.NodeName | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }",
+                "ContentProcessing": "$AllNodes.NodeName | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }",
+                "AnalyticsProcessing": "$AllNodes.NodeName | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }",
+                "QueryProcessing": "$AllNodes.NodeName | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }",
+                "PsDscRunAsCredential": "$SPSetupAccount",
                 "FirstPartitionDirectory": "[INDEXPATH]\\0",
-                "IndexPartition": "$AllNodes.NodeName"
+                "IndexPartition": "$AllNodes.NodeName | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }"
             },
             "dependsOn": "[SPSearchServiceApp]SearchServiceApp"
         }
