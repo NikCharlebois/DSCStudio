@@ -497,6 +497,18 @@ function ValidateForm(submitAfterValidate) {
         $("#CertThumbprint-Error").hide();
     }
 
+    if ($("#ConfigModeMins").val() == null || $("#ConfigModeMins").val() == "" || isNaN($("#ConfigModeMins").val())) {
+        $("#ConfigModeMins-Error").show();
+        configValid = false;
+    } else {
+        if ($("#ConfigModeMins").val() < 15) {
+            $("#ConfigModeMins-Error").show();
+            configValid = false;
+        } else {
+            $("#ConfigModeMins-Error").hide();
+        }
+    }
+
     if (ValidateNodeParameters() == false) {
         configValid = false;
     }
@@ -628,9 +640,7 @@ function generateConfig()
         configText += "            CertificateFile = \"" + $("#CertPath").val() + "\"\r\n";
         configText += "            Thumbprint = \"" + $("#CertThumbprint").val() + "\"\r\n";
         configText += "            PSDscAllowPlainTextPassword = $false\r\n";
-    } else {
-        configText += "            PSDscAllowPlainTextPassword = $true\r\n";
-    }
+    } 
     
     configText += "        }";
     if (nodes.length == 0) {
@@ -640,6 +650,9 @@ function generateConfig()
             configText += ",\r\n";
             configText += "        @{\r\n";
             configText += "            NodeName = \"" + node.name + "\"\r\n";
+            if (currentTemplate.configDataSettings.certificateDetails == null || currentTemplate.configDataSettings.certificateDetails == true) {} else {
+                configText += "            PSDscAllowPlainTextPassword = $true\r\n";
+            }
             node.additionalProperties.forEach(function(prop) {
                 switch(prop.valueType) {
                     case "text":
@@ -735,6 +748,18 @@ function generateConfig()
         }
         configText += "\r\n";
     });
+
+    configText += "        LocalConfigurationManager {\r\n";
+    if (currentTemplate.configDataSettings.certificateDetails == null || currentTemplate.configDataSettings.certificateDetails == true) {
+        configText += "            CertificateId = \"" + $("#CertThumbprint").val() + "\"\r\n";
+    }
+
+    var allowReboot = $("#AutoReboot label").hasClass("is-selected")
+    configText += "            RebootIfNeeded = $" + allowReboot + "\r\n";
+    configText += "            ConfigurationMode = \"" + $("#LcmConfigMode").val() + "\"\r\n";
+    configText += "            ConfigurationModeFrequencyMins = " + $("#ConfigModeMins").val() + "\r\n";
+    configText += "            ActionAfterReboot = \"" + $("#ActionAfterReboot").val() + "\"\r\n";
+    configText += "        }\r\n"
 
     configText += "    }\r\n"
     configText += "}\r\n"

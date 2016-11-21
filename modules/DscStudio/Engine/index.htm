@@ -9,8 +9,9 @@
     <link type="text/css" rel="stylesheet" href="syntaxhighlighter/shCore.css"/>
 	<link type="text/css" rel="stylesheet" href="syntaxhighlighter/shCoreDefault.css"/>
 
-    <link rel="stylesheet" href="officefabric/css/fabric.min.css" />
     <link rel="stylesheet" href="officefabric/css/fabric.components.min.css" />
+    <link rel="stylesheet" href="officefabric/css/fabric.min.css" />
+    
     <link rel="stylesheet" href="css/engine.css" />
 </head>
 <body>
@@ -176,6 +177,44 @@
                         </div>
 
                         <ul class="ms-List" id="nodeList"></ul>
+
+                        <h3>Local Configuration Manager (LCM) settings</h3>
+
+                        <div id="AutoReboot" class="ms-Toggle  ms-Toggle--textLeft">
+                            <span class="ms-Toggle-description">Allow the machine to reboot automatically during configuration?</span>
+                            <input class="ms-Toggle-input"  type="checkbox" id="AutoReboot-value" name="-value" />
+                            <label class="ms-Toggle-field" for="AutoReboot-value"><span class="ms-Label ms-Label--off">No</span><span class="ms-Label ms-Label--on">Yes</span></label>
+                        </div>
+                        <div class="ms-TextField">
+                            <label for="ActionAfterReboot" class="ms-Label">What configuration mode should the LCM be set to?</label>
+                            <select name="ActionAfterReboot" id="ActionAfterReboot" class="ms-TextField-field">
+                                <option value="ContinueConfiguration">Continue Configuration</option>
+                                <option value="StopConfiguration">Stop Configuration</option>
+                            </select>
+                        </div>
+
+                        <div class="ms-TextField">
+                            <label for="LcmConfigMode" class="ms-Label">What configuration mode should the LCM be set to?</label>
+                            <select name="LcmConfigMode" id="LcmConfigMode" class="ms-TextField-field">
+                                <option value="ApplyOnly">Apply Only</option>
+                                <option value="ApplyAndMonitor">Apply and Monitor</option>
+                                <option value="ApplyAndAutoCorrect">Apply and AutoCorrect</option>
+                            </select>
+                        </div>
+                        <div class="ms-TextField">
+                            <label for="ConfigModeMins" class="ms-Label">How often (in minutes) should the LCM check the configuration?</label>
+                            <input type="text" name="ConfigModeMins" id="ConfigModeMins" class="ms-TextField-field" value="15" />
+                            <div class="ms-MessageBar ms-MessageBar--error" id="ConfigModeMins-Error" style="display: none;">
+                                <div class="ms-MessageBar-content">
+                                    <div class="ms-MessageBar-icon">
+                                        <i class="ms-Icon ms-Icon--ErrorBadge"></i>
+                                    </div>
+                                    <div class="ms-MessageBar-text">
+                                        This must be a number above 15
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="QuestionnaireEditor">
