@@ -698,6 +698,13 @@ function generateConfig()
     configText += "    {\r\n"
 
     currentTemplate.outputResources.forEach(function(resource) {
+
+        if (resource.includeQuestion != null && resource.includeQuestion != "") {
+            if (responses[resource.includeQuestion] == false) {
+                return;
+            }
+        }
+        
         configText += "        " + resource.resourceType + " " + resource.resourceName + "\r\n"
         configText += "        {\r\n"
         Object.keys(resource.resourceProperties).forEach(function(resourceProperty) {

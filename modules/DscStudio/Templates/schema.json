@@ -192,6 +192,10 @@
                     "dependsOn": {
                         "type": "string",
                         "description": "The DependsOn value for this resource"
+                    },
+                    "includeQuestion": {
+                        "type": "string",
+                        "description": "The ID of a boolean question that determines if this resource should be included or not"
                     }
                 },
                 "required": [

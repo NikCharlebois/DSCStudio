@@ -76,6 +76,19 @@
             "title": "The username of the super reader account (formatted as DOMAIN\\USER)",
             "type": "text",
             "group": "Web application details"
+        },
+        {
+            "id": "PROVISION-MMS",
+            "title": "Deploy the managed metadata service app to this farm?",
+            "type": "boolean",
+            "group": "Service applications"
+        },
+        {
+            "id": "INDEXPATH",
+            "title": "Where should search index partitions be stored?",
+            "type": "filepath",
+            "validationMessage": "This must be a valid directory (do not include the '\\' on the end)",
+            "group": "Search"
         }
     ],
     "configDataSettings": {
@@ -293,7 +306,8 @@
                 "Ensure": "Present",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
-            "dependsOn": "[SPCreateFarm]CreateSPFarm"
+            "dependsOn": "[SPCreateFarm]CreateSPFarm",
+            "includeQuestion": "PROVISION-MMS"
         },
         {
             "resourceType": "SPServiceInstance",
@@ -347,7 +361,8 @@
                 "DatabaseName": "SP_ManagedMetadata",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
-            "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+            "dependsOn": "[SPServiceAppPool]MainServiceAppPool",
+            "includeQuestion": "PROVISION-MMS"
         },
         {
             "resourceType": "SPBCSServiceApp",
@@ -370,6 +385,22 @@
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPServiceAppPool]MainServiceAppPool"
+        },
+        {
+            "resourceType": "SPSearchTopology",
+            "resourceName": "SearchTopology",
+            "resourceProperties": {
+                "ServiceAppName": "Search Service Application",
+                "Admin": "$AllNodes.NodeName",
+                "Crawler": "$AllNodes.NodeName",
+                "ContentProcessing": "$AllNodes.NodeName",
+                "AnalyticsProcessing": "$AllNodes.NodeName",
+                "QueryProcessing": "$AllNodes.NodeName",
+                "PsDscRunAsCredential": "$AllNodes.NodeName",
+                "FirstPartitionDirectory": "[INDEXPATH]\\0",
+                "IndexPartition": "$AllNodes.NodeName"
+            },
+            "dependsOn": "[SPSearchServiceApp]SearchServiceApp"
         }
     ]
 }
