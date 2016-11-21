@@ -172,6 +172,14 @@ function loadTemplate() {
         }());
     }
 
+    $("input[id^='question-']").on('focusout', function() {
+        var questionId = this.id.replace("question-", "").replace("-value","");
+        var question = currentTemplate.questions.filter(function(item) {
+            return item.id == questionId;
+        })[0];
+        validateQuestion(question);
+    });
+
     UpdateNewNodeDialog();
     updateStyles();
     prepareFabricComponents();
@@ -502,67 +510,7 @@ function ValidateForm(submitAfterValidate) {
     // validate question responses
     var questionsValid = true;
     currentTemplate.questions.forEach(function(question) {
-        switch (question.type) {
-            case "text":
-                var value = $("#question-" + question.id + "-value")[0].value;
-                if (value == null || value == "") {
-                    questionsValid = false;
-                    $("#question-" + question.id + "-error").show();
-                } else {
-                    $("#question-" + question.id + "-error").hide();
-                }
-                break;
-            case "number":
-                var value = $("#question-" + question.id + "-value")[0].value;
-                if (value == null || value == "" || isNaN(value)) {
-                    questionsValid = false;
-                    $("#question-" + question.id + "-error").show();
-                } else {
-                    if (question.minValue != null && value < question.minValue) {
-                        questionsValid = false;
-                        $("#question-" + question.id + "-error").show();
-                    } else if(question.maxValue != null && value > question.maxValue) {
-
-                    }else {
-                        $("#question-" + question.id + "-error").hide();
-                    }
-                }
-                break;
-            case "filepath":
-                var value = $("#question-" + question.id + "-value")[0].value;
-                if (value == null || value == "") {
-                    questionsValid = false;
-                    $("#question-" + question.id + "-error").show();
-                } else {
-                    if (value.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) == null) {
-                        questionsValid = false;
-                        $("#question-" + question.id + "-error").show();
-                    } else {
-                        $("#question-" + question.id + "-error").hide();
-                    }
-                }
-                break;
-            case "regex":
-                var value = $("#question-" + question.id + "-value")[0].value;
-                if (value == null || value == "") {
-                    questionsValid = false;
-                    $("#question-" + question.id + "-error").show();
-                } else {
-                    if (value.match(eval(question.pattern)) == null) {
-                        questionsValid = false;
-                        $("#question-" + question.id + "-error").show();
-                    } else {
-                        $("#question-" + question.id + "-error").hide();
-                    }
-                }
-                break;
-            case "boolean":
-                
-                break;
-            default:
-                alert("not text or number")
-                break;
-        }
+        validateQuestion(question);
     });
 
     if (questionsValid == true) {
@@ -578,6 +526,70 @@ function ValidateForm(submitAfterValidate) {
         if (submitAfterValidate == true) {
             generateConfig();
         }
+    }
+}
+
+function validateQuestion(question) {
+    switch (question.type) {
+        case "text":
+            var value = $("#question-" + question.id + "-value")[0].value;
+            if (value == null || value == "") {
+                questionsValid = false;
+                $("#question-" + question.id + "-error").show();
+            } else {
+                $("#question-" + question.id + "-error").hide();
+            }
+            break;
+        case "number":
+            var value = $("#question-" + question.id + "-value")[0].value;
+            if (value == null || value == "" || isNaN(value)) {
+                questionsValid = false;
+                $("#question-" + question.id + "-error").show();
+            } else {
+                if (question.minValue != null && value < question.minValue) {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else if(question.maxValue != null && value > question.maxValue) {
+
+                }else {
+                    $("#question-" + question.id + "-error").hide();
+                }
+            }
+            break;
+        case "filepath":
+            var value = $("#question-" + question.id + "-value")[0].value;
+            if (value == null || value == "") {
+                questionsValid = false;
+                $("#question-" + question.id + "-error").show();
+            } else {
+                if (value.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) == null) {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    $("#question-" + question.id + "-error").hide();
+                }
+            }
+            break;
+        case "regex":
+            var value = $("#question-" + question.id + "-value")[0].value;
+            if (value == null || value == "") {
+                questionsValid = false;
+                $("#question-" + question.id + "-error").show();
+            } else {
+                if (value.match(eval(question.pattern)) == null) {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    $("#question-" + question.id + "-error").hide();
+                }
+            }
+            break;
+        case "boolean":
+            
+            break;
+        default:
+            alert("not text or number")
+            break;
     }
 }
 
