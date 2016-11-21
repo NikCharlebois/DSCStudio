@@ -590,6 +590,7 @@ function generateConfig()
             case "text":
             case "number":
             case "filepath":
+            case "regex":
                 responses[question.id] = $("#question-" + question.id + "-value")[0].value;
                 break;
             case "boolean":
@@ -707,7 +708,8 @@ function generateConfig()
 
     configText += "    }\r\n"
     configText += "}\r\n"
-
+    configText += "\r\n"
+    configText += "Start-DscConfiguration -Path .\\" + currentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n"
 
     currentScript = configText;
 
