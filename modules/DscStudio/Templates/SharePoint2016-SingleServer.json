@@ -15,8 +15,9 @@
         {
             "id": "BINARYPATH",
             "title": "Where are the SharePoint installation files stored on the local server?",
-            "type": "text",
-            "group": "Installation"
+            "type": "filepath",
+            "group": "Installation",
+            "validationMessage": "This must be a valid file path"
         },
         {
             "id": "PRODUCTKEY",
@@ -33,8 +34,9 @@
         {
             "id": "LOGPATH",
             "title": "Where should ULS and usage logs be stored?",
-            "type": "text",
-            "group": "Logging"
+            "type": "filepath",
+            "group": "Logging",
+            "validationMessage": "This must be a valid file path"
         },
         {
             "id": "LOGSIZE",

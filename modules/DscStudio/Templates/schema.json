@@ -115,7 +115,8 @@
                         "enum": [
                             "text",
                             "number",
-                            "boolean"
+                            "boolean",
+                            "filepath"
                         ]
                     },
                     "group": {

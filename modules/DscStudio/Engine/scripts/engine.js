@@ -144,6 +144,7 @@ function loadTemplate() {
         questionGroups[groupName].forEach(function(question) {
             switch (question.type) {
                 case "text":
+                case "filepath":
                     $("#templateQuestions").append(GetTextQuestionRender(question));
                     break;
                 case "number":
@@ -526,6 +527,20 @@ function ValidateForm(submitAfterValidate) {
                     }
                 }
                 break;
+            case "filepath":
+                var value = $("#question-" + question.id + "-value")[0].value;
+                if (value == null || value == "") {
+                    questionsValid = false;
+                    $("#question-" + question.id + "-error").show();
+                } else {
+                    if (value.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) == null) {
+                        questionsValid = false;
+                        $("#question-" + question.id + "-error").show();
+                    } else {
+                        $("#question-" + question.id + "-error").hide();
+                    }
+                }
+                break;
             case "boolean":
                 
                 break;
@@ -559,6 +574,7 @@ function generateConfig()
         switch (question.type) {
             case "text":
             case "number":
+            case "filepath":
                 responses[question.id] = $("#question-" + question.id + "-value")[0].value;
                 break;
             case "boolean":
