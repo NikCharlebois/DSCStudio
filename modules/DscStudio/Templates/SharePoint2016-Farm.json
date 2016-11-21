@@ -1,8 +1,8 @@
 {
     "$schema": "./schema.json",
     "metadata": {
-        "title": "SharePoint Server 2016 (Single Server)",
-        "description": "Used to create a SharePoint Server 2016 deployment on a single server",
+        "title": "SharePoint Server 2016 (Farm)",
+        "description": "Used to create a SharePoint Server 2016 deployment on multiple servers",
         "configurationName": "SharePointSingleServer"
     },
     "dscModules": [
@@ -105,8 +105,32 @@
     ],
     "configDataSettings": {
         "certificateDetails": true,
-        "nodeSettings": [],
-        "maxNodeCount": 1
+        "nodeSettings": [
+            {
+                "displayName": "Web Front End Server",
+                "powershellName": "WebFrontEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "Search Front End Server",
+                "powershellName": "SearchFrontEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "Search Back End Server",
+                "powershellName": "SearchBackEnd",
+                "valueType": "boolean",
+                "minOccurences": 1
+            },
+            {
+                "displayName": "App Server",
+                "powershellName": "AppServer",
+                "valueType": "boolean",
+                "minOccurences": 1
+            }
+        ]
     },
     "inputParameters": [
         {
@@ -284,7 +308,8 @@
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm",
-            "includeQuestion": "PROVISION-SECURESTORE"
+            "includeQuestion": "PROVISION-SECURESTORE",
+            "includeNodeDataProperty": "WebFrontEnd"
         },
         {
             "resourceType": "SPServiceInstance",
@@ -295,7 +320,8 @@
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm",
-            "includeQuestion": "PROVISION-MMS"
+            "includeQuestion": "PROVISION-MMS",
+            "includeNodeDataProperty": "WebFrontEnd"
         },
         {
             "resourceType": "SPServiceInstance",
@@ -305,9 +331,9 @@
                 "Ensure": "Present",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
-            "dependsOn": "[SPCreateFarm]CreateSPFarm"
-            ,
-            "includeQuestion": "PROVISION-BCS"
+            "dependsOn": "[SPCreateFarm]CreateSPFarm",
+            "includeQuestion": "PROVISION-BCS",
+            "includeNodeDataProperty": "WebFrontEnd"
         },
         {
             "resourceType": "SPServiceInstance",
@@ -383,14 +409,14 @@
             "resourceName": "SearchTopology",
             "resourceProperties": {
                 "ServiceAppName": "Search Service Application",
-                "Admin": "$AllNodes.NodeName",
-                "Crawler": "$AllNodes.NodeName",
-                "ContentProcessing": "$AllNodes.NodeName",
-                "AnalyticsProcessing": "$AllNodes.NodeName",
-                "QueryProcessing": "$AllNodes.NodeName",
+                "Admin": "$($AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }).NodeName",
+                "Crawler": "$($AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }).NodeName",
+                "ContentProcessing": "$($AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }).NodeName",
+                "AnalyticsProcessing": "$($AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }).NodeName",
+                "QueryProcessing": "$($AllNodes | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }).NodeName",
                 "PsDscRunAsCredential": "$SPSetupAccount",
                 "FirstPartitionDirectory": "[INDEXPATH]\\0",
-                "IndexPartition": "$AllNodes.NodeName"
+                "IndexPartition": "$($AllNodes | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }).NodeName"
             },
             "dependsOn": "[SPSearchServiceApp]SearchServiceApp"
         }
