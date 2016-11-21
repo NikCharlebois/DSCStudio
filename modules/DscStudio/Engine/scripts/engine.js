@@ -474,7 +474,7 @@ function ValidateForm(submitAfterValidate) {
     // validate config data
     var configValid = true;
 
-    if ($("#CertPath").val() == null || $("#CertPath").val() == "") {
+    if ($("#CertPath").val() == null || $("#CertPath").val() == "" || $("#CertPath").val().match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) == null) {
         $("#CertPath-Error").show();
         configValid = false;
     } else {
