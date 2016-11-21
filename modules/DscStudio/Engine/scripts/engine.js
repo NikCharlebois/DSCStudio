@@ -764,6 +764,7 @@ function generateConfig()
     configText += "    }\r\n"
     configText += "}\r\n"
     configText += "\r\n"
+    configText += "Set-DscLocalConfigurationManager -Path .\\" + currentTemplate.metadata.configurationName + "\r\n"
     configText += "Start-DscConfiguration -Path .\\" + currentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n"
 
     currentScript = configText;
