@@ -1,0 +1,33 @@
+{
+  "name": "dscstudio",
+  "version": "0.1.0",
+  "description": "DSC Studio allows you to generate DSC configurations from templates",
+  "main": "index.js",
+  "scripts": {
+    "lint": "jshint src/scripts",
+    "pretest": "npm run lint -s",
+    "test": "mocha tests/",
+    "minify:css": "cleancss src/css/main.css -o modules/DSCStudio/engine/css/main.min.css",
+    "minify:js": "gulp uglifyjs",
+    "watch": "watch \"npm run minify:js && npm run minify:css\" src/scripts/ src/css/",
+    "publishSyntaxHighlighter": "gulp publishSyntaxHighlighter",
+    "build": "npm run test -s && npm run minify:js -s && npm run minify:css -s && npm run copymodulescripts -s && npm run publishSyntaxHighlighter -s",
+    "copymodulescripts": "powershell -File .\\Build\\Publish-NodeModules.ps1"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "devDependencies": {
+    "clean-css": "^3.4.21",
+    "file-saver": "^1.3.3",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "handlebars": "^4.0.6",
+    "jshint": "^2.9.4",
+    "mocha": "^3.1.2",
+    "office-ui-fabric-js": "^1.2.0",
+    "requirejs": "^2.3.2",
+    "uglify-js": "^2.7.4",
+    "watch": "^1.0.1"
+  }
+}
