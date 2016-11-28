@@ -49,7 +49,7 @@ var OfficeFabricManager = {
             }());
         }
     }
-}
+};
 
 var ViewManager = {
     ShowView: function(view) {
