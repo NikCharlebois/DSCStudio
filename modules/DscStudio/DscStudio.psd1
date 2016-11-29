@@ -69,7 +69,7 @@ NestedModules = @("DscStudio.psm1")
 #FunctionsToExport = '*'
 
 # Cmdlets to export from this module
-CmdletsToExport = @("Start-DscStudio", "Get-DscStudioTemplate")
+CmdletsToExport = @("Start-DscStudio", "Get-DscStudioTemplate", "Reset-DscStudioDynamicTemplate")
 
 # Variables to export from this module
 #VariablesToExport = '*'

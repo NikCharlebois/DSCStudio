@@ -30,6 +30,15 @@ function Start-DscStudio
     }
 }
 
+function Reset-DscStudioDynamicTemplate
+{
+    $engineFolder = Join-Path -Path $PSScriptRoot -ChildPath "Engine"
+    $dynamicTemplatePath = Join-Path -Path $engineFolder -ChildPath "scripts/dynamictemplate.js"
+    if ((Test-Path -Path $dynamicTemplatePath) -eq $true) {
+        Remove-Item -Path $dynamicTemplatePath -Force:$true -Confirm:$false
+    }
+}
+
 function Get-DscStudioTemplate
 {
     param(

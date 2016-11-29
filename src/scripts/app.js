@@ -33,9 +33,9 @@ loadScript("ui.min.js", function () {
     EventManager.Init();
     OfficeFabricManager.InitFixedControls();
 });
-loadScript("engine.min.js", function () {
-    TemplateManager.Init();
-});
 loadScript("validator.min.js", function () {
     FormValidator.InitForm();
+});
+loadScript("engine.min.js", function () {
+    TemplateManager.Init();
 });

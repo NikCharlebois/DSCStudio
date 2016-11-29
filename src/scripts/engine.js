@@ -9,15 +9,18 @@ var TemplateManager = {
     Init: function() {
         if (window.File && window.FileReader && window.FileList && window.Blob) {
             this.Reader = new FileReader();
-            return true; 
         } else {
             alert('Your browser does not support HTML5 file APIs. Please open this from a browser that supports HTML5.');
             return false;
         }
+
+        if (DynamicTemplate !== undefined) {
+            this.ReadTemplateFromDynamicSource();
+        }
     },
     StartTemplateRead: function(filepicker) {
         if(filepicker.files && filepicker.files[0]) {
-            this.Reader.onload = this.ReadTemplate;
+            this.Reader.onload = this.ReadTemplateFromJSON;
             this.Reader.readAsText(filepicker.files[0]);
             return true;
         }
@@ -26,8 +29,15 @@ var TemplateManager = {
             return false;
         }
     },
-    ReadTemplate: function(contents) {
+    ReadTemplateFromJSON: function(contents) {
         TemplateManager.CurrentTemplate = JSON.parse(contents.target.result);
+        TemplateManager.ReadTemplate();
+    },
+    ReadTemplateFromDynamicSource: function() {
+        TemplateManager.CurrentTemplate = DynamicTemplate;
+        TemplateManager.ReadTemplate();
+    },
+    ReadTemplate: function() {
         var questionGroups = {};
         TemplateManager.CurrentTemplate.questions.forEach(function(question) {
             if (question.group !== null) {
