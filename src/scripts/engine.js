@@ -102,7 +102,7 @@ var PowerShellManager = {
         saveAs(blob, this.SaveAsFileName);
     },
     UpdateCurrentScript: function() {
-        var configText = ""
+        var configText = "";
 
         // build the config data
         
@@ -201,7 +201,7 @@ var PowerShellManager = {
             configText += s + "        " + resource.resourceType + " " + resource.resourceName + "\r\n";
             configText += s + "        {\r\n";
             Object.keys(resource.resourceProperties).forEach(function(resourceProperty) {
-                var outputValue = resource.resourceProperties[resourceProperty]
+                var outputValue = resource.resourceProperties[resourceProperty];
                 if (outputValue.match(/[\[].+[\]]/g) !== null)
                 {
                     outputValue = TemplateManager.GetQuestionResponse(outputValue);
@@ -213,7 +213,7 @@ var PowerShellManager = {
                 }
             });
             if (resource.dependsOn !== undefined) {
-                configText += s + "            DependsOn = \"" + resource.dependsOn + "\"\r\n"
+                configText += s + "            DependsOn = \"" + resource.dependsOn + "\"\r\n";
             }
 
             configText += s + "        }\r\n";

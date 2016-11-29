@@ -12,42 +12,35 @@ var StyleLoader = {
 var OfficeFabricManager = {
     InitFixedControls: function() {
         var CommandBarElements = document.querySelectorAll(".ms-CommandBar");
-        for(var i = 0; i < CommandBarElements.length; i++) {
-            new fabric['CommandBar'](CommandBarElements[i]);
+        for(var commandBarCount = 0; commandBarCount < CommandBarElements.length; commandBarCount++) {
+            new fabric.CommandBar(CommandBarElements[commandBarCount]);
         }
 
         var ListElements = document.querySelectorAll(".ms-List");
-        for(var i = 0; i < ListElements.length; i++) {
-            new fabric['List'](ListElements[i]);
-        }
-
-        var DialogElements = document.querySelectorAll(".ms-Dialog");
-        var DialogComponents = [];
-        for (var i = 0; i < DialogElements.length; i++) {
-            (function(){
-                DialogComponents[i] = new fabric['Dialog'](DialogElements[i]);
-            }());
+        for(var listElementsCount = 0; listElementsCount < ListElements.length; listElementsCount++) {
+            new fabric.List(ListElements[listElementsCount]);
         }
 
         var ToggleElements = document.querySelectorAll(".ms-Toggle");
-        for(var i = 0; i < ToggleElements.length; i++) {
-            new fabric['Toggle'](ToggleElements[i]);
+        for(var toggleElementsCount = 0; toggleElementsCount < ToggleElements.length; toggleElementsCount++) {
+            new fabric.Toggle(ToggleElements[toggleElementsCount]);
         }
     },
     UpdateToggle: function(id) {
-        new fabric['Toggle'](document.getElementById(id));
+        new fabric.Toggle(document.getElementById(id));
     },
     UpdatePanels: function() {
         var PanelExamples = document.getElementsByClassName("ms-PanelExample");
-        for (var i = 0; i < PanelExamples.length; i++) {
-            (function() {
-                var PanelExampleButton = PanelExamples[i].querySelector(".ms-Button");
-                var PanelExamplePanel = PanelExamples[i].querySelector(".ms-Panel");
-                PanelExampleButton.addEventListener("click", function(i) {
-                    new fabric['Panel'](PanelExamplePanel);
-                });
-            }());
+        for (var panelExamplesCount = 0; panelExamplesCount < PanelExamples.length; panelExamplesCount++) {
+            OfficeFabricManager.UpdatePanel(PanelExamples[panelExamplesCount]);
         }
+    },
+    UpdatePanel: function(container) {
+        var PanelExampleButton = container.querySelector(".ms-Button");
+        var PanelExamplePanel = container.querySelector(".ms-Panel");
+        PanelExampleButton.addEventListener("click", function(i) {
+            new fabric.Panel(PanelExamplePanel);
+        });
     }
 };
 
@@ -99,7 +92,7 @@ var ViewManager = {
     },
     OpenDialog: function(dialogId) {
         var dialog = document.getElementById(dialogId);
-        var dialogComponent = new fabric['Dialog'](dialog);
+        var dialogComponent = new fabric.Dialog(dialog);
         dialogComponent.open();
     },
     ToggleCodeMinimiseFrame: function() {
@@ -155,7 +148,7 @@ var EventManager = {
             ViewManager.ToggleCodeMinimiseFrame();
         });
 
-        new fabric['Button'](document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
+        new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
     }
 };
 
@@ -214,7 +207,7 @@ var TemplateUIBuilder = {
                     break;
                 case "boolean":
                     HandleBarManager.RenderHandleBar('BooleanNodeOption', setting, '#additionalNodeDetails');
-                    new fabric['Toggle'](document.getElementById("nodeSetting-" + setting.powershellName));
+                    new fabric.Toggle(document.getElementById("nodeSetting-" + setting.powershellName));
                     break;
                 default:
                     throw setting.valueType + " is not a supported node data type";

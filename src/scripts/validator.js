@@ -87,7 +87,9 @@ var FormValidator = {
                     questionValid = false;
                     $("#question-" + question.id + "-error").show();
                 } else {
-                    if (regexvalue.match(eval(question.pattern)) === null) {
+                    // eval is required here to dynamically pull in the regex.
+                    // The ignore comment has been added to pass the linting test 
+                    if (regexvalue.match(eval(question.pattern)) === null) { // jshint ignore:line 
                         questionValid = false;
                         $("#question-" + question.id + "-error").show();
                     } else {
@@ -99,7 +101,7 @@ var FormValidator = {
                 
                 break;
             default:
-                alert("not text or number")
+                alert("not text or number");
                 break;
         }
         return questionValid;
@@ -194,7 +196,7 @@ var FormValidator = {
                 });
                 if (occurences < nodeSetting.minOccurences) {
                     $("#nodeOptionsNotValidMessage").show();
-                    $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>")
+                    $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>");
                     result = false;
                 }
             }
