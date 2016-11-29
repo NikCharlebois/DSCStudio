@@ -11,7 +11,7 @@
     "minify:js": "gulp uglifyjs",
     "watch": "watch \"npm run minify:js && npm run minify:css\" src/scripts/ src/css/",
     "publishSyntaxHighlighter": "gulp publishSyntaxHighlighter",
-    "build": "npm run test -s && npm run minify:js -s && npm run minify:css -s && npm run copymodulescripts -s && npm run publishSyntaxHighlighter -s",
+    "build": "npm run minify:js && npm run minify:css && npm run copymodulescripts",
     "copymodulescripts": "npm run publishSyntaxHighlighter && powershell -File .\\Build\\Publish-NodeModules.ps1"
   },
   "author": "Microsoft Corporation",
