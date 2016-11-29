@@ -1,5 +1,5 @@
 {
-    "$schema": "./schema.json",
+    "$schema": "https://raw.githubusercontent.com/BrianFarnhill/DSCStudio/master/schema.json",
     "metadata": {
         "title": "SharePoint Server 2016 (Farm)",
         "description": "Used to create a SharePoint Server 2016 deployment on multiple servers",
