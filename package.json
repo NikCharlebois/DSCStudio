@@ -12,7 +12,7 @@
     "watch": "watch \"npm run minify:js && npm run minify:css\" src/scripts/ src/css/",
     "publishSyntaxHighlighter": "gulp publishSyntaxHighlighter",
     "build": "npm run test -s && npm run minify:js -s && npm run minify:css -s && npm run copymodulescripts -s && npm run publishSyntaxHighlighter -s",
-    "copymodulescripts": "powershell -File .\\Build\\Publish-NodeModules.ps1"
+    "copymodulescripts": "npm run publishSyntaxHighlighter && powershell -File .\\Build\\Publish-NodeModules.ps1"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -23,6 +23,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "handlebars": "^4.0.6",
+    "jquery": "^3.1.1",
     "jshint": "^2.9.4",
     "mocha": "^3.1.2",
     "office-ui-fabric-js": "^1.2.0",

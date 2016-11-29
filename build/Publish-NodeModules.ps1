@@ -7,6 +7,7 @@ $copyItems = @{
     "office-ui-fabric-js\dist\css\fabric.min.css" = "css"
     "file-saver\FileSaver.min.js" = "scripts"
     "handlebars\dist\handlebars.min.js" = "scripts"
+    "jquery\dist\jquery.min.js" = "scripts"
 }
 
 $copyItems.Keys | ForEach-Object -Process {

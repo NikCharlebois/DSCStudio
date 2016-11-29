@@ -20,7 +20,7 @@ function loadScript(url, callback){
     document.getElementsByTagName("head")[0].appendChild(script);
 }
 
-loadScript("jquery-3.1.1.min.js", function () {});
+loadScript("jquery.min.js", function () {});
 loadScript("fabric.min.js", function () {});
 loadScript("FileSaver.min.js", function () {});
 loadScript("nodes.min.js", function () {});
