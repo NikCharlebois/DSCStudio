@@ -3,6 +3,8 @@ image: WMF 5
 
 install:
     - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+    - ps: | 
+        Install-Module -Name Pester -Force
     - npm install -g gulp    
     - npm install  
 
