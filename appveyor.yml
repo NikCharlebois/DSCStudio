@@ -15,6 +15,8 @@ build_script:
 test_script:
     - npm run test
     - ps: | 
+        $webClient = New-Object -TypeName "System.Net.WebClient" 
+
         Start-Process -FilePath "$env:APPVEYOR_BUILD_FOLDER\node_modules\.bin\mocha" -ArgumentList "Tests\JavaScript --reporter mocha-junit-reporter --reporter-options mochaFile=mocharesults.xml" -Wait
         $webClient.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", 
                                 "$env:APPVEYOR_BUILD_FOLDER\mocharesults.xml")
@@ -27,8 +29,6 @@ test_script:
             $testCoverageFiles += $_.FullName    
         } 
         $result = Invoke-Pester -Path $testsPath -CodeCoverage $testCoverageFiles -OutputFormat "NUnitXml" -OutputFile $testResultsFile -PassThru
-
-        $webClient = New-Object -TypeName "System.Net.WebClient" 
 
         $testResultsFilePath = Resolve-Path -Path $testResultsFile
         $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", 
