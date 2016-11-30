@@ -22,3 +22,4 @@ gulp.task("publishSyntaxHighlighter-css", function() {
 });
 
 gulp.task("publishSyntaxHighlighter", ["publishSyntaxHighlighter-js", "publishSyntaxHighlighter-css"], function() {});
+

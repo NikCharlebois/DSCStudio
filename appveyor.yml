@@ -15,6 +15,10 @@ build_script:
 test_script:
     - npm run test
     - ps: | 
+        "$env:APPVEYOR_BUILD_FOLDER\node_modules\.bin\mocha" Tests\JavaScript --reporter mocha-junit-reporter --reporter-options mochaFile=mocharesults.xml
+        $webClient.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", 
+                                "$env:APPVEYOR_BUILD_FOLDER\mocharesults.xml")
+
         $testResultsFile = ".\TestsResults.xml"
         $testsPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                                -ChildPath "Tests\PowerShell"
