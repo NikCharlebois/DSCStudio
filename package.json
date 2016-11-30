@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "jshint src/scripts",
     "pretest": "npm run lint -s",
-    "test": "mocha tests/",
+    "test": "mocha tests/JavaScript",
     "minify:css": "cleancss src/css/main.css -o modules/DSCStudio/engine/css/main.min.css",
     "minify:js": "gulp uglifyjs",
     "watch": "watch \"npm run minify:js && npm run minify:css\" src/scripts/ src/css/",
@@ -28,6 +28,7 @@
     "mocha": "^3.1.2",
     "office-ui-fabric-js": "^1.2.0",
     "requirejs": "^2.3.2",
+    "simple-mock": "^0.7.3",
     "uglify-js": "^2.7.4",
     "watch": "^1.0.1"
   }

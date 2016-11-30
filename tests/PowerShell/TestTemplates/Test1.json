@@ -1,0 +1,40 @@
+{
+    "$schema": "https://raw.githubusercontent.com/BrianFarnhill/DSCStudio/master/schema.json",
+    "metadata": {
+        "title": "Test 1",
+        "description": "Test configuration for Pester tests",
+        "configurationName": "TestConfig1"
+    },
+    "dscModules": [
+    ],
+    "questions": [
+        {
+            "id": "TEST",
+            "title": "This is a test question",
+            "type": "text",
+            "group": "test",
+            "validationMessage": "This must have a value"
+        }
+    ],
+    "configDataSettings": {
+        "certificateDetails": true,
+        "nodeSettings": [],
+        "maxNodeCount": 1
+    },
+    "inputParameters": [
+        {
+            "name": "SetupAccount",
+            "parameterType": "PSCredential"
+        }
+    ],
+    "outputResources": [
+        {
+            "resourceType": "File",
+            "resourceName": "Dummy",
+            "resourceProperties": {
+                "Ensure": "Present",
+                "Credential": "$SetupAccount"
+            }
+        }
+    ]
+}

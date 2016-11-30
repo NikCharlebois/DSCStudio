@@ -1,7 +1,6 @@
-"use-strict";
+
 
 var TemplateManager = {
-    Self: this,
     Reader: null,
     CurrentTemplate: "",
     QuestionGroups: {},
@@ -245,4 +244,3 @@ var PowerShellManager = {
         PowerShellManager.DownloadScript = downloadScript;
     }
 };
-
