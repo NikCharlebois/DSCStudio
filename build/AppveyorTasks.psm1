@@ -12,6 +12,17 @@ function Start-InstallTasks
         "https://github.com/PowerShell/DscResources",
         (Join-Path -Path $env:APPVEYOR_BUILD_FOLDER -ChildPath "DscResources")
     )
+    Start-Process -Wait -FilePath "git" -ArgumentList @(
+        "clone",
+        "-q",
+        "https://github.com/PowerShell/DscResource.Tests",
+        (Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
+                   -ChildPath "DscResource.Tests")
+    )
+
+    $testHelperPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
+                                -ChildPath "DscResource.Tests\TestHelper.psm1"
+    Import-Module -Name $testHelperPath -Force
 }
 
 function Start-TestTasks
