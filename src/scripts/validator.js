@@ -73,7 +73,7 @@ var FormValidator = {
                     questionValid = false;
                     $("#question-" + question.id + "-error").show();
                 } else {
-                    if (filevalue.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\\*$/g) === null) {
+                    if (filevalue.match(/^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9\.]+)+\\*$/g) === null) {
                         questionValid = false;
                         $("#question-" + question.id + "-error").show();
                     } else {
