@@ -15,7 +15,7 @@ build_script:
 test_script:
     - npm run test
     - ps: | 
-        "$env:APPVEYOR_BUILD_FOLDER\node_modules\.bin\mocha" Tests\JavaScript --reporter mocha-junit-reporter --reporter-options mochaFile=mocharesults.xml
+        Start-Process -FilePath "$env:APPVEYOR_BUILD_FOLDER\node_modules\.bin\mocha" -ArgumentList "Tests\JavaScript --reporter mocha-junit-reporter --reporter-options mochaFile=mocharesults.xml" -Wait
         $webClient.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", 
                                 "$env:APPVEYOR_BUILD_FOLDER\mocharesults.xml")
 
