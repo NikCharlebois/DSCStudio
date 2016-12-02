@@ -1,10 +1,12 @@
-"use-strict";
+import $ from "jquery";
+import TemplateManager from "TemplateManager";
+import HandleBarManager from "HandleBarManager";
+import FormValidator from "FormValidator";
 
-var DscNodeManager = {
-    Nodes: [],
+export default {
     CanNewNodesBeAdded: function() {
-        if (TemplateManager.CurrentTemplate.configDataSettings.maxNodeCount !== undefined && 
-            DscNodeManager.Nodes.length >= TemplateManager.CurrentTemplate.configDataSettings.maxNodeCount) 
+        if (DscStudio.CurrentTemplate.configDataSettings.maxNodeCount !== undefined && 
+            DscStudio.Nodes.length >= DscStudio.CurrentTemplate.configDataSettings.maxNodeCount) 
         {
             return false;
         }
@@ -12,12 +14,12 @@ var DscNodeManager = {
     },
     TooManyNodesMessage: function() {
         return 'This template supports a maximum of ' + 
-              TemplateManager.CurrentTemplate.configDataSettings.maxNodeCount + 
+              DscStudio.CurrentTemplate.configDataSettings.maxNodeCount + 
               ' nodes, please remove a node before adding a new one.';
     },
     AddNewNode: function(event) {
         var additionalProperties = [];
-        TemplateManager.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
+        DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
             var internalValue;
             switch(setting.valueType) {
                 case "text":
@@ -44,7 +46,7 @@ var DscNodeManager = {
             additionalPropsHtmlList += prop.displayName + ': ' + prop.value + '<br />';
         });
 
-        DscNodeManager.Nodes.push({
+        DscStudio.Nodes.push({
             name: $("#NewNodeName").val(),
             additionalProperties: additionalProperties,
             additionalPropsHtmlList: additionalPropsHtmlList
@@ -52,17 +54,23 @@ var DscNodeManager = {
 
         $("#NewNodeName").val("");
         $("#nodeList").empty();
-        HandleBarManager.RenderHandleBar('NodeList', DscNodeManager.Nodes, '#nodeList');
+        HandleBarManager.RenderHandleBar('NodeList', DscStudio.Nodes, '#nodeList');
         FormValidator.ValidateNodeData();
+
+        var self = this;
+        $(".deleteNode").click(function() {
+            var nodeName = $(this).data("nodename");
+            if (window.confirm("Are you sure you wish to remove '" + nodeName + "'?")) {
+                DscStudio.Nodes = DscStudio.Nodes.filter(function(item) {
+                    return item.name !== nodeName;
+                });
+                $("#nodeList").empty();
+                HandleBarManager.RenderHandleBar('NodeList', DscStudio.Nodes, '#nodeList');
+                FormValidator.ValidateNodeData();
+            }
+        });
     },
     RemoveNode: function(nodeName) {
-        if (window.confirm("Are you sure you wish to remove '" + nodeName + "'?")) {
-            DscNodeManager.Nodes = DscNodeManager.Nodes.filter(function(item) {
-                return item.name !== nodeName;
-            });
-            $("#nodeList").empty();
-            HandleBarManager.RenderHandleBar('NodeList', DscNodeManager.Nodes, '#nodeList');
-            FormValidator.ValidateNodeData();
-        }
+        
     }
 };

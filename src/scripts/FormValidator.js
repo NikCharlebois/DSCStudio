@@ -1,6 +1,10 @@
-"use-strict";
+import $ from "jquery";
+import TemplateManager from "TemplateManager";
+import PowerShellManager from "PowerShellManager";
+import ViewManager from "ViewManager";
+import DscNodeManager from "DscNodeManager";
 
-var FormValidator = {
+export default {
     InitForm: function() {
         $(document).ready(function(){
             $("#questionErrorFlag").hide();
@@ -18,9 +22,10 @@ var FormValidator = {
             formValid = false;
         }
 
+        var _this = this;
         var questionsValid = true;
-        TemplateManager.CurrentTemplate.questions.forEach(function(question) {
-            var valid = FormValidator.ValidateQuestion(question);
+        DscStudio.CurrentTemplate.questions.forEach(function(question) {
+            var valid = _this.ValidateQuestion(question);
             if (valid === false) {
                 questionsValid = false;
             }
@@ -107,12 +112,13 @@ var FormValidator = {
         return questionValid;
     },
     EnableQuestionValidation: function() {
+        var _this = this;
         $("input[id^='question-']").on('focusout', function() {
             var questionId = this.id.replace("question-", "").replace("-value","");
-            var question = TemplateManager.CurrentTemplate.questions.filter(function(item) {
+            var question = DscStudio.CurrentTemplate.questions.filter(function(item) {
                 return item.id == questionId;
             })[0];
-            FormValidator.ValidateQuestion(question);
+            _this.ValidateQuestion(question);
         });
     },
     ValidateConfigData: function() {
@@ -154,28 +160,28 @@ var FormValidator = {
     ValidateNodeData: function() {
         var minCount = 1;
         var configValid = true;
-        if (TemplateManager.CurrentTemplate.configDataSettings.minNodeCount !== undefined) {
-            minCount = TemplateManager.CurrentTemplate.configDataSettings.minNodeCount;
+        if (DscStudio.CurrentTemplate.configDataSettings.minNodeCount !== undefined) {
+            minCount = DscStudio.CurrentTemplate.configDataSettings.minNodeCount;
         }
 
         $("#minNodeCountMessage").hide();
         $("#nodeOptionsNotValidMessage").hide();
         $("#nodeOptionsNotValidContent").empty();
 
-        if (DscNodeManager.Nodes.length < minCount) {
+        if (DscStudio.Nodes.length < minCount) {
             $("#minNodeCountMessage").show();
             $("#minNodeCountNumber").text(minCount);
             return false;
         } 
-        if (TemplateManager.CurrentTemplate.configDataSettings.maxNodeCount !== undefined && DscNodeManager.Nodes.length > TemplateManager.CurrentTemplate.configDataSettings.maxNodeCount) {
+        if (DscStudio.CurrentTemplate.configDataSettings.maxNodeCount !== undefined && DscStudio.Nodes.length > DscStudio.CurrentTemplate.configDataSettings.maxNodeCount) {
             return false;
         }
 
         var result = true;
-        TemplateManager.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(nodeSetting) {
+        DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(nodeSetting) {
             if (nodeSetting.minOccurences !== null) {
                 var occurences = 0;
-                DscNodeManager.Nodes.forEach(function(node) {
+                DscStudio.Nodes.forEach(function(node) {
                     node.additionalProperties.forEach(function(additionalProp) {
                         if (additionalProp.powershellName == nodeSetting.powershellName) {
                             switch(nodeSetting.valueType) {

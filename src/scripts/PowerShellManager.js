@@ -1,98 +1,9 @@
+import $ from "jquery";
+import TemplateManager from "TemplateManager";
+import DscNodeManager from "DscNodeManager";
+require("script-loader!..\\..\\node_modules\\file-saver\\FileSaver.js");
 
-
-var TemplateManager = {
-    Reader: null,
-    CurrentTemplate: "",
-    QuestionGroups: {},
-    Responses: [],
-    Init: function() {
-        if (window.File && window.FileReader && window.FileList && window.Blob) {
-            this.Reader = new FileReader();
-        } else {
-            alert('Your browser does not support HTML5 file APIs. Please open this from a browser that supports HTML5.');
-            return false;
-        }
-
-        if (DynamicTemplate !== undefined) {
-            this.ReadTemplateFromDynamicSource();
-        }
-    },
-    StartTemplateRead: function(filepicker) {
-        if(filepicker.files && filepicker.files[0]) {
-            this.Reader.onload = this.ReadTemplateFromJSON;
-            this.Reader.readAsText(filepicker.files[0]);
-            return true;
-        }
-        else 
-        {
-            return false;
-        }
-    },
-    ReadTemplateFromJSON: function(contents) {
-        TemplateManager.CurrentTemplate = JSON.parse(contents.target.result);
-        TemplateManager.ReadTemplate();
-    },
-    ReadTemplateFromDynamicSource: function() {
-        TemplateManager.CurrentTemplate = DynamicTemplate;
-        TemplateManager.ReadTemplate();
-    },
-    ReadTemplate: function() {
-        var questionGroups = {};
-        TemplateManager.CurrentTemplate.questions.forEach(function(question) {
-            if (question.group !== null) {
-                if (questionGroups.hasOwnProperty(question.group) === false) {
-                    questionGroups[question.group] = [];
-                }
-                questionGroups[question.group].push(question);
-            } else {
-                if (questionGroups.hasOwnProperty("Other questions") === false) {
-                    questionGroups["Other questions"] = [];
-                }
-                questionGroups["Other questions"].push(question);
-            }
-        });
-        TemplateManager.QuestionGroups = questionGroups;
-        TemplateManager.GenerateTemplateUI();
-    },
-    GenerateTemplateUI: function() {
-        TemplateUIBuilder.BuildPrimaryUI(this.CurrentTemplate);
-        TemplateUIBuilder.BuildQuestionUI(this.QuestionGroups);
-        TemplateUIBuilder.BuildNewNodeUI();
-        FormValidator.EnableQuestionValidation();
-        FormValidator.ValidateNodeData();
-        ViewManager.ShowView('response');
-    },
-    StoreQuestionResponses: function() {
-        responses = [];
-
-        TemplateManager.CurrentTemplate.questions.forEach(function(question) {
-            switch (question.type) {
-                case "text":
-                case "number":
-                case "filepath":
-                case "regex":
-                    responses[question.id] = $("#question-" + question.id + "-value")[0].value;
-                    break;
-                case "boolean":
-                    internalValue = $("#question-" + question.id + " label").hasClass("is-selected");
-                    responses[question.id] = internalValue;
-                    break;
-                default:
-                    alert("not text");
-                    break;
-            }
-        });
-        TemplateManager.Responses = responses;
-    },
-    GetQuestionResponse: function(outputResponse) {
-        var matchedString = outputResponse.match(/[\[].+[\]]/g)[0];
-        var questionId = matchedString.replace('[','').replace(']','');
-        var response = responses[questionId];
-        return outputResponse.replace(matchedString, response);
-    }
-};
-
-var PowerShellManager = {
+export default {
     CurrentScript: "",
     DownloadScript: "",
     SaveAsFileName: "DSCScript.ps1",
@@ -110,21 +21,21 @@ var PowerShellManager = {
         configText += "        @{\r\n";
         configText += "            NodeName = \"*\"\r\n";
 
-        if (TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === undefined || TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === true) {
+        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
             configText += "            CertificateFile = \"" + $("#CertPath").val() + "\"\r\n";
             configText += "            Thumbprint = \"" + $("#CertThumbprint").val() + "\"\r\n";
             configText += "            PSDscAllowPlainTextPassword = $false\r\n";
         } 
         
         configText += "        }";
-        if (DscNodeManager.Nodes.length === 0) {
+        if (DscStudio.Nodes.length === 0) {
             configText += "\r\n";
         } else {
-            DscNodeManager.Nodes.forEach(function(node) {
+            DscStudio.Nodes.forEach(function(node) {
                 configText += ",\r\n";
                 configText += "        @{\r\n";
                 configText += "            NodeName = \"" + node.name + "\"\r\n";
-                if (TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === null || TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
+                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === null || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
                     configText += "            PSDscAllowPlainTextPassword = $true\r\n";
                 }
                 node.additionalProperties.forEach(function(prop) {
@@ -149,12 +60,12 @@ var PowerShellManager = {
 
         // build the main configuration
 
-        configText += "Configuration " + TemplateManager.CurrentTemplate.metadata.configurationName + "\r\n";
+        configText += "Configuration " + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
         configText += "{\r\n";
 
         configText += "    param(";
         var firstParamAdded = false;
-        TemplateManager.CurrentTemplate.inputParameters.forEach(function(param) {
+        DscStudio.CurrentTemplate.inputParameters.forEach(function(param) {
             if (firstParamAdded === true) {
                 configText += ",\r\n\r\n        [Parameter(Mandatory = $true)]\r\n";
             } else {
@@ -167,7 +78,7 @@ var PowerShellManager = {
         configText += "\r\n    )\r\n";
 
         var downloadScript = "";
-        TemplateManager.CurrentTemplate.dscModules.forEach(function(element){
+        DscStudio.CurrentTemplate.dscModules.forEach(function(element){
             configText += "    Import-DscResource -ModuleName " + element.name;
             downloadScript += "Find-Module -Name \"" + element.name + "\"";
             if (element.version !== null) {
@@ -183,10 +94,10 @@ var PowerShellManager = {
         configText += "    node $AllNodes.NodeName\r\n";
         configText += "    {\r\n";
 
-        TemplateManager.CurrentTemplate.outputResources.forEach(function(resource) {
+        DscStudio.CurrentTemplate.outputResources.forEach(function(resource) {
 
             if (resource.includeQuestion !== undefined && resource.includeQuestion !== "") {
-                if (responses[resource.includeQuestion] === false) {
+                if (DscStudio.Responses[resource.includeQuestion] === false) {
                     return;
                 }
             }
@@ -223,7 +134,7 @@ var PowerShellManager = {
         });
 
         configText += "        LocalConfigurationManager {\r\n";
-        if (TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === undefined || TemplateManager.CurrentTemplate.configDataSettings.certificateDetails === true) {
+        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
             configText += "            CertificateId = \"" + $("#CertThumbprint").val() + "\"\r\n";
         }
 
@@ -237,10 +148,10 @@ var PowerShellManager = {
         configText += "    }\r\n";
         configText += "}\r\n";
         configText += "\r\n";
-        configText += "Set-DscLocalConfigurationManager -Path .\\" + TemplateManager.CurrentTemplate.metadata.configurationName + "\r\n";
-        configText += "Start-DscConfiguration -Path .\\" + TemplateManager.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
+        configText += "Set-DscLocalConfigurationManager -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
+        configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
 
-        PowerShellManager.CurrentScript = configText;
-        PowerShellManager.DownloadScript = downloadScript;
+        this.CurrentScript = configText;
+        this.DownloadScript = downloadScript;
     }
 };
