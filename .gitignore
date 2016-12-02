@@ -1,4 +1,3 @@
 node_modules
-modules/DscStudio/Engine/scripts/*.js
-modules/DscStudio/Engine/css/*.css
+modules/DscStudio/Engine/*
 npm-debug.log
