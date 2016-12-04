@@ -73,7 +73,7 @@ function Start-PackageTasks
 
     # Remove the readme files that are used to generate documentation so they aren't shipped
     $readmePaths = "$env:APPVEYOR_BUILD_FOLDER\Modules\**\readme.md"
-    Get-ChildItem -Path $readmePaths -Recurse | Remove-Item -Confirm:$false
+    Get-ChildItem -Path $readmePaths -Recurse -ErrorAction SilentlyContinue | Remove-Item -Confirm:$false
 
     # Add the appropriate build number to the manifest and zip/publish everything to appveyor
     $manifest = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER -ChildPath "modules\DSCStudio\DSCStudio.psd1"
@@ -81,7 +81,7 @@ function Start-PackageTasks
     $zipFileName = "DscStudio_$($env:APPVEYOR_BUILD_VERSION).zip"
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
     New-DscChecksum -Path $env:APPVEYOR_BUILD_FOLDER -Outpath $env:APPVEYOR_BUILD_FOLDER
-    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" -ErrorAction SilentlyContinue | ForEach-Object -Process { 
+    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process { 
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
     Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName.checksum" | ForEach-Object -Process { 
