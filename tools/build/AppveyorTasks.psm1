@@ -69,28 +69,21 @@ function Start-PackageTasks
     # Import so we can create zip files
     Add-Type -assemblyname System.IO.Compression.FileSystem
 
-    Write-Warning -Message "1"
-
     $mainModulePath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER -ChildPath "modules\DscStudio"
 
     # Remove the readme files that are used to generate documentation so they aren't shipped
     $readmePaths = "$env:APPVEYOR_BUILD_FOLDER\Modules\DscStudio"
     Get-ChildItem -Path $readmePaths -Recurse -Filter "readme.md" | Remove-Item -Confirm:$false
 
-    Write-Warning -Message "2"
-
     # Add the appropriate build number to the manifest and zip/publish everything to appveyor
     $manifest = Join-Path -Path $mainModulePath -ChildPath "DSCStudio.psd1"
     (Get-Content $manifest -Raw).Replace("0.1.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
-    Write-Warning -Message "3"
     $zipFileName = "DscStudio_$($env:APPVEYOR_BUILD_VERSION).zip"
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
-    New-DscChecksum -Path $env:APPVEYOR_BUILD_FOLDER -Outpath $env:APPVEYOR_BUILD_FOLDER
-    Write-Warning -Message "4"
+    New-DscChecksum -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" -Outpath $env:APPVEYOR_BUILD_FOLDER
     Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process { 
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
-    Write-Warning -Message "5"
     Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName.checksum" | ForEach-Object -Process { 
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
