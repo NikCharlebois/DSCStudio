@@ -88,6 +88,8 @@ function Start-PackageTasks
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
 
+    Write-Warning -Message "1"
+
     Set-Location -Path $mainModulePath
     $nuspecParams = @{
         packageName = "DscStudio"
@@ -100,17 +102,21 @@ function Start-PackageTasks
         tags = "DesiredStateConfiguration DSC"
         destinationPath = "."
     }
+    Write-Warning -Message "2"
     New-Nuspec @nuspecParams
 
+    Write-Warning -Message "3"
     Start-Process -FilePath "nuget" -Wait -ArgumentList @(
         "pack",
         ".\DscStudio.nuspec",
         "-outputdirectory $env:APPVEYOR_BUILD_FOLDER"
     )
+    Write-Warning -Message "4"
     $nuGetPackageName = "DscStudio." + $env:APPVEYOR_BUILD_VERSION + ".nupkg"
-    Get-ChildItem "$env:APPVEYOR_BUILD_FOLDER\$nuGetPackageName" -ErrorAction SilentlyContinue | ForEach-Object -Process { 
+    Get-ChildItem "$env:APPVEYOR_BUILD_FOLDER\$nuGetPackageName" | ForEach-Object -Process { 
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
+    Write-Warning -Message "5"
 }
 
 Export-ModuleMember -Function *
