@@ -32,9 +32,6 @@ export default {
             return false;
         }
     },
-    ReadTemplateFromJSON: function(contents) {
-        
-    },
     ReadTemplateFromDynamicSource: function() {
         DscStudio.CurrentTemplate = DynamicTemplate;
         this.ReadTemplate();
