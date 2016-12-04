@@ -81,7 +81,7 @@ function Start-PackageTasks
     $zipFileName = "DscStudio_$($env:APPVEYOR_BUILD_VERSION).zip"
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
     New-DscChecksum -Path $env:APPVEYOR_BUILD_FOLDER -Outpath $env:APPVEYOR_BUILD_FOLDER
-    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process { 
+    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" -ErrorAction SilentlyContinue | ForEach-Object -Process { 
         Push-AppveyorArtifact $_.FullName -FileName $_.Name 
     }
     Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName.checksum" | ForEach-Object -Process { 
