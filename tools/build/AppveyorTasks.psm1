@@ -79,6 +79,7 @@ function Start-PackageTasks
     $manifest = Join-Path -Path $mainModulePath -ChildPath "DSCStudio.psd1"
     (Get-Content $manifest -Raw).Replace("0.1.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
     $zipFileName = "DscStudio_$($env:APPVEYOR_BUILD_VERSION).zip"
+    New-Item -Path "$env:APPVEYOR_BUILD_FOLDER\output" -ItemType Directory
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\output\$zipFileName")
     New-DscChecksum -Path "$env:APPVEYOR_BUILD_FOLDER\output" -Outpath "$env:APPVEYOR_BUILD_FOLDER\output"
     Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\output" | ForEach-Object -Process { 
