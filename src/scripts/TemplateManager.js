@@ -82,11 +82,5 @@ export default {
             }
         });
         DscStudio.Responses = responses;
-    },
-    GetQuestionResponse: function(outputResponse) {
-        var matchedString = outputResponse.match(/[\[].+[\]]/g)[0];
-        var questionId = matchedString.replace('[','').replace(']','');
-        var response = DscStudio.Responses[questionId];
-        return outputResponse.replace(matchedString, response);
     }
 };

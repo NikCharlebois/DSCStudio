@@ -35,7 +35,7 @@ export default {
                 configText += ",\r\n";
                 configText += "        @{\r\n";
                 configText += "            NodeName = \"" + node.name + "\"\r\n";
-                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === null || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
+                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
                     configText += "            PSDscAllowPlainTextPassword = $true\r\n";
                 }
                 node.additionalProperties.forEach(function(prop) {
@@ -56,6 +56,15 @@ export default {
             configText += "\r\n";
         }
         configText += "    )\r\n";
+        configText += "    NonNodeData = @{\r\n";
+        configText += "        DscStudio = {\r\n";
+
+        DscStudio.CurrentTemplate.questions.forEach(function(question) {
+            configText += "            # " + question.title + "\r\n";
+            configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
+        });
+        configText += "        }\r\n";
+        configText += "    }\r\n";
         configText += "}\r\n\r\n";
 
         // build the main configuration
@@ -81,7 +90,7 @@ export default {
         DscStudio.CurrentTemplate.dscModules.forEach(function(element){
             configText += "    Import-DscResource -ModuleName " + element.name;
             downloadScript += "Find-Module -Name \"" + element.name + "\"";
-            if (element.version !== null) {
+            if (element.version !== undefined) {
                 configText += " -ModuleVersion " + element.version;
                 downloadScript += " -RequiredVersion \"" + element.version + "\"";
             }
@@ -89,6 +98,8 @@ export default {
             downloadScript += " | Install-Module \r\n";
         });
         
+        configText += "\r\n";
+        configText += "    $DscStudio = $ConfigurationData.NonNodeData.DscStudio\r\n";
         configText += "\r\n";
 
         configText += "    node $AllNodes.NodeName\r\n";
@@ -112,10 +123,6 @@ export default {
             configText += s + "        {\r\n";
             Object.keys(resource.resourceProperties).forEach(function(resourceProperty) {
                 var outputValue = resource.resourceProperties[resourceProperty];
-                if (outputValue.match(/[\[].+[\]]/g) !== null)
-                {
-                    outputValue = TemplateManager.GetQuestionResponse(outputValue);
-                }
                 if (outputValue.startsWith('$') === true || isNaN(outputValue) === false) {
                     configText += s + "            " + resourceProperty + " = " + outputValue + "\r\n";
                 } else {
@@ -148,6 +155,7 @@ export default {
         configText += "    }\r\n";
         configText += "}\r\n";
         configText += "\r\n";
+        configText += DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
         configText += "Set-DscLocalConfigurationManager -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
         configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
 

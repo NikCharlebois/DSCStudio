@@ -1,0 +1,81 @@
+{
+    "$schema": "https://raw.githubusercontent.com/BrianFarnhill/DSCStudio/master/schema.json",
+    "metadata": {
+        "title": "DSC Pull Server",
+        "description": "This configuration will help you create and deploy a secured HTTPS pull server",
+        "configurationName": "DscPullServer"
+    },
+    "dscModules": [
+        {
+            "name": "xPSDesiredStateConfiguration"
+        },
+        {
+            "name": "xWebAdministration"
+        }
+    ],
+    "configDataSettings": {
+        "certificateDetails": false,
+        "maxNodeCount": 1,
+        "minNodeCount": 1,
+        "nodeSettings": []
+    },
+    "questions": [
+        {
+            "id": "ConfigurationPath",
+            "title": "Where should DSC configurations be published from?",
+            "type": "filepath",
+            "helpText": "This directory will be where all the MOF and checksum files that the pull server hosts are stored",
+            "group": "Pull Server"
+        },
+        {
+            "id": "ModulePath",
+            "title": "Where should DSC modules be published from?",
+            "type": "filepath",
+            "helpText": "This directory will be where all the zipped modules and checksum files that the pull server hosts are stored",
+            "group": "Pull Server"
+        },
+        {
+            "id": "SitePath",
+            "title": "Where will the IIS site be run from?",
+            "type": "filepath",
+            "helpText": "This is where the files for the IIS site will be stored",
+            "group": "IIS Configuration"
+        },
+        {
+            "id": "CertThumbprint",
+            "title": "What is the thumbprint of the SSL certificate to use for the web site",
+            "type": "regex",
+            "pattern": "/^[A-Fa-f0-9]{40}/g",
+            "group": "IIS Configuration"
+        }
+    ],
+    "inputParameters": [
+        
+    ],
+    "outputResources": [
+        {
+            "resourceType": "WindowsFeature",
+            "resourceName": "DSCServiceFeature",
+            "resourceProperties": {
+                "Ensure": "Present",
+                "Name": "DSC-Service"
+            }
+        },
+        {
+            "resourceType": "xDSCWebService",
+            "resourceName": "PSDSCPullServer",
+            "resourceProperties": {
+                "Ensure": "Present",
+                "EndpointName": "PSDSCPullServer",
+                "Port": "8080",
+                "PhysicalPath": "$DscStudio.SitePath",
+                "CertificateThumbPrint": "$DscStudio.CertThumbprint",
+                "ModulePath": "$DscStudio.ModulePath",
+                "ConfigurationPath": "$DscStudio.ConfigurationPath",
+                "State": "Started",
+                "UseSecurityBestPractices": "$true"
+            },
+            "dependsOn": "[WindowsFeature]DSCServiceFeature"
+        }
+    ]
+}

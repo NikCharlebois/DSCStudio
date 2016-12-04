@@ -160,7 +160,7 @@
             "resourceName": "InstallPrereqs",
             "resourceProperties": {
                 "Ensure": "Present",
-                "InstallerPath": "[BINARYPATH]\\prerequisiteinstaller.exe",
+                "InstallerPath": "$DscStudio.BINARYPATH.TrimEnd('\\') + \"\\prerequisiteinstaller.exe\"",
                 "OnlineMode": "$true"
             }
         },
@@ -169,8 +169,8 @@
             "resourceName": "InstallSharePoint",
             "resourceProperties": {
                 "Ensure": "Present",
-                "BinaryDir": "[BINARYPATH]",
-                "ProductKey": "[PRODUCTKEY]"
+                "BinaryDir": "$DscStudio.BINARYPATH",
+                "ProductKey": "$DscStudio.PRODUCTKEY"
             },
             "dependsOn": "[SPInstallPrereqs]InstallPrereqs"
         },
@@ -178,7 +178,7 @@
             "resourceType": "SPCreateFarm",
             "resourceName": "CreateNewFarm",
             "resourceProperties": {
-                "DatabaseServer": "[SQLSERVERNAME]",
+                "DatabaseServer": "$DscStudio.SQLSERVERNAME",
                 "FarmConfigDatabaseName": "SP_Config",
                 "AdminContentDatabaseName": "SP_AdminContent",
                 "Passphrase": "$Passphrase",
@@ -212,8 +212,8 @@
             "resourceName": "ApplyDiagnosticLogSettings",
             "resourceProperties": {
                 "PsDscRunAsCredential": "$SPSetupAccount",
-                "LogSpaceInGB": "[LOGSIZE]",
-                "LogPath": "[LOGPATH]"
+                "LogSpaceInGB": "$DscStudio.LOGSIZE",
+                "LogPath": "$DscStudio.LOGPATH"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm"
         },
@@ -223,7 +223,7 @@
             "resourceProperties": {
                 "Name": "Usage Service Application",
                 "DatabaseName": "SP_Usage",
-                "UsageLogLocation": "[LOGPATH]",
+                "UsageLogLocation": "$DscStudio.LOGPATH",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPCreateFarm]CreateSPFarm"
@@ -244,7 +244,7 @@
             "resourceProperties": {
                 "Name": "AppFabricCachingService",
                 "Ensure": "Present",
-                "CacheSizeInMB": "[CACHESIZE]",
+                "CacheSizeInMB": "$DscStudio.CACHESIZE",
                 "ServiceAccount": "$ServicePoolManagedAccount.UserName",
                 "CreateFirewallRules": "$true",
                 "PsDscRunAsCredential": "$SPSetupAccount"
@@ -259,8 +259,8 @@
                 "ApplicationPool": "SharePoint Sites",
                 "ApplicationPoolAccount": "$WebPoolManagedAccount.UserName",
                 "DatabaseName": "SP_Content",
-                "Url": "http://[WEBAPPDOMAIN]",
-                "HostHeader": "[WEBAPPDOMAIN]",
+                "Url": "http://$($DscStudio.WEBAPPDOMAIN)",
+                "HostHeader": "$DscStudio.WEBAPPDOMAIN",
                 "Port": "80",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
@@ -270,9 +270,9 @@
             "resourceType": "SPCacheAccounts",
             "resourceName": "WebAppCacheAccounts",
             "resourceProperties": {
-                "WebAppUrl": "http://[WEBAPPDOMAIN]",
-                "SuperUserAlias": "[SUPERUSER]",
-                "SuperReaderAlias": "[SUPERREADER]",
+                "WebAppUrl": "http://$($DscStudio.WEBAPPDOMAIN)",
+                "SuperUserAlias": "$DscStudio.SUPERUSER",
+                "SuperReaderAlias": "$DscStudio.SUPERREADER",
                 "PsDscRunAsCredential": "$SPSetupAccount"
             },
             "dependsOn": "[SPWebApplication]SharePointSites"
@@ -281,7 +281,7 @@
             "resourceType": "SPSite",
             "resourceName": "TeamSite",
             "resourceProperties": {
-                "Url": "http://[WEBAPPDOMAIN]",
+                "Url": "http://$($DscStudio.WEBAPPDOMAIN)",
                 "OwnerAlias": "$FarmAccount",
                 "Name": "DSC Demo Site",
                 "Template": "STS#0",
@@ -415,7 +415,7 @@
                 "AnalyticsProcessing": "$($AllNodes | Where-Object -FilterScript { $_.SearchBackEnd -eq $true }).NodeName",
                 "QueryProcessing": "$($AllNodes | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }).NodeName",
                 "PsDscRunAsCredential": "$SPSetupAccount",
-                "FirstPartitionDirectory": "[INDEXPATH]\\0",
+                "FirstPartitionDirectory": "$DscStudio.INDEXPATH.TrimEnd('\\') + \"\\0\"",
                 "IndexPartition": "$($AllNodes | Where-Object -FilterScript { $_.SearchFrontEnd -eq $true }).NodeName"
             },
             "dependsOn": "[SPSearchServiceApp]SearchServiceApp"
