@@ -124,18 +124,20 @@ export default {
     ValidateConfigData: function() {
         var configValid = true;
 
-        if ($("#CertPath").val() === null || $("#CertPath").val() === "" || $("#CertPath").val().match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(cer)$/g) === null) {
-            $("#CertPath-Error").show();
-            configValid = false;
-        } else {
-            $("#CertPath-Error").hide();
-        }
+        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
+            if ($("#CertPath").val() === null || $("#CertPath").val() === "" || $("#CertPath").val().match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(cer)$/g) === null) {
+                $("#CertPath-Error").show();
+                configValid = false;
+            } else {
+                $("#CertPath-Error").hide();
+            }
 
-        if ($("#CertThumbprint").val() === null || $("#CertThumbprint").val() === "" || $("#CertThumbprint").val().match(/^[A-Fa-f0-9]{40}/g) === null) {
-            $("#CertThumbprint-Error").show();
-            configValid = false;
-        } else {
-            $("#CertThumbprint-Error").hide();
+            if ($("#CertThumbprint").val() === null || $("#CertThumbprint").val() === "" || $("#CertThumbprint").val().match(/^[A-Fa-f0-9]{40}/g) === null) {
+                $("#CertThumbprint-Error").show();
+                configValid = false;
+            } else {
+                $("#CertThumbprint-Error").hide();
+            }
         }
 
         if ($("#ConfigModeMins").val() === null || $("#ConfigModeMins").val() === "" || isNaN($("#ConfigModeMins").val())) {

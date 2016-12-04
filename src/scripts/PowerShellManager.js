@@ -35,7 +35,7 @@ export default {
                 configText += ",\r\n";
                 configText += "        @{\r\n";
                 configText += "            NodeName = \"" + node.name + "\"\r\n";
-                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === null || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
+                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
                     configText += "            PSDscAllowPlainTextPassword = $true\r\n";
                 }
                 node.additionalProperties.forEach(function(prop) {
@@ -90,7 +90,7 @@ export default {
         DscStudio.CurrentTemplate.dscModules.forEach(function(element){
             configText += "    Import-DscResource -ModuleName " + element.name;
             downloadScript += "Find-Module -Name \"" + element.name + "\"";
-            if (element.version !== null) {
+            if (element.version !== undefined) {
                 configText += " -ModuleVersion " + element.version;
                 downloadScript += " -RequiredVersion \"" + element.version + "\"";
             }

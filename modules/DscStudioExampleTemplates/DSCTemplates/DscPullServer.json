@@ -2,7 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/BrianFarnhill/DSCStudio/master/schema.json",
     "metadata": {
         "title": "DSC Pull Server",
-        "description": "This configuration will help you create and deploy a secured HTTP pull server",
+        "description": "This configuration will help you create and deploy a secured HTTPS pull server",
         "configurationName": "DscPullServer"
     },
     "dscModules": [
@@ -44,7 +44,8 @@
         {
             "id": "CertThumbprint",
             "title": "What is the thumbprint of the SSL certificate to use for the web site",
-            "type": "filepath",
+            "type": "regex",
+            "pattern": "/^[A-Fa-f0-9]{40}/g",
             "group": "IIS Configuration"
         }
     ],
