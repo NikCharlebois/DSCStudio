@@ -23,22 +23,12 @@ function Start-DscStudio
             $dynamicTemplatePath = Join-Path -Path $engineFolder `
                                              -ChildPath "scripts/dynamictemplate.js"
 
-            if ($Path) 
-            {
-                $templateContent = Get-Content -Path $Path -Raw
-                "var DynamicTemplate = " + $templateContent | 
-                    Out-File -FilePath $dynamicTemplatePath `
-                             -Append:$false `
-                             -Force:$true `
-                             -Encoding utf8
-            } 
-            else 
-            {
-                if ((Test-Path -Path $dynamicTemplatePath) -eq $true) 
-                {
-                    Remove-Item -Path $dynamicTemplatePath -Confirm:$false -Force
-                }
-            }
+            $templateContent = Get-Content -Path $Path -Raw
+            "var DynamicTemplate = " + $templateContent | 
+                Out-File -FilePath $dynamicTemplatePath `
+                         -Append:$false `
+                         -Force:$true `
+                         -Encoding utf8
 
             Start-Process -FilePath $enginePath
             $engineLaunched = $true
