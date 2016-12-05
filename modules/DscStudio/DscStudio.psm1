@@ -10,22 +10,44 @@ function Start-DscStudio
         $Path
     )
 
-    Begin {
+    Begin 
+    {
         $engineLaunched = $false
     }
-    Process {
-        if ($engineLaunched -eq $false) {
+    Process 
+    {
+        if ($engineLaunched -eq $false) 
+        {
             $engineFolder = Join-Path -Path $PSScriptRoot -ChildPath "Engine"
             $enginePath = Join-Path -Path $engineFolder -ChildPath "index.htm"
-            $dynamicTemplatePath = Join-Path -Path $engineFolder -ChildPath "scripts/dynamictemplate.js"
+            $dynamicTemplatePath = Join-Path -Path $engineFolder `
+                                             -ChildPath "scripts/dynamictemplate.js"
 
-            $templateContent = Get-Content -Path $Path -Raw
-            "var DynamicTemplate = " + $templateContent | Out-File -FilePath $dynamicTemplatePath -Append:$false -Force:$true -Encoding utf8
+            if ($Path) 
+            {
+                $templateContent = Get-Content -Path $Path -Raw
+                "var DynamicTemplate = " + $templateContent | 
+                    Out-File -FilePath $dynamicTemplatePath `
+                             -Append:$false `
+                             -Force:$true `
+                             -Encoding utf8
+            } 
+            else 
+            {
+                if ((Test-Path -Path $dynamicTemplatePath) -eq $true) 
+                {
+                    Remove-Item -Path $dynamicTemplatePath -Confirm:$false -Force
+                }
+            }
 
             Start-Process -FilePath $enginePath
             $engineLaunched = $true
-        } else {
-            Write-Warning -Message "Start-DscStudio is designed to take a single template through the pipeline. The additional template '$Path' has therefore been ignored."
+        } 
+        else 
+        {
+            Write-Warning -Message ("Start-DscStudio is designed to take a single template " + `
+                                    "through the pipeline. The additional template '$Path' " + `
+                                    "has therefore been ignored.")
         }
     }
 }

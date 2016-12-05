@@ -175,5 +175,24 @@ Describe -Name "DSC Studio Tests" -Fixture {
                 Get-DscStudioTemplate -TemplateName "Test 1" | Should Not BeNullOrEmpty
             }
         }
+
+        Context -Name "Start-DscStudio" -Fixture {
+
+            Mock -CommandName "Start-Process" -MockWith {}
+            Mock -CommandName "Remove-Item" -MockWith {}
+            Mock -CommandName "Out-File" -MockWith {}
+            Mock -CommandName "Write-Warning" -MockWith {}
+
+            Mock -CommandName "Get-Content" -ParameterFilter { $Path -like "C:\test*" } -MockWith {
+                $filename = Split-Path -Path $Path -Leaf
+                return Get-Content -Path (Join-Path -Path $global:ScriptRoot -ChildPath "TestTemplates\$filename") -Raw
+            }
+
+            It "Should run with the first config when multiple items are piped to it" {
+                Start-DscStudio -Path "C:\test\test1.json"
+                Assert-MockCalled Out-File
+                Assert-MockCalled Start-Process
+            }
+        }
     }
 }
