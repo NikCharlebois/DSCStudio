@@ -11,6 +11,9 @@
         },
         {
             "name": "xWebAdministration"
+        },
+        {
+            "name": "PSDesiredStateConfiguration"
         }
     ],
     "configDataSettings": {
