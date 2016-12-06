@@ -57,7 +57,7 @@ export default {
         }
         configText += "    )\r\n";
         configText += "    NonNodeData = @{\r\n";
-        configText += "        DscStudio = {\r\n";
+        configText += "        DscStudio = @{\r\n";
 
         DscStudio.CurrentTemplate.questions.forEach(function(question) {
             configText += "            # " + question.title + "\r\n";
