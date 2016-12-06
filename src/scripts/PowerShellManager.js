@@ -155,9 +155,9 @@ export default {
         configText += "    }\r\n";
         configText += "}\r\n";
         configText += "\r\n";
-        configText += DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
+        configText += DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
         configText += "Set-DscLocalConfigurationManager -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
-        configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
+        configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
 
         this.CurrentScript = configText;
         this.DownloadScript = downloadScript;
