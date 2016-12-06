@@ -146,7 +146,7 @@ export default {
         }
 
         var allowReboot = $("#AutoReboot label").hasClass("is-selected");
-        configText += "            RebootIfNeeded = $" + allowReboot + "\r\n";
+        configText += "            RebootNodeIfNeeded = $" + allowReboot + "\r\n";
         configText += "            ConfigurationMode = \"" + $("#LcmConfigMode").val() + "\"\r\n";
         configText += "            ConfigurationModeFrequencyMins = " + $("#ConfigModeMins").val() + "\r\n";
         configText += "            ActionAfterReboot = \"" + $("#ActionAfterReboot").val() + "\"\r\n";
