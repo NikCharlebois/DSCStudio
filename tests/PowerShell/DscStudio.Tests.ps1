@@ -194,5 +194,32 @@ Describe -Name "DSC Studio Tests" -Fixture {
                 Assert-MockCalled Start-Process
             }
         }
+
+        Context -Name "Reset-DscStudioDynamicTemplate" -Fixture {
+
+            Mock -CommandName "Remove-Item" -MockWith {}
+            
+            It "Removes an existing template when it exists" {
+                Mock -CommandName "Test-Path" -MockWith { return $true }
+                Reset-DscStudioDynamicTemplate
+                Assert-MockCalled -CommandName "Remove-Item" -Times 1
+            }
+
+            It "Does not remove anything when the template doesn't exist" {
+                Mock -CommandName "Test-Path" -MockWith { return $false }
+                Reset-DscStudioDynamicTemplate
+                Assert-MockCalled -CommandName "Remove-Item" -Times 1
+            }                
+        }
+
+        Context -Name "New-DscStudioTemplate" -Fixture {
+            
+            Mock -CommandName "Out-File" -MockWith {}
+
+            It "New templates get generated without error" {
+                New-DscStudioTemplate -Title "test" -Description "test" -FilePath "C:\test.json"
+                Assert-MockCalled -CommandName "Out-File" -Times 1
+            }
+        }
     }
 }
