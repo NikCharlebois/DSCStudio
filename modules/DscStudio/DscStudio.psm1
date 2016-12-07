@@ -4,8 +4,7 @@ function Start-DscStudio
 {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
         [String]
         $Path
     )
@@ -13,6 +12,7 @@ function Start-DscStudio
     Begin 
     {
         $engineLaunched = $false
+        Reset-DscStudioDynamicTemplate
     }
     Process 
     {
@@ -23,12 +23,15 @@ function Start-DscStudio
             $dynamicTemplatePath = Join-Path -Path $engineFolder `
                                              -ChildPath "scripts/dynamictemplate.js"
 
-            $templateContent = Get-Content -Path $Path -Raw
-            "var DynamicTemplate = " + $templateContent | 
-                Out-File -FilePath $dynamicTemplatePath `
-                         -Append:$false `
-                         -Force:$true `
-                         -Encoding utf8
+            if ($Path)
+            {
+                $templateContent = Get-Content -Path $Path -Raw
+                "var DynamicTemplate = " + $templateContent | 
+                    Out-File -FilePath $dynamicTemplatePath `
+                             -Append:$false `
+                             -Force:$true `
+                             -Encoding utf8
+            }
 
             Start-Process -FilePath $enginePath
             $engineLaunched = $true
@@ -116,6 +119,62 @@ function Get-DscStudioTemplate
     {
         return $alltemplates
     }
+}
+
+function New-DscStudioTemplate
+{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Title,
+
+        [Parameter(Mandatory = $false)]
+        [String]
+        $Description,
+
+        [Parameter(Mandatory = $false)]
+        [String]
+        $ConfigurationName = "DscStudioConfiguration",
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $FilePath
+    )
+
+    $template = [string]::Empty
+    function New-Line 
+    {
+        param($Text)
+        $template = Get-Variable -Name "template" -Scope 1
+        Set-Variable -Name "template" -Value ("$($template.Value)$Text$([System.Environment]::NewLine)") -Scope 1
+    }
+
+    New-Line -Text "{"
+    New-Line -Text "    `"`$schema`": `"https://raw.githubusercontent.com/BrianFarnhill/DSCStudio/master/schema.json`","
+    New-Line -Text "    `"metadata`": {"
+    New-Line -Text "        `"title`": `"$Title`","
+    if ($PSBoundParameters.ContainsKey("Description") -eq $true)
+    {
+        New-Line -Text "        `"description`": `"$Description`","
+    }
+    New-Line -Text "        `"configurationName`": `"$ConfigurationName`""
+    New-Line -Text "    },"
+    New-Line -Text "    `"dscModules`": ["
+    New-Line -Text "    ],"
+    New-Line -Text "    `"configDataSettings`": {"
+    New-Line -Text "        `"certificateDetails`": true,"
+    New-Line -Text "        `"nodeSettings`": []"
+    New-Line -Text "    },"
+    New-Line -Text "    `"questions`": ["
+    New-Line -Text "    ],"
+    New-Line -Text "    `"inputParameters`": ["
+    New-Line -Text "    ],"
+    New-Line -Text "    `"outputResources`": ["
+    New-Line -Text "    ]"
+    New-Line -Text "}"
+
+    $template | Out-File -FilePath $FilePath -Append:$false -Force -Confirm:$false
 }
 
 Export-ModuleMember -Function *
