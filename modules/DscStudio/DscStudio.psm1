@@ -23,7 +23,7 @@ function Start-DscStudio
             $dynamicTemplatePath = Join-Path -Path $engineFolder `
                                              -ChildPath "scripts/dynamictemplate.js"
 
-            if ($Path)
+            if ([String]::IsNullOrEmpty($Path) -eq $false)
             {
                 $templateContent = Get-Content -Path $Path -Raw
                 "var DynamicTemplate = " + $templateContent | 

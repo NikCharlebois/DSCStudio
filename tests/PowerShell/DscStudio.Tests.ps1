@@ -1,4 +1,4 @@
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\DSCStudio\DSCStudio.psm1" -Resolve)
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\DSCStudio\DSCStudio.psm1" -Resolve) -Force
 
 $global:ScriptRoot = $PSScriptRoot
 
@@ -188,10 +188,25 @@ Describe -Name "DSC Studio Tests" -Fixture {
                 return Get-Content -Path (Join-Path -Path $global:ScriptRoot -ChildPath "TestTemplates\$filename") -Raw
             }
 
-            It "Should run with the first config when multiple items are piped to it" {
+            It "Should run without any config specified" {
+                Start-DscStudio
+                Assert-MockCalled Out-File -Times 0
+                Assert-MockCalled Start-Process
+            }
+
+            It "Should run with a single config" {
                 Start-DscStudio -Path "C:\test\test1.json"
                 Assert-MockCalled Out-File
                 Assert-MockCalled Start-Process
+            }
+            
+            It "Should run with the first config only when more than one is piped to it" {
+                $a = New-Object -Type PSCustomObject -Property @{Path = "C:\test\test1.json"}
+                $b = New-Object -Type PSCustomObject -Property @{Path = "C:\test\test2.json"}
+                @($a, $b) | Start-DscStudio
+                Assert-MockCalled Out-File
+                Assert-MockCalled Start-Process
+                Assert-MockCalled Write-Warning
             }
         }
 
