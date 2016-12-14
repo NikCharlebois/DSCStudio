@@ -44,7 +44,7 @@ export default {
                   QuestionHelpText +
                   '{{/if}}' +
                   '    </label>' +
-                  '    <input class="ms-TextField-field" type="text" id="question-{{id}}-value" name="question-{{id}}-value" />' + 
+                  '    <input class="ms-TextField-field" type="text" id="question-{{id}}-value" name="question-{{id}}-value" value="{{defaultValue}}" />' + 
                   QuestionValidationLabel +
                   '</div>',
     NumberQuestion: '<div id="question-{{id}}" class="ms-TextField">' +
@@ -53,7 +53,7 @@ export default {
                     QuestionHelpText +
                     '{{/if}}' +
                     '    </label>' +
-                    '    <input class="ms-TextField-field"  type="text" id="question-{{id}}-value" name="question-id-value" />' +
+                    '    <input class="ms-TextField-field"  type="text" id="question-{{id}}-value" name="question-id-value"value="{{defaultValue}}" />' +
                     QuestionValidationLabel +
                     '</div>',
     BooleanQuestion: '<div id="question-{{id}}" class="ms-Toggle  ms-Toggle--textLeft">' +

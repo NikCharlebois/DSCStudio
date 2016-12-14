@@ -39,9 +39,22 @@ export default {
                     case "boolean":
                         HandleBarManager.RenderHandleBar('BooleanQuestion', question, '#templateQuestions');
                         OfficeFabricManager.UpdateToggle('question-' + question.id);
+                        switch (question.defaultValue) {
+                            case true:
+                                $("#question-" + question.id + " label").addClass("is-selected");
+                                break;
+                            case false:
+                                $("#question-" + question.id + " label").removeClass("is-selected");
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     case "choice":
                         HandleBarManager.RenderHandleBar('ChoiceQuestion', question, '#templateQuestions');
+                        if (question.defaultValue !== undefined) {
+                            $("#question-" + question.id + "-value").val(question.defaultValue);
+                        }
                         break;
                     default:
                         alert("Field type not supported");

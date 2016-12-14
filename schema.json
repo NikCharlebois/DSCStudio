@@ -130,6 +130,10 @@
                             "choice"
                         ]
                     },
+                    "defaultValue": {
+                        "type": "string",
+                        "description": "What should the default value of this question be?"
+                    },
                     "group": {
                         "type": "string",
                         "description": "A group heading to put this question in to"
