@@ -116,9 +116,15 @@ export default {
             }
 
             var s = "";
+            var ifStatementOpen = false;
             if (resource.includeNodeDataProperty !== undefined && resource.includeNodeDataProperty !== "") {
                 configText += "        if ($node." + resource.includeNodeDataProperty + " -eq $true)\r\n        {\r\n";
                 s = "    ";
+                ifStatementOpen = true;
+            } else if (resource.includeScriptTest !== undefined && resource.includeScriptTest !== "") {
+                configText += "        if (" + resource.includeScriptTest + ")\r\n        {\r\n";
+                s = "    ";
+                ifStatementOpen = true;
             }
 
             configText += s + "        " + resource.resourceType + " " + resource.resourceName + "\r\n";
@@ -136,7 +142,7 @@ export default {
             }
 
             configText += s + "        }\r\n";
-            if (resource.includeNodeDataProperty !== undefined && resource.includeNodeDataProperty !== "") {
+            if (ifStatementOpen === true) {
                 configText += "        }\r\n";
             }
             configText += "\r\n";

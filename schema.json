@@ -221,6 +221,10 @@
                     "includeNodeDataProperty": {
                         "type": "string",
                         "description": "The powershell name of a node data question that determines if this resource should be included or not"
+                    },
+                    "includeScriptTest": {
+                        "type": "string",
+                        "description": "A PowerShell statement that should evaluate to $true or $false to determine if this resource applies to the current node"
                     }
                 },
                 "required": [
