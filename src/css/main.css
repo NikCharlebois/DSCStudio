@@ -48,3 +48,15 @@ div.ms-Grid {
 .ms-TextField-field {
     max-width: 650px;
 }
+
+.ms-Toggle.ms-Toggle--textLeft {
+    width: 100%;
+    max-width: 620px;
+    padding-top: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.ms-Toggle.ms-Toggle--textLeft .ms-Toggle-description {
+    max-width: 500px;
+}
