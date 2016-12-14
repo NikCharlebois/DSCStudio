@@ -46,6 +46,9 @@ export default {
     },
     ValidateQuestion: function(question) {
         var questionValid = true;
+        if ($("#question-" + question.id).is(':visible') === false) {
+            return true;
+        }
         switch (question.type) {
             case "text":
                 var textValue = $("#question-" + question.id + "-value")[0].value;

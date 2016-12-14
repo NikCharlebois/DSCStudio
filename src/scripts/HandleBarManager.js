@@ -38,8 +38,12 @@ export default {
         var template = Handlebars.compile(this[templateName]);
         $(appendTo).append(template(context));
     },
-    TextQuestion: '<div id="question-{{id}}" class=\"ms-TextField \">' +
-                  '    <label class="ms-Label" for="question-{{id}}-value\">{{title}}' +
+    TextQuestion: '<div id="question-{{id}}" class="ms-TextField "' +
+                  '{{#if showForTrueResponseQuestion}}' +
+                  'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                  '{{/if}}' +
+                  '>' +
+                  '    <label class="ms-Label" for="question-{{id}}-value">{{title}}' +
                   '{{#if helpText}}' +
                   QuestionHelpText +
                   '{{/if}}' +
@@ -62,7 +66,7 @@ export default {
                      QuestionHelpText +
                      '{{/if}}' +
                      '    </span>' +
-                     '    <input class="ms-Toggle-input"  type="checkbox" id=\"" + fieldName + "-value\" name=\"" + fieldName + "-value\" />' +
+                     '    <input class="ms-Toggle-input"  type="checkbox" id="question-{{id}}-value" name="question-{{id}}-value" />' +
                      '    <label class="ms-Toggle-field" for="question-{{id}}-value">' + 
                      '        <span class="ms-Label ms-Label--off">No</span>' + 
                      '        <span class="ms-Label ms-Label--on">Yes</span>' + 

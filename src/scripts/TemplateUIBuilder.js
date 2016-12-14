@@ -65,6 +65,20 @@ export default {
 
         OfficeFabricManager.UpdatePanels();
         StyleLoader.ApplyStyles();
+
+        Object.keys(questionGroups).forEach(function(groupName) {
+            questionGroups[groupName].forEach(function(question) {
+                if (question.showForTrueResponseQuestion !== undefined) {
+                    $("#question-" + question.showForTrueResponseQuestion).click(function() {
+                        if ($(this).children("label").hasClass("is-selected") === true) {
+                            $('*[data-showforresponse="' + this.id + '"]').show();
+                        } else {
+                            $('*[data-showforresponse="' + this.id + '"]').hide();
+                        }
+                    });
+                }
+            });
+        });
     },
     BuildNewNodeUI: function() {
         var localFabric = this.Fabric;

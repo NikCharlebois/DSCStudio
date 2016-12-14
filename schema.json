@@ -164,6 +164,10 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "showForTrueResponseQuestion": {
+                        "type": "string",
+                        "description": "The ID of a boolean question that controls whether or not this question should be displayed and validated"
                     }
                 },
                 "required": [
