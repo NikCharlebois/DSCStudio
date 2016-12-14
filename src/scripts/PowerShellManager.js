@@ -24,8 +24,10 @@ export default {
         if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
             configText += "            CertificateFile = \"" + $("#CertPath").val() + "\"\r\n";
             configText += "            Thumbprint = \"" + $("#CertThumbprint").val() + "\"\r\n";
-            configText += "            PSDscAllowPlainTextPassword = $false\r\n";
         } 
+        if (DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === undefined || DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === false) {
+            configText += "            PSDscAllowPlainTextPassword = $false\r\n";
+        }
         
         configText += "        }";
         if (DscStudio.Nodes.length === 0) {
@@ -35,7 +37,7 @@ export default {
                 configText += ",\r\n";
                 configText += "        @{\r\n";
                 configText += "            NodeName = \"" + node.name + "\"\r\n";
-                if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {} else {
+                if (DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === true) {
                     configText += "            PSDscAllowPlainTextPassword = $true\r\n";
                 }
                 node.additionalProperties.forEach(function(prop) {
