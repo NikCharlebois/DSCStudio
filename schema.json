@@ -126,7 +126,8 @@
                             "number",
                             "boolean",
                             "filepath",
-                            "regex"
+                            "regex",
+                            "choice"
                         ]
                     },
                     "group": {
@@ -152,6 +153,13 @@
                     "pattern": {
                         "type": "string",
                         "description": "The regular expression to validate this field with (for regex fields only)"
+                    },
+                    "choices": {
+                        "type": "array",
+                        "description": "A list of choices to present the user for this question type",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [

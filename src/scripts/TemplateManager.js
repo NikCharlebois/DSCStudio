@@ -76,6 +76,9 @@ export default {
                 case "boolean":
                     responses[question.id] = $("#question-" + question.id + " label").hasClass("is-selected");
                     break;
+                case "choice":
+                    responses[question.id] = $("#question-" + question.id + "-value").val();
+                    break;
                 default:
                     alert("not text");
                     break;

@@ -103,6 +103,7 @@ export default {
                 }
                 break;
             case "boolean":
+            case "choice":
                 
                 break;
             default:

@@ -40,6 +40,9 @@ export default {
                         HandleBarManager.RenderHandleBar('BooleanQuestion', question, '#templateQuestions');
                         OfficeFabricManager.UpdateToggle('question-' + question.id);
                         break;
+                    case "choice":
+                        HandleBarManager.RenderHandleBar('ChoiceQuestion', question, '#templateQuestions');
+                        break;
                     default:
                         alert("Field type not supported");
                         break;

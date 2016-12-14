@@ -69,6 +69,19 @@ export default {
                      '    </label>' +
                      QuestionValidationLabel +
                      '</div>',
+    ChoiceQuestion: '<div id="question-{{id}}" class=\"ms-TextField \">' +
+                    '    <label class="ms-Label" for="question-{{id}}-value\">{{title}}' +
+                    '{{#if helpText}}' +
+                    QuestionHelpText +
+                    '{{/if}}' +
+                    '    </label>' +
+                    '    <select name="ActionAfterReboot" id="question-{{id}}-value" class="ms-TextField-field">' + 
+                    '    {{#each choices}}' +
+                    '        <option value="{{this}}">{{this}}</option>' +
+                    '    {{/each}}' +
+                    '    </select>' +
+                    QuestionValidationLabel +
+                    '</div>',
     NodeList: '{{#each this}}' + 
               '<li class="ms-ListItem" tabindex="0">' + 
               '    <span class="ms-ListItem-primaryText">{{name}}</span>' + 
