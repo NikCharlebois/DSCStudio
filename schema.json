@@ -71,6 +71,10 @@
                             "minOccurences": {
                                 "type": "integer",
                                 "description": "For boolean properties - the minimum number of nodes that must have this set to 'true' for a configuration to be valid"
+                            },
+                            "maxOccurences": {
+                                "type": "integer",
+                                "description": "For boolean properties - the maximum number of nodes that can have this set to 'true' for a configuration to be valid"
                             }
                         },
                         "required": [

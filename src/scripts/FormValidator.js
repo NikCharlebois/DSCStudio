@@ -207,6 +207,11 @@ export default {
                     $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>");
                     result = false;
                 }
+                if (occurences > nodeSetting.maxOccurences) {
+                    $("#nodeOptionsNotValidMessage").show();
+                    $("#nodeOptionsNotValidContent").append("This template requires no more than " + nodeSetting.maxOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>");
+                    result = false;
+                }
             }
         });
 
