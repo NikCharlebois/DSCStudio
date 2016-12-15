@@ -60,3 +60,27 @@ div.ms-Grid {
 .ms-Toggle.ms-Toggle--textLeft .ms-Toggle-description {
     max-width: 500px;
 }
+
+#templateQuestions h3 {
+    padding-top: 30px;
+    width: 100%;
+    max-width: 650px;
+    border-bottom: 1px solid #000000;
+}
+
+#navBox {
+    margin: 8px;
+    position: relative;
+}
+
+#navBox p {
+    margin-left: 6px;
+}
+
+#navBox ul {
+    padding: 10px;
+}
+
+#navBox li {
+    list-style: none;
+}

@@ -13,10 +13,14 @@ export default {
             if (TemplateManager.StartTemplateRead(this) === false) {
                 throw "An error has occured reading your template.";
             }
+            ViewManager.ShowTab('configdata');
+
+            
         });
 
         $("#goBackToResponses").on('click', function() {
             ViewManager.ShowView('response');
+            ViewManager.ShowTab('configdata');
         });
 
         $("#switchView-Config").on('click', function() {
@@ -25,6 +29,7 @@ export default {
 
         $("#switchView-Questions").on('click', function() {
             ViewManager.ShowTab('questionaire');
+            ViewManager.SetNavBarPosition();
         });
 
         $("#GenerateConfig").on('click', function() {
@@ -37,6 +42,14 @@ export default {
             } else {
                 throw DscNodeManager.TooManyNodesMessage();
             }
+        });
+
+        $(window).scroll(function() {
+            ViewManager.SetNavBarPosition();
+        });
+
+        $(window).resize(function() {
+            ViewManager.SetNavBarPosition();
         });
 
         $("#saveConfig").on('click', function() {

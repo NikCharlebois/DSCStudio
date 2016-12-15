@@ -2,6 +2,7 @@ import $ from "jquery";
 import HandleBarManager from "HandleBarManager";
 import OfficeFabricManager from "OfficeFabricManager";
 import StyleLoader from "StyleLoader";
+import ViewManager from "ViewManager";
 import TemplateManager from "TemplateManager";
 var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
 
@@ -25,7 +26,8 @@ export default {
     BuildQuestionUI: function(questionGroups) {
 
         Object.keys(questionGroups).forEach(function(groupName) {
-            $("#templateQuestions").append("<h3>" + groupName + "</h3>");
+            HandleBarManager.RenderHandleBar('QuestionGroupHeader', groupName, '#templateQuestions');
+            HandleBarManager.RenderHandleBar('NavigationLink', groupName, '#navBox ul');
             questionGroups[groupName].forEach(function(question) {
                 switch (question.type) {
                     case "text":
@@ -75,6 +77,7 @@ export default {
                         } else {
                             $('*[data-showforresponse="' + this.id + '"]').hide();
                         }
+                        ViewManager.SetNavBarPosition();
                     });
                 }
             });

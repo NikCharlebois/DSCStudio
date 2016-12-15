@@ -48,6 +48,7 @@ export default {
                 if (questionGroups.hasOwnProperty("Other questions") === false) {
                     questionGroups["Other questions"] = [];
                 }
+                question.group = "Other questions";
                 questionGroups["Other questions"].push(question);
             }
         });

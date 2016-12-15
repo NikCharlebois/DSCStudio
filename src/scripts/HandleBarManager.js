@@ -38,6 +38,8 @@ export default {
         var template = Handlebars.compile(this[templateName]);
         $(appendTo).append(template(context));
     },
+    NavigationLink: '<li><a class="ms-Link" href="#section-{{this}}">{{this}}</a></li>',
+    QuestionGroupHeader: '<h3 id="section-{{this}}">{{this}}</h3>',
     TextQuestion: '<div id="question-{{id}}" class="ms-TextField "' +
                   '{{#if showForTrueResponseQuestion}}' +
                   'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
