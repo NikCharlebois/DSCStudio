@@ -73,16 +73,16 @@ export default {
                 if (question.showForTrueResponseQuestion !== undefined) {
                     
                     if ($("#question-" + question.showForTrueResponseQuestion + " label").hasClass("is-selected") === true) {
-                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').show();
+                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').show(250);
                     } else {
-                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').hide();
+                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').hide(250);
                     }
                     
                     $("#question-" + question.showForTrueResponseQuestion).click(function() {
                         if ($(this).children("label").hasClass("is-selected") === true) {
-                            $('*[data-showforresponse="' + this.id + '"]').show();
+                            $('*[data-showforresponse="' + this.id + '"]').show(250);
                         } else {
-                            $('*[data-showforresponse="' + this.id + '"]').hide();
+                            $('*[data-showforresponse="' + this.id + '"]').hide(250);
                         }
                         ViewManager.SetNavBarPosition();
                     });
