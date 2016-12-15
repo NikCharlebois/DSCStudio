@@ -35,6 +35,7 @@ export default {
     ReadTemplateFromDynamicSource: function() {
         DscStudio.CurrentTemplate = DynamicTemplate;
         this.ReadTemplate();
+        $("#navBox").hide();
     },
     ReadTemplate: function() {
         var questionGroups = {};
