@@ -53,7 +53,11 @@ export default {
                   '    <input class="ms-TextField-field" type="text" id="question-{{id}}-value" name="question-{{id}}-value" value="{{defaultValue}}" />' + 
                   QuestionValidationLabel +
                   '</div>',
-    NumberQuestion: '<div id="question-{{id}}" class="ms-TextField">' +
+    NumberQuestion: '<div id="question-{{id}}" class="ms-TextField"' +
+                    '{{#if showForTrueResponseQuestion}}' +
+                    'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                    '{{/if}}' +
+                    '>' +
                     '    <label class="ms-Label" for="question-{{id}}-value">{{title}}' +
                     '{{#if helpText}}' +
                     QuestionHelpText +
@@ -62,7 +66,11 @@ export default {
                     '    <input class="ms-TextField-field"  type="text" id="question-{{id}}-value" name="question-id-value"value="{{defaultValue}}" />' +
                     QuestionValidationLabel +
                     '</div>',
-    BooleanQuestion: '<div id="question-{{id}}" class="ms-Toggle  ms-Toggle--textLeft">' +
+    BooleanQuestion: '<div id="question-{{id}}" class="ms-Toggle  ms-Toggle--textLeft"' +
+                     '{{#if showForTrueResponseQuestion}}' +
+                     'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                     '{{/if}}' +
+                     '>' +
                      '    <span class="ms-Toggle-description">{{title}}' +
                      '{{#if helpText}}' +
                      QuestionHelpText +
@@ -75,7 +83,11 @@ export default {
                      '    </label>' +
                      QuestionValidationLabel +
                      '</div>',
-    ChoiceQuestion: '<div id="question-{{id}}" class=\"ms-TextField \">' +
+    ChoiceQuestion: '<div id="question-{{id}}" class=\"ms-TextField \"' +
+                    '{{#if showForTrueResponseQuestion}}' +
+                    'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                    '{{/if}}' +
+                    '>' +
                     '    <label class="ms-Label" for="question-{{id}}-value\">{{title}}' +
                     '{{#if helpText}}' +
                     QuestionHelpText +
