@@ -71,6 +71,13 @@ export default {
         Object.keys(questionGroups).forEach(function(groupName) {
             questionGroups[groupName].forEach(function(question) {
                 if (question.showForTrueResponseQuestion !== undefined) {
+                    
+                    if ($("#question-" + question.showForTrueResponseQuestion + " label").hasClass("is-selected") === true) {
+                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').show();
+                    } else {
+                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').hide();
+                    }
+                    
                     $("#question-" + question.showForTrueResponseQuestion).click(function() {
                         if ($(this).children("label").hasClass("is-selected") === true) {
                             $('*[data-showforresponse="' + this.id + '"]').show();

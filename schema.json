@@ -131,7 +131,7 @@
                         ]
                     },
                     "defaultValue": {
-                        "type": "string",
+                        "type": "object",
                         "description": "What should the default value of this question be?"
                     },
                     "group": {
