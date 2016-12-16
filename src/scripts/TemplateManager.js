@@ -81,6 +81,17 @@ export default {
                 case "choice":
                     responses[question.id] = $("#question-" + question.id + "-value").val();
                     break;
+                case "textarray":
+                    var values = "";
+                    $.each($("#question-" + question.id + "-value option"), function(item) {
+                        if (values === "") {
+                            values += this.text;
+                        } else {
+                            values += ";" + this.text;
+                        }
+                    });
+                    responses[question.id] = values;
+                    break;
                 default:
                     alert("not text");
                     break;

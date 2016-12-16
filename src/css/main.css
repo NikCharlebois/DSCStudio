@@ -84,3 +84,11 @@ div.ms-Grid {
 #navBox li {
     list-style: none;
 }
+
+.textarrayresponses {
+    height: 80px;
+}
+
+.textarraynewitem {
+    max-width: 480px;
+}

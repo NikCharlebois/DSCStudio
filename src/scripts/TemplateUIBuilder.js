@@ -58,6 +58,18 @@ export default {
                             $("#question-" + question.id + "-value").val(question.defaultValue);
                         }
                         break;
+                    case "textarray":
+                        HandleBarManager.RenderHandleBar('TextArrayQuestion', question, '#templateQuestions');
+                        $("#question-" + question.id + " button.add").click(function() {
+                            var newValue = $("#" + this.id.replace("add", "newitem")).val();
+                            $("#" + this.id.replace("add", "value")).append("<option value=\"" + newValue + "\">" + newValue + "</option>");
+                            $("#" + this.id.replace("add", "newitem")).val("");
+                        });
+                        $("#question-" + question.id + " button.remove").click(function() {
+                            var current = $("#" + this.id.replace("remove", "value")).val();
+                            $("#" + this.id.replace("remove", "value")).children("option[value=\"" + current + "\"]").remove();
+                        });
+                        break;
                     default:
                         alert("Field type not supported");
                         break;

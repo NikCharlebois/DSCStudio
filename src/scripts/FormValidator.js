@@ -107,6 +107,7 @@ export default {
                 break;
             case "boolean":
             case "choice":
+            case "textarray":
                 
                 break;
             default:

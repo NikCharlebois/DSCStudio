@@ -127,7 +127,8 @@
                             "boolean",
                             "filepath",
                             "regex",
-                            "choice"
+                            "choice",
+                            "textarray"
                         ]
                     },
                     "defaultValue": {

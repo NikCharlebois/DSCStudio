@@ -63,7 +63,24 @@ export default {
 
         DscStudio.CurrentTemplate.questions.forEach(function(question) {
             configText += "            # " + question.title + "\r\n";
-            configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
+            switch (question.type) {
+                case "textarray":
+                    var values = DscStudio.Responses[question.id].split(';');
+                    var output = "@(";
+                    values.forEach(function(val) {
+                        if (output === "@(") {
+                            output += "\"" + val + "\"";
+                        } else {
+                            output += ", \"" + val + "\"";
+                        }
+                    });
+                    output += ")";
+                    configText += "            \"" + question.id + "\" = " + output + "\r\n";
+                    break;
+                default:
+                    configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
+                    break;
+            }
         });
         configText += "        }\r\n";
         configText += "    }\r\n";

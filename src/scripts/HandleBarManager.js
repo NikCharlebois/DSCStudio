@@ -53,6 +53,24 @@ export default {
                   '    <input class="ms-TextField-field" type="text" id="question-{{id}}-value" name="question-{{id}}-value" value="{{defaultValue}}" />' + 
                   QuestionValidationLabel +
                   '</div>',
+    TextArrayQuestion: '<div id="question-{{id}}" class="ms-TextField "' +
+                       '{{#if showForTrueResponseQuestion}}' +
+                       'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                       '{{/if}}' +
+                       '>' +
+                       '    <label class="ms-Label" for="question-{{id}}-value">{{title}}' +
+                       '{{#if helpText}}' +
+                       QuestionHelpText +
+                       '{{/if}}' +
+                       '    </label>' +
+                       '    <input class="ms-TextField-field textarraynewitem" type="text" id="question-{{id}}-newitem" name="question-{{id}}-newitem" />' + 
+                       '    <button class="ms-Button ms-Button--command add" id="question-{{id}}-add"><span class="ms-CommandButton-icon"><i class="ms-Icon ms-Icon--Add"></i></span></button>' +
+                       '    <button class="ms-Button ms-Button--command remove" id="question-{{id}}-remove"><span class="ms-CommandButton-icon"><i class="ms-Icon ms-Icon--Remove"></i></span></button>' +
+                       '    <br/>' +
+                       '    <select name="question-{{id}}-value" id="question-{{id}}-value" class="ms-TextField-field textarrayresponses" multiple>' + 
+                       '    </select>' +
+                       QuestionValidationLabel +
+                       '</div>',
     NumberQuestion: '<div id="question-{{id}}" class="ms-TextField"' +
                     '{{#if showForTrueResponseQuestion}}' +
                     'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
