@@ -105,9 +105,18 @@ export default {
                     }
                 }
                 break;
+            case "textarray":
+                var hasItems = false;
+                $.each($("#question-" + question.id + "-value option"), function(item) {
+                    hasItems = true;
+                });
+                if (hasItems === false) {
+                    questionValid = false;
+                    $("#question-" + question.id + "-error").show();
+                }
+                break;
             case "boolean":
             case "choice":
-            case "textarray":
                 
                 break;
             default:
