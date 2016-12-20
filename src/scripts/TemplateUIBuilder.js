@@ -42,10 +42,10 @@ export default {
                         HandleBarManager.RenderHandleBar('BooleanQuestion', question, '#templateQuestions');
                         OfficeFabricManager.UpdateToggle('question-' + question.id);
                         switch (question.defaultValue) {
-                            case true:
+                            case "true":
                                 $("#question-" + question.id + " label").addClass("is-selected");
                                 break;
-                            case false:
+                            case "false":
                                 $("#question-" + question.id + " label").removeClass("is-selected");
                                 break;
                             default:
