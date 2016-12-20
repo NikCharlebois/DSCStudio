@@ -24,25 +24,6 @@
                 "configurationName"
             ]
         },
-        "dscModules": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "The name of the DSC module as it appears on the PowerShell gallery"
-                    },
-                    "version": {
-                        "type": "string",
-                        "description": "The version number of the module that is used for this template"
-                    }
-                },
-                "required": [
-                    "name"
-                ]
-            }
-        },
         "configDataSettings": {
             "type": "object",
             "properties": {
@@ -132,7 +113,7 @@
                         ]
                     },
                     "defaultValue": {
-                        "type": "object",
+                        "type": "string",
                         "description": "What should the default value of this question be?"
                     },
                     "group": {
@@ -177,67 +158,6 @@
                     "type"
                 ]
             }
-        },
-        "inputParameters": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "The name of the parameter to add to the configuration"
-                    },
-                    "parameterType": {
-                        "type": "string",
-                        "description": "The object type in PowerShell for this parameter"
-                    }
-                },
-                "required": [
-                    "name",
-                    "parameterType"
-                ]
-            }
-        },
-        "outputResources": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "resourceType": {
-                        "type": "string",
-                        "description": "The name of the DSC resource to include"
-                    },
-                    "resourceName": {
-                        "type": "string",
-                        "description": "The friendly name to put on to this resource"
-                    },
-                    "resourceProperties": {
-                        "type": "object",
-                        "description": "A list of the properties and values to include on this resource"
-                    },
-                    "dependsOn": {
-                        "type": "string",
-                        "description": "The DependsOn value for this resource"
-                    },
-                    "includeQuestion": {
-                        "type": "string",
-                        "description": "The ID of a boolean question that determines if this resource should be included or not"
-                    },
-                    "includeNodeDataProperty": {
-                        "type": "string",
-                        "description": "The powershell name of a node data question that determines if this resource should be included or not"
-                    },
-                    "includeScriptTest": {
-                        "type": "string",
-                        "description": "A PowerShell statement that should evaluate to $true or $false to determine if this resource applies to the current node"
-                    }
-                },
-                "required": [
-                    "resourceType",
-                    "resourceName",
-                    "resourceProperties"
-                ]
-            }    
         }
     }
 }

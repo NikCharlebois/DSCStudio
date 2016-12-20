@@ -40,7 +40,7 @@ export default {
     ReadTemplate: function() {
         var questionGroups = {};
         DscStudio.CurrentTemplate.questions.forEach(function(question) {
-            if (question.group !== null) {
+            if (question.group !== undefined) {
                 if (questionGroups.hasOwnProperty(question.group) === false) {
                     questionGroups[question.group] = [];
                 }

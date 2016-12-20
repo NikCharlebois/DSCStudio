@@ -5,17 +5,6 @@
         "description": "This configuration will help you create and deploy a secured HTTPS pull server",
         "configurationName": "DscPullServer"
     },
-    "dscModules": [
-        {
-            "name": "xPSDesiredStateConfiguration"
-        },
-        {
-            "name": "xWebAdministration"
-        },
-        {
-            "name": "PSDesiredStateConfiguration"
-        }
-    ],
     "configDataSettings": {
         "certificateDetails": false,
         "maxNodeCount": 1,
@@ -50,35 +39,6 @@
             "type": "regex",
             "pattern": "/^[A-Fa-f0-9]{40}/g",
             "group": "IIS Configuration"
-        }
-    ],
-    "inputParameters": [
-        
-    ],
-    "outputResources": [
-        {
-            "resourceType": "WindowsFeature",
-            "resourceName": "DSCServiceFeature",
-            "resourceProperties": {
-                "Ensure": "Present",
-                "Name": "DSC-Service"
-            }
-        },
-        {
-            "resourceType": "xDSCWebService",
-            "resourceName": "PSDSCPullServer",
-            "resourceProperties": {
-                "Ensure": "Present",
-                "EndpointName": "PSDSCPullServer",
-                "Port": "8080",
-                "PhysicalPath": "$DscStudio.SitePath",
-                "CertificateThumbPrint": "$DscStudio.CertThumbprint",
-                "ModulePath": "$DscStudio.ModulePath",
-                "ConfigurationPath": "$DscStudio.ConfigurationPath",
-                "State": "Started",
-                "UseSecurityBestPractices": "$true"
-            },
-            "dependsOn": "[WindowsFeature]DSCServiceFeature"
         }
     ]
 }

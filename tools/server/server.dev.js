@@ -27,6 +27,7 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use('/css/fabric.min.css', express.static(path.join(projectRoot, "node_modules/office-ui-fabric-js/dist/css/fabric.min.css")));
 app.use('/css/fabric.components.min.css', express.static(path.join(projectRoot, "node_modules/office-ui-fabric-js/dist/css/fabric.components.min.css")));
 app.use('/css/shCore.css', express.static(path.join(sourceRoot, "syntaxhighlighter/shCore.css")));
+app.use('/DynamicTemplate.js', express.static(path.join(sourceRoot, "DynamicTemplate.js")));
 app.use('/css/shCoreDefault.css', express.static(path.join(sourceRoot, "syntaxhighlighter/shCoreDefault.css")));
 app.use('/css/main.css', express.static(path.join(cssRoot, "main.css")));
 app.use('/img', express.static(path.join(imgRoot)));

@@ -4,7 +4,7 @@ function Start-DscStudio
 {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [String]
         $Path
     )
@@ -21,17 +21,40 @@ function Start-DscStudio
             $engineFolder = Join-Path -Path $PSScriptRoot -ChildPath "Engine"
             $enginePath = Join-Path -Path $engineFolder -ChildPath "index.htm"
             $dynamicTemplatePath = Join-Path -Path $engineFolder `
-                                             -ChildPath "scripts/dynamictemplate.js"
+                                             -ChildPath "DynamicTemplate.js"
 
-            if ([String]::IsNullOrEmpty($Path) -eq $false)
-            {
-                $templateContent = Get-Content -Path $Path -Raw
-                "var DynamicTemplate = " + $templateContent | 
-                    Out-File -FilePath $dynamicTemplatePath `
-                             -Append:$false `
-                             -Force:$true `
-                             -Encoding utf8
+            $tokens = $null
+            $errors = $null
+            $ps1Path = $Path.Replace(".json", ".ps1")
+            $ast = [System.Management.Automation.Language.Parser]::ParseFile($ps1Path, [ref] $tokens, [ref] $errors)
+            $configurations = $ast.FindAll({
+                $args[0] -is [System.Management.Automation.Language.ConfigurationDefinitionAst]
+            }, $true)
+
+            $sr = New-Object -TypeName System.IO.StringReader `
+                             -ArgumentList $configurations[0].ToString()
+
+            $contentRows = @()
+            $line = [string]::Empty
+            do {
+                $line = $sr.ReadLine()
+                if ($null -ne $line) {
+                    $contentRows += $line
+                }
             }
+            while ($null -ne $line)
+
+            $template = Get-Content -Raw -Path $Path | ConvertFrom-Json
+            $template = $template | Add-Member -MemberType NoteProperty `
+                                               -Name "ScriptOutput" `
+                                               -Value $contentRows `
+                                               -PassThru
+            $dynamicContent = "var DynamicTemplate = " + ($template | ConvertTo-Json -Depth 10)
+
+            $dynamicContent | Out-File -FilePath $dynamicTemplatePath `
+                            -Append:$false `
+                            -Force:$true `
+                            -Encoding utf8
 
             Start-Process -FilePath $enginePath
             $engineLaunched = $true
@@ -49,7 +72,8 @@ function Reset-DscStudioDynamicTemplate
 {
     $engineFolder = Join-Path -Path $PSScriptRoot -ChildPath "Engine"
     $dynamicTemplatePath = Join-Path -Path $engineFolder -ChildPath "scripts/dynamictemplate.js"
-    if ((Test-Path -Path $dynamicTemplatePath) -eq $true) {
+    if ((Test-Path -Path $dynamicTemplatePath) -eq $true) 
+    {
         Remove-Item -Path $dynamicTemplatePath -Force:$true -Confirm:$false
     }
 }
@@ -84,7 +108,7 @@ function Get-DscStudioTemplate
         {
             Get-Childitem -Path $templatePath -Filter "*.json" | ForEach-Object -Process {
                 $template = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-                if ($null -ne $template.metadata -and $null -ne $template.questions -and $null -ne $template.dscModules)
+                if ($null -ne $template.metadata -and $null -ne $template.questions)
                 {
                      $templateObject = New-Object -TypeName PSObject | 
                                         Add-Member -Name "Name" `

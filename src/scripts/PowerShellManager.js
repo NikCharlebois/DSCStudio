@@ -86,105 +86,15 @@ export default {
         configText += "    }\r\n";
         configText += "}\r\n\r\n";
 
-        // build the main configuration
-
-        configText += "Configuration " + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
-        configText += "{\r\n";
-
-        configText += "    param(";
-        var firstParamAdded = false;
-        DscStudio.CurrentTemplate.inputParameters.forEach(function(param) {
-            if (firstParamAdded === true) {
-                configText += ",\r\n\r\n        [Parameter(Mandatory = $true)]\r\n";
-            } else {
-                configText += "\r\n        [Parameter(Mandatory = $true)]\r\n";
-                firstParamAdded = true;
-            }
-            configText += "        [" + param.parameterType + "]\r\n";
-            configText += "        $" + param.name;
+        DscStudio.CurrentTemplate.ScriptOutput.forEach(function(line) {
+            configText += line + "\r\n";
         });
-        configText += "\r\n    )\r\n";
-
-        var downloadScript = "";
-        DscStudio.CurrentTemplate.dscModules.forEach(function(element){
-            configText += "    Import-DscResource -ModuleName " + element.name;
-            downloadScript += "Find-Module -Name \"" + element.name + "\"";
-            if (element.version !== undefined) {
-                configText += " -ModuleVersion " + element.version;
-                downloadScript += " -RequiredVersion \"" + element.version + "\"";
-            }
-            configText += "\r\n";
-            downloadScript += " | Install-Module \r\n";
-        });
+        configText += "\r\n";
         
-        configText += "\r\n";
-        configText += "    $DscStudio = $ConfigurationData.NonNodeData.DscStudio\r\n";
-        configText += "\r\n";
-
-        configText += "    node $AllNodes.NodeName\r\n";
-        configText += "    {\r\n";
-
-        DscStudio.CurrentTemplate.outputResources.forEach(function(resource) {
-
-            if (resource.includeQuestion !== undefined && resource.includeQuestion !== "") {
-                if (DscStudio.Responses[resource.includeQuestion] === false) {
-                    return;
-                }
-            }
-
-            var s = "";
-            var ifStatementOpen = false;
-            if (resource.includeNodeDataProperty !== undefined && resource.includeNodeDataProperty !== "") {
-                configText += "        if ($node." + resource.includeNodeDataProperty + " -eq $true)\r\n        {\r\n";
-                s = "    ";
-                ifStatementOpen = true;
-            } else if (resource.includeScriptTest !== undefined && resource.includeScriptTest !== "") {
-                configText += "        if (" + resource.includeScriptTest + ")\r\n        {\r\n";
-                s = "    ";
-                ifStatementOpen = true;
-            }
-
-            configText += s + "        " + resource.resourceType + " " + resource.resourceName + "\r\n";
-            configText += s + "        {\r\n";
-            Object.keys(resource.resourceProperties).forEach(function(resourceProperty) {
-                var outputValue = resource.resourceProperties[resourceProperty];
-                if (outputValue.startsWith('$') === true || isNaN(outputValue) === false) {
-                    configText += s + "            " + resourceProperty + " = " + outputValue + "\r\n";
-                } else {
-                    configText += s + "            " + resourceProperty + " = \"" + outputValue + "\"\r\n";
-                }
-            });
-            if (resource.dependsOn !== undefined) {
-                configText += s + "            DependsOn = \"" + resource.dependsOn + "\"\r\n";
-            }
-
-            configText += s + "        }\r\n";
-            if (ifStatementOpen === true) {
-                configText += "        }\r\n";
-            }
-            configText += "\r\n";
-        });
-
-        configText += "        LocalConfigurationManager {\r\n";
-        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
-            configText += "            CertificateId = \"" + $("#CertThumbprint").val() + "\"\r\n";
-        }
-
-        var allowReboot = $("#AutoReboot label").hasClass("is-selected");
-        configText += "            RebootNodeIfNeeded = $" + allowReboot + "\r\n";
-        configText += "            ConfigurationMode = \"" + $("#LcmConfigMode").val() + "\"\r\n";
-        configText += "            ConfigurationModeFrequencyMins = " + $("#ConfigModeMins").val() + "\r\n";
-        configText += "            ActionAfterReboot = \"" + $("#ActionAfterReboot").val() + "\"\r\n";
-        configText += "        }\r\n";
-
-        configText += "    }\r\n";
-        configText += "}\r\n";
-        configText += "\r\n";
         configText += DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
         configText += "Set-DscLocalConfigurationManager -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
         configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
 
         this.CurrentScript = configText;
-        this.DownloadScript = downloadScript;
     }
 };

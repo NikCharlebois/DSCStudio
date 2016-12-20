@@ -26,9 +26,9 @@ export default {
         loaders: [
             {
                 test: /\.js$/,
-                include: scriptRoot,
+                include: [scriptRoot],
                 loaders: ['babel']
-            }
+            }            
         ]
     },
     resolve: {
