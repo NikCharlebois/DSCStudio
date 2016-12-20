@@ -109,7 +109,8 @@
                             "filepath",
                             "regex",
                             "choice",
-                            "textarray"
+                            "textarray",
+                            "complextype"
                         ]
                     },
                     "defaultValue": {
@@ -150,6 +151,38 @@
                     "showForTrueResponseQuestion": {
                         "type": "string",
                         "description": "The ID of a boolean question that controls whether or not this question should be displayed and validated"
+                    },
+                    "properties": {
+                        "type": "array",
+                        "description": "For 'complextype' objects, a collection of properties to record on each object that is added",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the property that appears on the screen"
+                                },
+                                "powershellname": {
+                                    "type": "string",
+                                    "description": "The name of the variable to save this value as in PowerShell scripts"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "description": "What data type should the UI collect the value as",
+                                    "enum": [
+                                        "text",
+                                        "number",
+                                        "regex",
+                                        "boolean"
+                                    ]
+                                }
+                            },
+                            "required":[
+                                "name",
+                                "powershellname",
+                                "type"
+                            ]
+                        }
                     }
                 },
                 "required": [
