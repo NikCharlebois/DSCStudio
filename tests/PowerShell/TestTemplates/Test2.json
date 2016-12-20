@@ -5,8 +5,6 @@
         "description": "Test configuration for Pester tests",
         "configurationName": "TestConfig1"
     },
-    "dscModules": [
-    ],
     "questions": [
         {
             "id": "TEST",
@@ -20,21 +18,5 @@
         "certificateDetails": true,
         "nodeSettings": [],
         "maxNodeCount": 1
-    },
-    "inputParameters": [
-        {
-            "name": "SetupAccount",
-            "parameterType": "PSCredential"
-        }
-    ],
-    "outputResources": [
-        {
-            "resourceType": "File",
-            "resourceName": "Dummy",
-            "resourceProperties": {
-                "Ensure": "Present",
-                "Credential": "$SetupAccount"
-            }
-        }
-    ]
+    }
 }
