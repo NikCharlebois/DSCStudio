@@ -77,6 +77,28 @@ export default {
                     output += ")";
                     configText += "            \"" + question.id + "\" = " + output + "\r\n";
                     break;
+                case "complextype":
+                    var value = JSON.parse(DscStudio.Responses[question.id]);
+                    var complexoutput = "@(\r\n";
+                    value.forEach(function(val) {
+
+                        if (complexoutput === "@(\r\n") {
+                            complexoutput += "                @{\r\n";
+                        } else {
+                            complexoutput += ",\r\n                @{\r\n";
+                        }
+                        val.AllResponses.forEach(function(response) {
+                            if (response.type === "boolean") {
+                                complexoutput += "                    " + response.powershellName + " = $" + response.value + "\r\n";
+                            } else {
+                                complexoutput += "                    " + response.powershellName + " = \"" + response.value + "\"\r\n";
+                            }
+                        });
+                        complexoutput += "                }";
+                    });
+                    complexoutput += "\r\n            )";
+                    configText += "            \"" + question.id + "\" = " + complexoutput + "\r\n";
+                    break;
                 default:
                     configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
                     break;

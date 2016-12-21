@@ -73,7 +73,8 @@ export default {
                 case "number":
                 case "filepath":
                 case "regex":
-                    responses[question.id] = $("#question-" + question.id + "-value")[0].value;
+                case "complextype":
+                    responses[question.id] = $("#question-" + question.id + "-value").val();
                     break;
                 case "boolean":
                     responses[question.id] = $("#question-" + question.id + " label").hasClass("is-selected");
@@ -93,7 +94,7 @@ export default {
                     responses[question.id] = values;
                     break;
                 default:
-                    alert("not text");
+                    alert("question type " + question.type + " does not have support for storing responses");
                     break;
             }
         });

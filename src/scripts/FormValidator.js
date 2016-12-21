@@ -115,12 +115,20 @@ export default {
                     $("#question-" + question.id + "-error").show();
                 }
                 break;
+            case "complextype":
+                var complextypevalue = $("#question-" + question.id + "-value").val();
+                var object = JSON.parse(complextypevalue);
+                if (object.length === 0) {
+                    questionValid = false;
+                    $("#question-" + question.id + "-error").show();
+                }
+                break;
             case "boolean":
             case "choice":
                 
                 break;
             default:
-                alert("not text or number");
+                alert("Question type " + question.type + " does not have validation support");
                 break;
         }
         return questionValid;

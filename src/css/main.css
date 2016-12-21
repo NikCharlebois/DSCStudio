@@ -100,3 +100,8 @@ div.ms-Grid {
 .textarraynewitem {
     max-width: 480px;
 }
+
+.complexquestiondisplay li {
+    border-bottom: 1px solid #000000;
+    max-width: 650px;
+}

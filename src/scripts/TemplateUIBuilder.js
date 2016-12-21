@@ -5,6 +5,7 @@ import StyleLoader from "StyleLoader";
 import ViewManager from "ViewManager";
 import TemplateManager from "TemplateManager";
 import FormValidator from "FormValidator";
+import TemplateUIBuilder from "TemplateUIBuilder";
 var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
 
 export default {
@@ -78,6 +79,12 @@ export default {
                             ViewManager.OpenDialog(this.id.replace("openbutton", "dialog"));
                         });
 
+                        question.properties.forEach(function(property) {
+                            if (property.type === "boolean") {
+                                OfficeFabricManager.UpdateToggle('complex-' + question.id + '-' + property.powershellName + "-toggle");
+                            }
+                        });
+
                         var validationResult = FormValidator.ValidateComplexTypeItem(question.id);
                         if (validationResult === false) {
                             $("#complex-" + question.id + "-addbutton").attr("disabled", "disabled");
@@ -95,6 +102,8 @@ export default {
                                 $("#complex-" + questionId + "-addbutton").removeAttr("disabled");      
                             }
                         });
+
+                        TemplateUIBuilder.BuildComplexQuestionOutput(question.id);
 
                         new localFabric.Button(document.getElementById("complex-" + question.id + "-addbutton"), function(event) {
                             var id = event.currentTarget.id.replace("-addbutton", "").replace("complex-", "");
@@ -120,6 +129,7 @@ export default {
                                             newItem.AllResponses.push({
                                                 name: element.name,
                                                 powershellName: element.powershellName,
+                                                type: element.type,
                                                 value: propertyValue
                                             });
                                             break;
@@ -127,13 +137,16 @@ export default {
                                             newItem.AllResponses.push({
                                                 name: element.name,
                                                 powershellName: element.powershellName,
+                                                type: element.type,
                                                 value: $("label[for='complex-" + id + "-" + element.powershellName + "-value']").hasClass("is-selected")
                                             });
                                             break;
                                     }
                                 });
                                 currentValue.push(newItem);
-                                $("#question-" + id + "-value").val(JSON.stringify(currentValue));
+                                var newValue = JSON.stringify(currentValue);
+                                $("#question-" + id + "-value").val(newValue);
+                                TemplateUIBuilder.BuildComplexQuestionOutput(question.id);
                             }
                         });
                         break;
@@ -187,5 +200,18 @@ export default {
                     throw setting.valueType + " is not a supported node data type";
             }
         });
+    },
+    BuildComplexQuestionOutput: function(questionId) {
+        var value = $("#question-" + questionId + "-value").val();
+        var currentObject = JSON.parse(value);
+
+        var resultsDisplayBox = $("#question-" + questionId + "-results");
+        resultsDisplayBox.empty();
+
+        if (currentObject.length === 0) {
+            resultsDisplayBox.append("<p>No items</p>");
+        } else {
+            HandleBarManager.RenderHandleBar('ComplexQuestionDisplay', currentObject, '#question-' + questionId + '-results');
+        }
     }
 };

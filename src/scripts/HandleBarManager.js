@@ -157,6 +157,8 @@ export default {
                          '             <span class="ms-CommandButton-label">Add item</span>' +
                          '        </button>' +
                          '    </div>' +
+                         '    <div id="question-{{id}}-results">' +
+                         '    </div>' +  
                          '    <div class="ms-Dialog complextypedialog" id="question-{{id}}-dialog">' +
                          '        <div class="ms-Dialog-title">New item details</div>' +
                          '        <div class="ms-Dialog-content complextypedialog-content">' +
@@ -174,7 +176,7 @@ export default {
                          '                </div>' +
                          '            {{/ifTypeIsNumber}}' +
                          '            {{#ifTypeIsBoolean this.type}}' +
-                         '                <div class="ms-Toggle  ms-Toggle--textLeft">' +
+                         '                <div class="ms-Toggle  ms-Toggle--textLeft" id="complex-{{../id}}-{{powershellName}}-toggle">' +
                          '                    <span class="ms-Toggle-description">{{name}}</span>' +
                          '                    <input class="ms-Toggle-input" type="checkbox" id="complex-{{../id}}-{{powershellName}}-value" name="complex-{{../id}}-{{powershellName}}-value" />' +
                          '                    <label class="ms-Toggle-field" for="complex-{{../id}}-{{powershellName}}-value">' + 
@@ -193,9 +195,8 @@ export default {
                          '                <span class="ms-Button-label">Cancel</span>' +
                          '            </button>' +
                          '        </div>' +
-                         '        ' +
-                         '        ' +
                          '    </div>' +
+                         QuestionValidationLabel +
                          '</div>',
     NodeList: '{{#each this}}' + 
               '<li class="ms-ListItem" tabindex="0">' + 
@@ -209,6 +210,15 @@ export default {
               '    </div>' + 
               '</li>' + 
               '{{/each}}',
+    ComplexQuestionDisplay: '<ul class="ms-List complexquestiondisplay">' + 
+                            '    {{#each this}}' +
+                            '        <li class="ms-ListItem" tabindex="0">' +
+                            '            {{#each AllResponses}}' +
+                            '                {{name}}: {{value}}<br />' +
+                            '            {{/each}}' +
+                            '        </li>' +
+                            '    {{/each}}' +
+                            '</ul>',
     TextNodeOption: '<div id="nodeSetting-{{powershellName}}" class="ms-TextField">' + 
                     '    <label class="ms-Label" for="nodeSetting-{{powershellName}}-value">{{displayName}}</label>' + 
                     '    <input class="ms-TextField-field" type="text" id="nodeSetting-{{powershellName}}-value" name="nodeSetting-{{powershellName}}-value" />' + 
