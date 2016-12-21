@@ -26,6 +26,14 @@ div.ms-Grid {
     margin-right: 24px;
 }
 
+.complextypedialog {
+    max-width: 450px;
+}
+
+.complextypedialog-content {
+    width: 400px;
+    margin-right: 24px;
+}
 
 .code-minimise {
     height: 250px;

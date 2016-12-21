@@ -34,6 +34,26 @@ const QuestionValidationLabel = '<div class="ms-MessageBar ms-MessageBar--error"
                               '</div>';
 
 export default {
+    RegisterHelpers: function() {
+        Handlebars.registerHelper('ifTypeIsText', function(v1, options) {
+            if(v1 === "text") {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        });
+        Handlebars.registerHelper('ifTypeIsNumber', function(v1, options) {
+            if(v1 === "number") {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        });
+        Handlebars.registerHelper('ifTypeIsBoolean', function(v1, options) {
+            if(v1 === "boolean") {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        });
+    },
     RenderHandleBar: function(templateName, context, appendTo) {
         var template = Handlebars.compile(this[templateName]);
         $(appendTo).append(template(context));
@@ -111,13 +131,72 @@ export default {
                     QuestionHelpText +
                     '{{/if}}' +
                     '    </label>' +
-                    '    <select name="ActionAfterReboot" id="question-{{id}}-value" class="ms-TextField-field">' + 
+                    '    <select name="question-{{id}}-value" id="question-{{id}}-value" class="ms-TextField-field">' + 
                     '    {{#each choices}}' +
                     '        <option value="{{this}}">{{this}}</option>' +
                     '    {{/each}}' +
                     '    </select>' +
                     QuestionValidationLabel +
                     '</div>',
+    ComplexTypeQuestion: '<div id="question-{{id}}" class=\"ms-TextField \"' +
+                         '{{#if showForTrueResponseQuestion}}' +
+                         'data-showforresponse="question-{{showForTrueResponseQuestion}}"' +
+                         '{{/if}}' +
+                         '>' +
+                         '    <label class="ms-Label" for="question-{{id}}-value\">{{title}}' +
+                         '{{#if helpText}}' +
+                         QuestionHelpText +
+                         '{{/if}}' +
+                         '    </label>' +
+                         '    <input type="hidden" id="question-{{id}}-value" value="[]"/>' +
+                         '    <div class="ms-CommandButton">' +
+                         '         <button class="ms-CommandButton-button" id="question-{{id}}-openbutton">' +
+                         '             <span class="ms-CommandButton-icon ms-fontColor-themePrimary">' +
+                         '                 <i class="ms-Icon ms-Icon--Add"></i>' +
+                         '             </span>' +
+                         '             <span class="ms-CommandButton-label">Add item</span>' +
+                         '        </button>' +
+                         '    </div>' +
+                         '    <div class="ms-Dialog complextypedialog" id="question-{{id}}-dialog">' +
+                         '        <div class="ms-Dialog-title">New item details</div>' +
+                         '        <div class="ms-Dialog-content complextypedialog-content">' +
+                         '        {{#each properties}}' +
+                         '            {{#ifTypeIsText this.type}}' +
+                         '                <div class="ms-TextField">' +
+                         '                    <label for="complex-{{../id}}-{{powershellName}}" class="ms-Label">{{name}}</label>' +
+                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" />' +
+                         '                </div>' +
+                         '            {{/ifTypeIsText}}' +
+                         '            {{#ifTypeIsNumber this.type}}' +
+                         '                <div class="ms-TextField">' +
+                         '                    <label for="complex-{{../id}}-{{powershellName}}" class="ms-Label">{{name}}</label>' +
+                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" />' +
+                         '                </div>' +
+                         '            {{/ifTypeIsNumber}}' +
+                         '            {{#ifTypeIsBoolean this.type}}' +
+                         '                <div class="ms-Toggle  ms-Toggle--textLeft">' +
+                         '                    <span class="ms-Toggle-description">{{name}}</span>' +
+                         '                    <input class="ms-Toggle-input" type="checkbox" id="complex-{{../id}}-{{powershellName}}-value" name="complex-{{../id}}-{{powershellName}}-value" />' +
+                         '                    <label class="ms-Toggle-field" for="complex-{{../id}}-{{powershellName}}-value">' + 
+                         '                        <span class="ms-Label ms-Label--off">No</span>' + 
+                         '                        <span class="ms-Label ms-Label--on">Yes</span>' + 
+                         '                    </label>' +
+                         '                </div>' +
+                         '            {{/ifTypeIsBoolean}}' +
+                         '        {{/each}}' +
+                         '        </div>' +
+                         '        <div class="ms-Dialog-actions">' +
+                         '            <button id="complex-{{id}}-addbutton" class="ms-Button ms-Dialog-action ms-Button--primary">' +
+                         '                <span class="ms-Button-label">Add item</span>' +
+                         '            </button>' +
+                         '            <button class="ms-Button ms-Dialog-action">' +
+                         '                <span class="ms-Button-label">Cancel</span>' +
+                         '            </button>' +
+                         '        </div>' +
+                         '        ' +
+                         '        ' +
+                         '    </div>' +
+                         '</div>',
     NodeList: '{{#each this}}' + 
               '<li class="ms-ListItem" tabindex="0">' + 
               '    <span class="ms-ListItem-primaryText">{{name}}</span>' + 
@@ -140,7 +219,7 @@ export default {
                       '</div>',
     BooleanNodeOption: '<div id="nodeSetting-{{powershellName}}" class="ms-Toggle  ms-Toggle--textLeft">' +
                        '    <span class="ms-Toggle-description">{{displayName}}</span>' +
-                       '    <input class="ms-Toggle-input"  type="checkbox" id="nodeSetting-{{powershellNam}}-value" name="nodeSetting-{{powershellName}}-value" />' +
+                       '    <input class="ms-Toggle-input"  type="checkbox" id="nodeSetting-{{powershellName}}-value" name="nodeSetting-{{powershellName}}-value" />' +
                        '    <label class="ms-Toggle-field" for="nodeSetting-{{powershellName}}-value">' +
                        '        <span class="ms-Label ms-Label--off">No</span>' +
                        '        <span class="ms-Label ms-Label--on">Yes</span>' + 

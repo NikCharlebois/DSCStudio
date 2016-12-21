@@ -4,6 +4,7 @@ import OfficeFabricManager from "OfficeFabricManager";
 import StyleLoader from "StyleLoader";
 import ViewManager from "ViewManager";
 import TemplateManager from "TemplateManager";
+import FormValidator from "FormValidator";
 var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
 
 export default {
@@ -25,6 +26,7 @@ export default {
     },
     BuildQuestionUI: function(questionGroups) {
 
+        var localFabric = this.Fabric;
         Object.keys(questionGroups).forEach(function(groupName) {
             HandleBarManager.RenderHandleBar('QuestionGroupHeader', groupName, '#templateQuestions');
             HandleBarManager.RenderHandleBar('NavigationLink', groupName, '#navBox ul');
@@ -70,8 +72,73 @@ export default {
                             $("#" + this.id.replace("remove", "value")).children("option[value=\"" + current + "\"]").remove();
                         });
                         break;
+                    case "complextype":
+                        HandleBarManager.RenderHandleBar('ComplexTypeQuestion', question, '#templateQuestions');
+                        $("#question-" + question.id + "-openbutton").click(function() {
+                            ViewManager.OpenDialog(this.id.replace("openbutton", "dialog"));
+                        });
+
+                        var validationResult = FormValidator.ValidateComplexTypeItem(question.id);
+                        if (validationResult === false) {
+                            $("#complex-" + question.id + "-addbutton").attr("disabled", "disabled");
+                        } else {
+                            $("#complex-" + question.id + "-addbutton").removeAttr("disabled");      
+                        }
+
+                        $("#question-" + question.id + " input").on("keyup", function() {
+                            var currentDialogId = $(this).parents(".ms-Dialog").attr('id');
+                            var questionId = currentDialogId.replace("question-","").replace("-dialog","");
+                            var validationResult = FormValidator.ValidateComplexTypeItem(questionId);
+                            if (validationResult === false) {
+                                $("#complex-" + questionId + "-addbutton").attr("disabled", "disabled");
+                            } else {
+                                $("#complex-" + questionId + "-addbutton").removeAttr("disabled");      
+                            }
+                        });
+
+                        new localFabric.Button(document.getElementById("complex-" + question.id + "-addbutton"), function(event) {
+                            var id = event.currentTarget.id.replace("-addbutton", "").replace("complex-", "");
+                            var validationResult = FormValidator.ValidateComplexTypeItem(id);
+                            if (validationResult === false) {
+                                alert("The values you submitted were not valid. Please attempt to add this item again.");
+                            } else {
+                                var currentValue = JSON.parse($("#question-" + id + "-value").val());
+                                var newItem = {};
+                                var question = null;
+                                DscStudio.CurrentTemplate.questions.forEach(function(element) {
+                                    if (element.id === id) {
+                                        question = element;
+                                    }
+                                }, this);
+
+                                newItem.AllResponses = [];
+                                question.properties.forEach(function(element) {
+                                    switch(element.type) {
+                                        case "text":
+                                        case "number":
+                                            var propertyValue = $("#complex-" + id + "-" + element.powershellName).val();
+                                            newItem.AllResponses.push({
+                                                name: element.name,
+                                                powershellName: element.powershellName,
+                                                value: propertyValue
+                                            });
+                                            break;
+                                        case "boolean":
+                                            newItem.AllResponses.push({
+                                                name: element.name,
+                                                powershellName: element.powershellName,
+                                                value: $("label[for='complex-" + id + "-" + element.powershellName + "-value']").hasClass("is-selected")
+                                            });
+                                            break;
+                                    }
+                                });
+                                currentValue.push(newItem);
+                                $("#question-" + id + "-value").val(JSON.stringify(currentValue));
+                            }
+                        });
+                        break;
                     default:
-                        alert("Field type not supported");
+                        alert("Field type '" + question.type + "'not supported");
                         break;
                 }
             });

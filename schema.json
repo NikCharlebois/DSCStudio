@@ -162,7 +162,7 @@
                                     "type": "string",
                                     "description": "The name of the property that appears on the screen"
                                 },
-                                "powershellname": {
+                                "powershellName": {
                                     "type": "string",
                                     "description": "The name of the variable to save this value as in PowerShell scripts"
                                 },
@@ -172,14 +172,13 @@
                                     "enum": [
                                         "text",
                                         "number",
-                                        "regex",
                                         "boolean"
                                     ]
                                 }
                             },
                             "required":[
                                 "name",
-                                "powershellname",
+                                "powershellName",
                                 "type"
                             ]
                         }

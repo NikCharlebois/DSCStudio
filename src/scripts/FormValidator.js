@@ -236,5 +236,41 @@ export default {
         }
 
         return result;
+    },
+    ValidateComplexTypeItem: function(id) {
+        var question = null;
+        DscStudio.CurrentTemplate.questions.forEach(function(element) {
+            if (element.id === id) {
+                question = element;
+            }
+        }, this);
+
+        var returnVal = true;
+        question.properties.forEach(function(element) {
+            switch(element.type) {
+                case "text":
+                    var val = $("#complex-" + question.id + "-" + element.powershellName).val();
+                    if (val === null || val === "" || val === undefined) {
+                        $("#complex-" + question.id + "-" + element.powershellName).addClass("ms-borderColor-red");
+                        returnVal = false;
+                    } else {
+                        $("#complex-" + question.id + "-" + element.powershellName).removeClass("ms-borderColor-red");
+                    }
+                    break;
+                case "number":
+                    var numval = $("#complex-" + question.id + "-" + element.powershellName).val();
+                    if (numval === null || numval === "" || numval === undefined || isNaN(numval)) {
+                        $("#complex-" + question.id + "-" + element.powershellName).addClass("ms-borderColor-red");
+                        returnVal = false;
+                    } else {
+                        $("#complex-" + question.id + "-" + element.powershellName).removeClass("ms-borderColor-red");
+                    }
+                    break;
+                case "boolean":
+
+                    break;
+            }
+        });
+        return returnVal;
     }
 };

@@ -7,6 +7,7 @@ import FormValidator from "FormValidator";
 import EventManager from "EventManager";
 import TemplateManager from "TemplateManager";
 import SettingsStore from "SettingsStore";
+import HandleBarManager from "HandleBarManager";
 
 
 $(document).ready(function() {
@@ -14,6 +15,7 @@ $(document).ready(function() {
     ViewManager.ShowView('start');
     EventManager.Init();
     OfficeFabricManager.InitFixedControls();
+    HandleBarManager.RegisterHelpers();
     FormValidator.InitForm();
     TemplateManager.Init();
 });

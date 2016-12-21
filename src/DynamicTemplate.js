@@ -80,6 +80,28 @@ var DynamicTemplate = {
             "id": "ArrayQuestion",
             "title": "An example text array question",
             "type": "textarray"
+        },
+        {
+            "id": "ComplexTypeQuestion",
+            "title": "An example complex type question",
+            "type": "complextype",
+            "properties": [
+                {
+                    "name": "Text data",
+                    "powershellName": "text",
+                    "type": "text"
+                },
+                {
+                    "name": "Number data",
+                    "powershellName": "number",
+                    "type": "number"
+                },
+                {
+                    "name": "Boolean data",
+                    "powershellName": "boolean",
+                    "type": "boolean"
+                }
+            ]
         }
     ],
     "ScriptOutput": [
