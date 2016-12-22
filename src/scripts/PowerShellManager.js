@@ -99,6 +99,9 @@ export default {
                     complexoutput += "\r\n            )";
                     configText += "            \"" + question.id + "\" = " + complexoutput + "\r\n";
                     break;
+                case "boolean":
+                    configText += "            \"" + question.id + "\" = $" + DscStudio.Responses[question.id] + "\r\n";
+                    break;
                 default:
                     configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
                     break;

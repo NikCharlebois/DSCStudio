@@ -82,6 +82,13 @@ export default {
                         question.properties.forEach(function(property) {
                             if (property.type === "boolean") {
                                 OfficeFabricManager.UpdateToggle('complex-' + question.id + '-' + property.powershellName + "-toggle");
+                                if (property.default !== undefined) {
+                                    if (property.default === "true" || property.default === true) {
+                                        $("label[for='complex-" + question.id + "-" + property.powershellName + "-value']").addClass("is-selected");
+                                    } else {
+                                        $("label[for='complex-" + question.id + "-" + property.powershellName + "-value']").removeClass("is-selected");
+                                    }
+                                }
                             }
                         });
 
@@ -132,7 +139,11 @@ export default {
                                                 type: element.type,
                                                 value: propertyValue
                                             });
-                                            $("#complex-" + id + "-" + element.powershellName).val("");
+                                            if (element.default !== undefined) {
+                                                $("#complex-" + id + "-" + element.powershellName).val(element.default);
+                                            } else {
+                                                $("#complex-" + id + "-" + element.powershellName).val("");
+                                            }
                                             break;
                                         case "boolean":
                                             newItem.AllResponses.push({
@@ -141,7 +152,11 @@ export default {
                                                 type: element.type,
                                                 value: $("label[for='complex-" + id + "-" + element.powershellName + "-value']").hasClass("is-selected")
                                             });
-                                            $("label[for='complex-" + id + "-" + element.powershellName + "-value']").removeClass("is-selected");
+                                            if (element.default !== undefined && (element.default === true || element.default === "true")) {
+                                                $("label[for='complex-" + id + "-" + element.powershellName + "-value']").addClass("is-selected");
+                                            } else {
+                                                $("label[for='complex-" + id + "-" + element.powershellName + "-value']").removeClass("is-selected");
+                                            }
                                             break;
                                     }
                                 });

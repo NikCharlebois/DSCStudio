@@ -101,7 +101,7 @@ export default {
                     QuestionHelpText +
                     '{{/if}}' +
                     '    </label>' +
-                    '    <input class="ms-TextField-field"  type="text" id="question-{{id}}-value" name="question-id-value"value="{{defaultValue}}" />' +
+                    '    <input class="ms-TextField-field"  type="text" id="question-{{id}}-value" name="question-id-value" value="{{defaultValue}}" />' +
                     QuestionValidationLabel +
                     '</div>',
     BooleanQuestion: '<div id="question-{{id}}" class="ms-Toggle  ms-Toggle--textLeft"' +
@@ -166,13 +166,13 @@ export default {
                          '            {{#ifTypeIsText this.type}}' +
                          '                <div class="ms-TextField">' +
                          '                    <label for="complex-{{../id}}-{{powershellName}}" class="ms-Label">{{name}}</label>' +
-                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" />' +
+                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" value="{{default}}" />' +
                          '                </div>' +
                          '            {{/ifTypeIsText}}' +
                          '            {{#ifTypeIsNumber this.type}}' +
                          '                <div class="ms-TextField">' +
                          '                    <label for="complex-{{../id}}-{{powershellName}}" class="ms-Label">{{name}}</label>' +
-                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" />' +
+                         '                    <input type="text" name="complex-{{../id}}-{{powershellName}}" id="complex-{{../id}}-{{powershellName}}" class="ms-TextField-field" value="{{default}}" />' +
                          '                </div>' +
                          '            {{/ifTypeIsNumber}}' +
                          '            {{#ifTypeIsBoolean this.type}}' +
