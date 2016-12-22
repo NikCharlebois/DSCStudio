@@ -132,6 +132,7 @@ export default {
                                                 type: element.type,
                                                 value: propertyValue
                                             });
+                                            $("#complex-" + id + "-" + element.powershellName).val("");
                                             break;
                                         case "boolean":
                                             newItem.AllResponses.push({
@@ -140,6 +141,7 @@ export default {
                                                 type: element.type,
                                                 value: $("label[for='complex-" + id + "-" + element.powershellName + "-value']").hasClass("is-selected")
                                             });
+                                            $("label[for='complex-" + id + "-" + element.powershellName + "-value']").removeClass("is-selected");
                                             break;
                                     }
                                 });
