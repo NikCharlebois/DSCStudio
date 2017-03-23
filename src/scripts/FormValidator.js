@@ -1,8 +1,8 @@
 import $ from "jquery";
-import TemplateManager from "TemplateManager";
-import PowerShellManager from "PowerShellManager";
-import ViewManager from "ViewManager";
-import DscNodeManager from "DscNodeManager";
+import TemplateManager from "./TemplateManager";
+import PowerShellManager from "./PowerShellManager";
+import ViewManager from "./ViewManager";
+import DscNodeManager from "./DscNodeManager";
 
 export default {
     InitForm: function() {

@@ -1,7 +1,6 @@
 import $ from "jquery";
-import TemplateManager from "TemplateManager";
-import DscNodeManager from "DscNodeManager";
-require("script-loader!..\\..\\node_modules\\file-saver\\FileSaver.js");
+import TemplateManager from "./TemplateManager";
+import DscNodeManager from "./DscNodeManager";
 
 export default {
     CurrentScript: "",

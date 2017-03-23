@@ -1,7 +1,7 @@
 import $ from "jquery";
-import TemplateUIBuilder from "TemplateUIBuilder";
-import ViewManager from "ViewManager";
-import FormValidator from "FormValidator";
+import TemplateUIBuilder from "./TemplateUIBuilder";
+import ViewManager from "./ViewManager";
+import FormValidator from "./FormValidator";
 
 export default {
     CurrentTemplate: "",

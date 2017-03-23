@@ -1,26 +1,24 @@
-import OfficeFabricManager from "OfficeFabricManager";
-var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
+import OfficeFabricManager from "./OfficeFabricManager";
 
 export default {
-    Fabric: fabric, 
     InitFixedControls: function() {
         var CommandBarElements = document.querySelectorAll(".ms-CommandBar");
         for(var commandBarCount = 0; commandBarCount < CommandBarElements.length; commandBarCount++) {
-            new this.Fabric.CommandBar(CommandBarElements[commandBarCount]);
+            new fabric.CommandBar(CommandBarElements[commandBarCount]);
         }
 
         var ListElements = document.querySelectorAll(".ms-List");
         for(var listElementsCount = 0; listElementsCount < ListElements.length; listElementsCount++) {
-            new this.Fabric.List(ListElements[listElementsCount]);
+            new fabric.List(ListElements[listElementsCount]);
         }
 
         var ToggleElements = document.querySelectorAll(".ms-Toggle");
         for(var toggleElementsCount = 0; toggleElementsCount < ToggleElements.length; toggleElementsCount++) {
-            new this.Fabric.Toggle(ToggleElements[toggleElementsCount]);
+            new fabric.Toggle(ToggleElements[toggleElementsCount]);
         }
     },
     UpdateToggle: function(id) {
-        new this.Fabric.Toggle(document.getElementById(id));
+        new fabric.Toggle(document.getElementById(id));
     },
     UpdatePanels: function() {
         var PanelExamples = document.getElementsByClassName("ms-PanelExample");
@@ -33,7 +31,7 @@ export default {
         var PanelExamplePanel = container.querySelector(".ms-Panel");
         var _this = this;
         PanelExampleButton.addEventListener("click", function(i) {
-            new _this.Fabric.Panel(PanelExamplePanel);
+            new _fabric.Panel(PanelExamplePanel);
         });
     }
 };

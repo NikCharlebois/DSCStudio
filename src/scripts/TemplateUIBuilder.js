@@ -1,15 +1,13 @@
 import $ from "jquery";
-import HandleBarManager from "HandleBarManager";
-import OfficeFabricManager from "OfficeFabricManager";
-import StyleLoader from "StyleLoader";
-import ViewManager from "ViewManager";
-import TemplateManager from "TemplateManager";
-import FormValidator from "FormValidator";
-import TemplateUIBuilder from "TemplateUIBuilder";
-var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
+import HandleBarManager from "./HandleBarManager";
+import OfficeFabricManager from "./OfficeFabricManager";
+import StyleLoader from "./StyleLoader";
+import ViewManager from "./ViewManager";
+import TemplateManager from "./TemplateManager";
+import FormValidator from "./FormValidator";
+import TemplateUIBuilder from "./TemplateUIBuilder";
 
 export default {
-    Fabric: fabric, 
     BuildPrimaryUI: function(template) {
         $("#templateNameHeader").text(template.metadata.title);
         if (template.metadata.description !== null) {
@@ -27,7 +25,7 @@ export default {
     },
     BuildQuestionUI: function(questionGroups) {
 
-        var localFabric = this.Fabric;
+        // var localFabric = this.Fabric;
         Object.keys(questionGroups).forEach(function(groupName) {
             HandleBarManager.RenderHandleBar('QuestionGroupHeader', groupName, '#templateQuestions');
             HandleBarManager.RenderHandleBar('NavigationLink', groupName, '#navBox ul');
@@ -112,7 +110,7 @@ export default {
 
                         TemplateUIBuilder.BuildComplexQuestionOutput(question.id);
 
-                        new localFabric.Button(document.getElementById("complex-" + question.id + "-addbutton"), function(event) {
+                        new fabric.Button(document.getElementById("complex-" + question.id + "-addbutton"), function(event) {
                             var id = event.currentTarget.id.replace("-addbutton", "").replace("complex-", "");
                             var validationResult = FormValidator.ValidateComplexTypeItem(id);
                             if (validationResult === false) {
@@ -200,7 +198,7 @@ export default {
         });
     },
     BuildNewNodeUI: function() {
-        var localFabric = this.Fabric;
+        // var localFabric = this.Fabric;
         DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
             switch (setting.valueType) {
                 case "text":
@@ -211,7 +209,7 @@ export default {
                     break;
                 case "boolean":
                     HandleBarManager.RenderHandleBar('BooleanNodeOption', setting, '#additionalNodeDetails');
-                    new localFabric.Toggle(document.getElementById("nodeSetting-" + setting.powershellName));
+                    new fabric.Toggle(document.getElementById("nodeSetting-" + setting.powershellName));
                     break;
                 default:
                     throw setting.valueType + " is not a supported node data type";

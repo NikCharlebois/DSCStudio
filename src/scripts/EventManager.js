@@ -1,13 +1,11 @@
 import $ from "jquery";
-import ViewManager from "ViewManager";
-import DscNodeManager from "DscNodeManager";
-import TemplateManager from "TemplateManager";
-import FormValidator from "FormValidator";
-import PowerShellManager from "PowerShellManager";
-var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
+import ViewManager from "./ViewManager";
+import DscNodeManager from "./DscNodeManager";
+import TemplateManager from "./TemplateManager";
+import FormValidator from "./FormValidator";
+import PowerShellManager from "./PowerShellManager";
 
 export default {
-    Fabric: fabric, 
     Init: function() {
         $('#templateSelector').on('change', function() {
             if (TemplateManager.StartTemplateRead(this) === false) {
@@ -60,6 +58,6 @@ export default {
             ViewManager.ToggleCodeMinimiseFrame();
         });
 
-        new this.Fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
+        new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
     }
 };

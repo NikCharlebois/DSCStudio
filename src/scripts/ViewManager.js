@@ -1,12 +1,8 @@
 import $ from "jquery";
-import StyleLoader from "StyleLoader";
-import PowerShellManager from "PowerShellManager";
-require("script-loader!..\\syntaxhighlighter\\shCore.js");
-require("script-loader!..\\syntaxhighlighter\\shBrushPowerShell.js");
-var fabric = require("exports?fabric!..\\..\\node_modules\\office-ui-fabric-js\\dist\\js\\fabric.js");
+import StyleLoader from "./StyleLoader";
+import PowerShellManager from "./PowerShellManager";
 
 export default {
-    Fabric: fabric, 
     ShowView: function(view) {
         $("#templateStart").hide();
         $("#templateResponse").hide();
@@ -56,7 +52,7 @@ export default {
     },
     OpenDialog: function(dialogId) {
         var dialog = document.getElementById(dialogId);
-        var dialogComponent = new this.Fabric.Dialog(dialog);
+        var dialogComponent = new fabric.Dialog(dialog);
         dialogComponent.open();
     },
     ToggleCodeMinimiseFrame: function() {

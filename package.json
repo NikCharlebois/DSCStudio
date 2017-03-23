@@ -14,10 +14,14 @@
     "copy:syntaxhighlighterCss": "copyfiles -f src/syntaxhighlighter/*.css modules/DscStudio/engine/css",
     "minify:css": "cleancss src/css/main.css -o modules/DSCStudio/engine/css/main.css",
     "copy:css": "npm-run-all copy:fabricCss copy:fabricComponentsCss copy:syntaxhighlighterCss minify:css",
+    "copy:fabricJs": "copyFiles -f node_modules/office-ui-fabric-js/dist/js/fabric.js modules/DscStudio/engine/scripts",
+    "copy:fileSaverJs": "copyFiles -f node_modules/file-saver/FileSaver.js modules/DscStudio/engine/scripts",
+    "copy:shJs": "copyFiles -f src/syntaxhighlighter/*.js modules/DscStudio/engine/scripts",
+    "copy:allJs": "npm-run-all copy:shJs copy:fileSaverJs copy:fabricJs",
     "lint": "jshint src/scripts",
     "pretest": "npm run lint -s",
     "test": "mocha \"tests/JavaScript/*.js\" --reporter mocha-junit-reporter --compilers js:babel-core/register",
-    "build": "npm run clean && babel-node tools/build/buildJs.js && npm-run-all copy:css copy:index copy:img"
+    "build": "npm run clean && babel-node tools/build/buildJs.js && npm-run-all copy:allJs copy:css copy:index copy:img"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",

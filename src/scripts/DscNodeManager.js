@@ -1,7 +1,7 @@
 import $ from "jquery";
-import TemplateManager from "TemplateManager";
-import HandleBarManager from "HandleBarManager";
-import FormValidator from "FormValidator";
+import TemplateManager from "./TemplateManager";
+import HandleBarManager from "./HandleBarManager";
+import FormValidator from "./FormValidator";
 
 export default {
     CanNewNodesBeAdded: function() {

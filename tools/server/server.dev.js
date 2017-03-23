@@ -32,6 +32,12 @@ app.use('/css/shCoreDefault.css', express.static(path.join(sourceRoot, "syntaxhi
 app.use('/css/main.css', express.static(path.join(cssRoot, "main.css")));
 app.use('/img', express.static(path.join(imgRoot)));
 
+app.use('/scripts/fabric.js', express.static(path.join(projectRoot, "node_modules/office-ui-fabric-js/dist/js/fabric.js")));
+app.use('/scripts/FileSaver.js', express.static(path.join(projectRoot, "node_modules/file-saver/FileSaver.js")));
+app.use('/scripts/shCore.js', express.static(path.join(projectRoot, "src/syntaxhighlighter/shCore.js")));
+app.use('/scripts/shBrushPowerShell.js', express.static(path.join(projectRoot, "src/syntaxhighlighter/shBrushPowerShell.js")));
+
+
 app.get('/', function(req, res) {
   res.sendFile(path.join(sourceRoot, 'index.htm'));
 });
