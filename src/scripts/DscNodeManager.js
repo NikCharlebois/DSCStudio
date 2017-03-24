@@ -12,11 +12,6 @@ export default {
         }
         return true;
     },
-    TooManyNodesMessage: function() {
-        return 'This template supports a maximum of ' + 
-              DscStudio.CurrentTemplate.configDataSettings.maxNodeCount + 
-              ' nodes, please remove a node before adding a new one.';
-    },
     AddNewNode: function(event) {
         var additionalProperties = [];
         DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {

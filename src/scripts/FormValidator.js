@@ -41,7 +41,7 @@ export default {
         if (submitAfterValidate === true && formValid === true) {
             TemplateManager.StoreQuestionResponses();
             PowerShellManager.UpdateCurrentScript();
-            ViewManager.ShowView('output');
+            UI.SwitchView(UI.Views.Output);
         }
     },
     ValidateQuestion: function(question) {

@@ -1,5 +1,7 @@
 import $ from "jquery";
 
+import UI from "./UI";
+
 import StyleLoader from "./StyleLoader";
 import OfficeFabricManager from "./OfficeFabricManager";
 import ViewManager from "./ViewManager";
@@ -12,7 +14,9 @@ import HandleBarManager from "./HandleBarManager";
 
 $(document).ready(function() {
     StyleLoader.ApplyStyles();
-    ViewManager.ShowView('start');
+
+    UI.SwitchView(UI.Views.Start);
+    
     EventManager.Init();
     OfficeFabricManager.InitFixedControls();
     HandleBarManager.RegisterHelpers();

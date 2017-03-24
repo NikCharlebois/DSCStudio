@@ -24,8 +24,6 @@ export default {
         } //TODO: Handle the "no secure password scenario here
     },
     BuildQuestionUI: function(questionGroups) {
-
-        // var localFabric = this.Fabric;
         Object.keys(questionGroups).forEach(function(groupName) {
             HandleBarManager.RenderHandleBar('QuestionGroupHeader', groupName, '#templateQuestions');
             HandleBarManager.RenderHandleBar('NavigationLink', groupName, '#navBox ul');
@@ -198,7 +196,6 @@ export default {
         });
     },
     BuildNewNodeUI: function() {
-        // var localFabric = this.Fabric;
         DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
             switch (setting.valueType) {
                 case "text":

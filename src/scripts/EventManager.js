@@ -4,20 +4,19 @@ import DscNodeManager from "./DscNodeManager";
 import TemplateManager from "./TemplateManager";
 import FormValidator from "./FormValidator";
 import PowerShellManager from "./PowerShellManager";
+import UI from "./UI";
+import Strings from "./Strings";
 
 export default {
     Init: function() {
         $('#templateSelector').on('change', function() {
-            if (TemplateManager.StartTemplateRead(this) === false) {
-                throw "An error has occured reading your template.";
+            if (UI.SetTemplateFromFilePicker(this) === true) {
+                ViewManager.ShowTab('configdata');
             }
-            ViewManager.ShowTab('configdata');
-
-            
         });
 
         $("#goBackToResponses").on('click', function() {
-            ViewManager.ShowView('response');
+            UI.SwitchView(UI.Views.Response);
             ViewManager.ShowTab('configdata');
         });
 
@@ -38,7 +37,7 @@ export default {
             if (DscNodeManager.CanNewNodesBeAdded() === true) {
                 ViewManager.OpenDialog('newNodeDialog');
             } else {
-                throw DscNodeManager.TooManyNodesMessage();
+                UI.SendAlert(Strings.ErrorTooManyNodes, [DscStudio.CurrentTemplate.configDataSettings.maxNodeCount.toString()]);
             }
         });
 

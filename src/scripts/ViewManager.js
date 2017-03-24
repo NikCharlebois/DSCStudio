@@ -3,32 +3,6 @@ import StyleLoader from "./StyleLoader";
 import PowerShellManager from "./PowerShellManager";
 
 export default {
-    ShowView: function(view) {
-        $("#templateStart").hide();
-        $("#templateResponse").hide();
-        $("#templateOutput").hide();
-        switch(view) {
-            case "start":
-                $("#templateStart").show();
-                break;
-            case "response":
-                $("#templateResponse").show();
-                break;
-            case "output":
-                $("#templateOutput").show();
-
-                $("#moduleDownloadScript").text(PowerShellManager.DownloadScript);
-                $("#scriptContentParent").empty();
-                $("#scriptContentParent").html("<pre id=\"scriptContent\" class=\"brush: powershell\">" + PowerShellManager.CurrentScript + "</pre>");
-
-                StyleLoader.ApplyStyles();
-
-                SyntaxHighlighter.highlight();
-                break;
-            default:
-                throw view + " is an unknown view to switch this form to";
-        }
-    },
     ShowTab: function(tabname) {
         switch(tabname) 
         {
