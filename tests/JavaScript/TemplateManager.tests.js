@@ -20,19 +20,19 @@ describe("TemplateManager - GetQuestionGroups method", function() {
 
   it("Should process questions when provided from a valid template", function() {
     var result = TemplateManager.GetQuestionGroups(ValidTemplate);
-    assert(result !== undefined, "At least one question group should be returned");
+    assert(result !== undefined);
   });
 
   it ("Should alert the user if no questions section is present", function() {
     var alertMock = sandbox.stub(UI, "SendAlert").callsFake(function() { });
     TemplateManager.GetQuestionGroups(NoQuestionSectionTemplate);
-    assert(alertMock.calledOnce, "Alert was not called during the method");
+    assert(alertMock.calledOnce);
   });
 
   it ("Should alert the user if no questions are added", function() {
     var alertMock = sandbox.stub(UI, "SendAlert").callsFake(function() { });
     TemplateManager.GetQuestionGroups(NoQuestionsTemplate);
-    assert(alertMock.calledOnce, "Alert was not called during the method");
+    assert(alertMock.calledOnce);
   });
 });
 
@@ -54,7 +54,7 @@ describe("TemplateManager - Init method", function() {
     var returnVal = TemplateManager.Init();
 
     assert(returnVal === false, "Init method did not return false when the initialisation failed");
-    assert(alertMock.calledOnce, "Alert was not called during the method");
+    assert(alertMock.calledOnce);
   });
 
   it ("Should not return a value when appropriate APIs are supported", function () {
@@ -63,7 +63,7 @@ describe("TemplateManager - Init method", function() {
 
     var returnVal = TemplateManager.Init();
 
-    assert(returnVal === undefined, "Init method should equal 'undefined' when it succeeds");
+    assert(returnVal === undefined);
   });
 
   it ("Should read a dynamic template when it exists", function() {
@@ -74,7 +74,7 @@ describe("TemplateManager - Init method", function() {
 
     var returnVal = TemplateManager.Init();
 
-    assert(returnVal === undefined, "Init method should equal 'undefined' when it succeeds");
-    assert(dyanmicRead.calledOnce, "The 'ParseTemplate' was not called");
+    assert(returnVal === undefined);
+    assert(dyanmicRead.calledOnce);
   });
 });

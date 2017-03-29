@@ -10,7 +10,7 @@ function Start-DscStudio
     )
 
     Begin 
-    {
+    {        
         $engineLaunched = $false
         Reset-DscStudioDynamicTemplate
     }

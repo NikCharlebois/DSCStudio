@@ -2,6 +2,8 @@ import $ from "jquery";
 import TemplateManager from "./TemplateManager";
 import TemplateUIBuilder from "./TemplateUIBuilder";
 import FormValidator from "./FormValidator";
+import Handlebars from "handlebars";
+import HandleBarManager from "./HandleBarManager";
 import Strings from "./Strings";
 
 export default {
@@ -19,10 +21,59 @@ export default {
         TemplateUIBuilder.BuildQuestionUI(TemplateManager.GetQuestionGroups(template));
         TemplateUIBuilder.BuildNewNodeUI();
         FormValidator.EnableQuestionValidation();
-        FormValidator.ValidateNodeData();
+        FormValidator.ValidateAllNodeData();
+    },
+    AppendText: function(selector, text) {
+        $(selector).append(text);
+    },
+    ClearNodeSettingsValues: function(NodeSettings) {
+        NodeSettings.forEach(function(setting) {
+            switch(setting.valueType) {
+                case "text":
+                case "number":
+                    $("#nodeSetting-" + setting.powershellName + "-value").val("");
+                    break;
+                case "boolean":
+                    $("#nodeSetting-" + setting.powershellName + " label").removeClass("is-selected");
+                    break; 
+                default:
+                    this.SendAlert(Strings.ErrorNodeSettingTypeNotSupported); 
+                    return;
+            }
+        });
+        $("#NewNodeName").val("");
+    },
+    ConfirmAction: function(message, replacements) {
+        var newMessage = message;
+        if (replacements !== undefined) {
+            var count = 0;
+            replacements.forEach(function(replacement) {
+                newMessage = newMessage.replace(`{${count}}`, replacement);
+            }, this); 
+        }
+        return confirm(newMessage);
+    },
+    EmptyObject: function(selector) {
+        $(selector).empty();
+    },
+    GetValue: function(selector) {
+        return $(selector).val();
     },
     HideElement: function(elementId) {
         $(`#${elementId}`).hide();
+    },
+    ReadNodeSettingResponse: function(nodeSetting) {
+        var internalValue;
+            switch(nodeSetting.valueType) {
+                case "text":
+                case "number":
+                    return $("#nodeSetting-" + nodeSetting.powershellName + "-value").val();
+                case "boolean":
+                    return $("#nodeSetting-" + nodeSetting.powershellName + " label").hasClass("is-selected");
+                default:
+                    this.SendAlert(Strings.ErrorNodeSettingTypeNotSupported); 
+                    return;
+            }
     },
     ReadQuestionResponse: function(question) {
         switch (question.type) {
@@ -51,12 +102,20 @@ export default {
                 break;
         }
     },
+    RegisterEvent: function(target, method, callback) {
+        $(target).on(method, callback);
+    },
+    RenderUISection: function(templateName, context, appendTo) {
+        $("#nodeList").empty();
+        var template = Handlebars.compile(HandleBarManager[templateName]);
+        $(appendTo).append(template(context));
+    },
     SendAlert: function(message, replacements) {
         var newMessage = message;
         if (replacements !== undefined) {
             var count = 0;
             replacements.forEach(function(replacement) {
-                newMessage.replace(`{${count}}`, replacement);
+                newMessage = newMessage.replace(`{${count}}`, replacement);
             }, this);
         }
         alert(newMessage);
@@ -75,6 +134,9 @@ export default {
             this.SendAlert(Strings.ErrorUnableToReadFileContents);
             return false;
         }
+    },
+    SetText: function(selector, text) {
+        $(selector).text(text);
     },
     ShowElement: function(elementId) {
         $(`#${elementId}`).show();

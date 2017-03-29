@@ -1,7 +1,8 @@
 import $ from "jquery";
-import TemplateManager from "./TemplateManager";
-import HandleBarManager from "./HandleBarManager";
 import FormValidator from "./FormValidator";
+import DscNodeManager from './DscNodeManager';
+import UI from "./UI";
+import Strings from "./Strings";
 
 export default {
     CanNewNodesBeAdded: function() {
@@ -12,60 +13,44 @@ export default {
         }
         return true;
     },
-    AddNewNode: function(event) {
+    AddNewNode: function() {
         var additionalProperties = [];
         DscStudio.CurrentTemplate.configDataSettings.nodeSettings.forEach(function(setting) {
-            var internalValue;
-            switch(setting.valueType) {
-                case "text":
-                case "number":
-                    internalValue = $("#nodeSetting-" + setting.powershellName + "-value").val();
-                    $("#nodeSetting-" + setting.powershellName + "-value").val("");
-                    break;
-                case "boolean":
-                    internalValue = $("#nodeSetting-" + setting.powershellName + " label").hasClass("is-selected");
-                    $("#nodeSetting-" + setting.powershellName + " label").removeClass("is-selected");
-                break; 
-            }
-
             additionalProperties.push({
                 powershellName: setting.powershellName,
                 displayName: setting.displayName,
                 valueType: setting.valueType,
-                value: internalValue
+                value: UI.ReadNodeSettingResponse(setting)
             });
         });
 
-        var additionalPropsHtmlList = '';
-        additionalProperties.forEach(function(prop) {
-            additionalPropsHtmlList += prop.displayName + ': ' + prop.value + '<br />';
-        });
-
         DscStudio.Nodes.push({
-            name: $("#NewNodeName").val(),
-            additionalProperties: additionalProperties,
-            additionalPropsHtmlList: additionalPropsHtmlList
+            name: UI.GetValue("#NewNodeName"),
+            additionalProperties: additionalProperties
         });
 
-        $("#NewNodeName").val("");
-        $("#nodeList").empty();
-        HandleBarManager.RenderHandleBar('NodeList', DscStudio.Nodes, '#nodeList');
-        FormValidator.ValidateNodeData();
+        UI.ClearNodeSettingsValues(DscStudio.CurrentTemplate.configDataSettings.nodeSettings);
 
-        var self = this;
-        $(".deleteNode").click(function() {
+        UI.RenderUISection('NodeList', DscStudio.Nodes, '#nodeList');
+
+        if (FormValidator.ValidateAllNodeData() === true) {
+            UI.HideElement("configErrorFlag");
+        } else {
+            UI.ShowElement("configErrorFlag");
+        }
+
+        UI.RegisterEvent(".deleteNode", "click", function() {
             var nodeName = $(this).data("nodename");
-            if (window.confirm("Are you sure you wish to remove '" + nodeName + "'?")) {
-                DscStudio.Nodes = DscStudio.Nodes.filter(function(item) {
-                    return item.name !== nodeName;
-                });
-                $("#nodeList").empty();
-                HandleBarManager.RenderHandleBar('NodeList', DscStudio.Nodes, '#nodeList');
-                FormValidator.ValidateNodeData();
-            }
+            DscNodeManager.RemoveNode(nodeName);
         });
     },
     RemoveNode: function(nodeName) {
-        
+        if (UI.ConfirmAction(Strings.ConfirmRemoveNode, [nodeName])) {
+            DscStudio.Nodes = DscStudio.Nodes.filter(function(item) {
+                return item.name !== nodeName;
+            });
+            UI.RenderUISection('NodeList', DscStudio.Nodes, '#nodeList');
+            FormValidator.ValidateAllNodeData();
+        }
     }
 };

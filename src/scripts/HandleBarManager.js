@@ -202,7 +202,9 @@ export default {
               '<li class="ms-ListItem" tabindex="0">' + 
               '    <span class="ms-ListItem-primaryText">{{name}}</span>' + 
               '    <span class="ms-ListItem-tertiaryText">' + 
-              '        {{{additionalPropsHtmlList}}}' +
+              '        {{#each additionalProperties}}' +
+              '            {{displayName}}: {{value}}<br />' +
+              '        {{/each}}' +
               '    </span>' + 
               '    <div class="ms-ListItem-selectionTarget"></div>' + 
               '    <div class="ms-ListItem-actions">' + 

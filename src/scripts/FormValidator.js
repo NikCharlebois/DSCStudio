@@ -3,6 +3,8 @@ import TemplateManager from "./TemplateManager";
 import PowerShellManager from "./PowerShellManager";
 import ViewManager from "./ViewManager";
 import DscNodeManager from "./DscNodeManager";
+import UI from "./UI";
+import Strings from "./Strings";
 
 export default {
     InitForm: function() {
@@ -18,7 +20,7 @@ export default {
         if (this.ValidateConfigData() === false) {
             formValid = false;
         }
-        if (this.ValidateNodeData() === false) {
+        if (this.ValidateAllNodeData() === false) {
             formValid = false;
         }
 
@@ -181,20 +183,20 @@ export default {
         }
         return configValid;
     },
-    ValidateNodeData: function() {
+    ValidateAllNodeData: function() {
         var minCount = 1;
         var configValid = true;
         if (DscStudio.CurrentTemplate.configDataSettings.minNodeCount !== undefined) {
             minCount = DscStudio.CurrentTemplate.configDataSettings.minNodeCount;
         }
 
-        $("#minNodeCountMessage").hide();
-        $("#nodeOptionsNotValidMessage").hide();
-        $("#nodeOptionsNotValidContent").empty();
+        UI.HideElement("minNodeCountMessage");
+        UI.HideElement("nodeOptionsNotValidMessage");
+        UI.EmptyObject("nodeOptionsNotValidContent");
 
         if (DscStudio.Nodes.length < minCount) {
-            $("#minNodeCountMessage").show();
-            $("#minNodeCountNumber").text(minCount);
+            UI.ShowElement("minNodeCountMessage");
+            UI.SetText("#minNodeCountNumber", minCount);
             return false;
         } 
         if (DscStudio.CurrentTemplate.configDataSettings.maxNodeCount !== undefined && DscStudio.Nodes.length > DscStudio.CurrentTemplate.configDataSettings.maxNodeCount) {
@@ -225,23 +227,19 @@ export default {
                     });
                 });
                 if (occurences < nodeSetting.minOccurences) {
-                    $("#nodeOptionsNotValidMessage").show();
-                    $("#nodeOptionsNotValidContent").append("This template requires " + nodeSetting.minOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>");
+                    UI.ShowElement("nodeOptionsNotValidMessage");
+                    var notEnoughRoleMessage = Strings.ErrorNodeSettingsRoleNeeded.replace("{0}", nodeSetting.minOccurences).replace("{1}", nodeSetting.displayName);
+                    UI.AppendText("#nodeOptionsNotValidContent", notEnoughRoleMessage + "<br />");
                     result = false;
                 }
                 if (occurences > nodeSetting.maxOccurences) {
-                    $("#nodeOptionsNotValidMessage").show();
-                    $("#nodeOptionsNotValidContent").append("This template requires no more than " + nodeSetting.maxOccurences + " computers with the '" + nodeSetting.displayName + "' option <br/>");
+                    UI.ShowElement("nodeOptionsNotValidMessage");
+                    var tooManyRoleMessage = Strings.ErrorNodeSettingsRoleAsMaximum.replace("{0}", nodeSetting.minOccurences).replace("{1}", nodeSetting.displayName);
+                    UI.AppendText("#nodeOptionsNotValidContent", tooManyRoleMessage + "<br />");
                     result = false;
                 }
             }
         });
-
-        if (configValid === true) {
-            $("#configErrorFlag").hide();
-        } else {
-            $("#configErrorFlag").show();
-        }
 
         return result;
     },
