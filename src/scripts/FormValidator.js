@@ -3,40 +3,40 @@ import TemplateManager from "./TemplateManager";
 import PowerShellManager from "./PowerShellManager";
 import ViewManager from "./ViewManager";
 import DscNodeManager from "./DscNodeManager";
+import FormValidator from "./FormValidator";
 import UI from "./UI";
 import Strings from "./Strings";
 
 export default {
     InitForm: function() {
-        $(document).ready(function(){
-            $("#questionErrorFlag").hide();
-            $("#configErrorFlag").hide();
-            $("#globalValidationMessage").hide();
-            $("#QuestionnaireEditor").hide();
+        UI.RegisterEvent(UI.Document(), "ready", function() {
+            UI.HideElement("questionErrorFlag");
+            UI.HideElement("configErrorFlag");
+            UI.HideElement("globalValidationMessage");
+            UI.HideElement("QuestionnaireEditor");
         });
     },
     ValidateForm: function(submitAfterValidate) {
         var formValid = true;
-        if (this.ValidateConfigData() === false) {
+        if (FormValidator.ValidateConfigData() === false) {
             formValid = false;
         }
-        if (this.ValidateAllNodeData() === false) {
+        if (FormValidator.ValidateAllNodeData() === false) {
             formValid = false;
         }
 
-        var _this = this;
         var questionsValid = true;
         DscStudio.CurrentTemplate.questions.forEach(function(question) {
-            var valid = _this.ValidateQuestion(question);
+            var valid = FormValidator.ValidateQuestion(question);
             if (valid === false) {
                 questionsValid = false;
             }
         });
 
         if (questionsValid === true) {
-            $("#questionErrorFlag").hide();
+            UI.HideElement("questionErrorFlag");
         } else {
-            $("#questionErrorFlag").show();
+            UI.ShowElement("questionErrorFlag");
             formValid = false;
         }
 
@@ -45,93 +45,84 @@ export default {
             PowerShellManager.UpdateCurrentScript();
             UI.SwitchView(UI.Views.Output);
         }
+
+        return formValid;
     },
     ValidateQuestion: function(question) {
         var questionValid = true;
-        if ($("#question-" + question.id).is(':visible') === false) {
+        if (UI.IsElementVisible(`#question-${question.id}`) === false) {
             return true;
         }
         switch (question.type) {
             case "text":
-                var textValue = $("#question-" + question.id + "-value")[0].value;
+                var textValue = UI.GetValue(`#question-${question.id}-value`);
                 if (textValue === null || textValue === "") {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
-                } else {
-                    $("#question-" + question.id + "-error").hide();
                 }
                 break;
             case "number":
-                var numberValue = $("#question-" + question.id + "-value")[0].value;
+                var numberValue = UI.GetValue(`#question-${question.id}-value`);
                 if (numberValue === null || numberValue === "" || isNaN(numberValue)) {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
                 } else {
                     if (question.minValue !== null && numberValue < question.minValue) {
                         questionValid = false;
-                        $("#question-" + question.id + "-error").show();
                     } else if(question.maxValue !== null && numberValue > question.maxValue) {
-
-                    } else {
-                        $("#question-" + question.id + "-error").hide();
+                        questionValid = false;
                     }
                 }
                 break;
             case "filepath":
-                var filevalue = $("#question-" + question.id + "-value")[0].value;
+                var filevalue = UI.GetValue(`#question-${question.id}-value`);
                 if (filevalue === null || filevalue === "") {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
                 } else {
                     if (filevalue.match(/^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9\.]+)+\\*$/g) === null) {
                         questionValid = false;
-                        $("#question-" + question.id + "-error").show();
-                    } else {
-                        $("#question-" + question.id + "-error").hide();
                     }
                 }
                 break;
             case "regex":
-                var regexvalue = $("#question-" + question.id + "-value")[0].value;
+                var regexvalue = UI.GetValue(`#question-${question.id}-value`);
                 if (regexvalue === null || regexvalue === "") {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
                 } else {
                     // eval is required here to dynamically pull in the regex.
                     // The ignore comment has been added to pass the linting test 
                     if (regexvalue.match(eval(question.pattern)) === null) { // jshint ignore:line 
                         questionValid = false;
-                        $("#question-" + question.id + "-error").show();
-                    } else {
-                        $("#question-" + question.id + "-error").hide();
                     }
                 }
                 break;
             case "textarray":
                 var hasItems = false;
-                $.each($("#question-" + question.id + "-value option"), function(item) {
+                UI.GetUIElements(`#question-${question.id}-value option`).forEach(function(item) {
                     hasItems = true;
-                });
+                }, this);
                 if (hasItems === false) {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
                 }
                 break;
             case "complextype":
-                var complextypevalue = $("#question-" + question.id + "-value").val();
+                var complextypevalue = UI.GetValue(`#question-${question.id}-value`);
                 var object = JSON.parse(complextypevalue);
                 if (object.length === 0) {
                     questionValid = false;
-                    $("#question-" + question.id + "-error").show();
                 }
                 break;
             case "boolean":
             case "choice":
-                
+                // no specific validation is required for these types
                 break;
             default:
-                alert("Question type " + question.type + " does not have validation support");
+                UI.SendAlert(Strings.ErrorQuestionTypeNotSupported, [question.type]);
+                questionValid = false;
                 break;
+        }
+        if (questionValid) {
+            UI.HideElement(`#question-${question.id}-error`);
+        } else {
+            UI.ShowElement(`#question-${question.id}-error`);
         }
         return questionValid;
     },

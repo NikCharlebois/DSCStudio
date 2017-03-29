@@ -1,4 +1,5 @@
 import $ from "jquery";
+import DscNodeManager from "./DscNodeManager";
 import TemplateManager from "./TemplateManager";
 import TemplateUIBuilder from "./TemplateUIBuilder";
 import FormValidator from "./FormValidator";
@@ -55,6 +56,9 @@ export default {
         }
         return confirm(newMessage);
     },
+    Document: function() {
+        return document;
+    },
     DownloadCurrentScript: function() {
         var blob = new Blob([PowerShellManager.CurrentScript], {
             type: "text/plain;charset=utf-8"
@@ -78,6 +82,9 @@ export default {
 
         // IE in quirks mode
         return document.body.scrollTop;
+    },
+    GetUIElements: function(selector) {
+        return $(selector);
     },
     GetValue: function(selector) {
         return $(selector).val();
@@ -118,11 +125,11 @@ export default {
             }
         });
 
-        UI.RegisterEvent(window, 'scroll', function() {
+        UI.RegisterEvent(UI.Window(), 'scroll', function() {
             UI.SetNavBarPosition();
         });
 
-        UI.RegisterEvent(window, 'resize', function() {
+        UI.RegisterEvent(UI.Window(), 'resize', function() {
             UI.SetNavBarPosition();
         });
 
@@ -135,6 +142,9 @@ export default {
         });
 
         new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
+    },
+    IsElementVisible: function(selector) {
+        return $(selector).is(':visible');
     },
     OpenDialog: function(dialogId) {
         var dialog = document.getElementById(dialogId);
@@ -286,5 +296,8 @@ export default {
             default:
                 throw view + " is an unknown view to switch this form to";
         }
+    },
+    Window: function() {
+        return window;
     }
 };
