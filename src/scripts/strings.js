@@ -1,5 +1,6 @@
 export default {
     ConfirmRemoveNode: "Are you sure you wish to remove '{0}'?",
+    DefaultDownloadFileName: "DSCStudio.ps1",
     LabelOtherQuestionsCategory: "Other Questions",
     ErrorNodeSettingTypeNotSupported: "Node setting type {0} is not supported by DSC Studio",
     ErrorNodeSettingsRoleNeeded: "This template requires {0} computers with the '{1}' option configured",

@@ -4,6 +4,8 @@ import TemplateUIBuilder from "./TemplateUIBuilder";
 import FormValidator from "./FormValidator";
 import Handlebars from "handlebars";
 import HandleBarManager from "./HandleBarManager";
+import PowerShellManager from "./PowerShellManager";
+import UI from "./UI";
 import Strings from "./Strings";
 
 export default {
@@ -53,14 +55,91 @@ export default {
         }
         return confirm(newMessage);
     },
+    DownloadCurrentScript: function() {
+        var blob = new Blob([PowerShellManager.CurrentScript], {
+            type: "text/plain;charset=utf-8"
+        });
+        saveAs(blob, Strings.DefaultDownloadFileName);
+    },
     EmptyObject: function(selector) {
         $(selector).empty();
+    },
+    GetScrollPosition: function () {
+        if (typeof window.pageYOffset !== 'undefined' ) {
+            // Most browsers
+            return window.pageYOffset;
+        }
+
+        var d = document.documentElement;
+        if (d.clientHeight) {
+            // IE in standards mode
+            return d.scrollTop;
+        }
+
+        // IE in quirks mode
+        return document.body.scrollTop;
     },
     GetValue: function(selector) {
         return $(selector).val();
     },
     HideElement: function(elementId) {
         $(`#${elementId}`).hide();
+    },
+    InitialiseEvents: function() {
+        UI.RegisterEvent('#templateSelector', 'change', function() {
+            if (UI.SetTemplateFromFilePicker(this) === true) {
+                UI.SwitchResponseTab(UI.ResponseTabs.ConfigData);
+            }
+        });
+
+        UI.RegisterEvent('#goBackToResponses', 'click', function() {
+            UI.SwitchView(UI.Views.Response);
+            UI.SwitchResponseTab(UI.ResponseTabs.ConfigData);
+        });
+
+        UI.RegisterEvent('#switchView-Config', 'click', function() {
+            UI.SwitchResponseTab(UI.ResponseTabs.ConfigData);
+        });
+
+        UI.RegisterEvent('#switchView-Questions', 'click', function() {
+            UI.SwitchResponseTab(UI.ResponseTabs.Questionaire);
+            UI.SetNavBarPosition();
+        });
+
+        UI.RegisterEvent('#GenerateConfig', 'click', function() {
+            FormValidator.ValidateForm(true);
+        });
+
+        UI.RegisterEvent('#newNodeCommand', 'click', function() {
+            if (DscNodeManager.CanNewNodesBeAdded() === true) {
+                UI.OpenDialog('newNodeDialog');
+            } else {
+                UI.SendAlert(Strings.ErrorTooManyNodes, [DscStudio.CurrentTemplate.configDataSettings.maxNodeCount.toString()]);
+            }
+        });
+
+        UI.RegisterEvent(window, 'scroll', function() {
+            UI.SetNavBarPosition();
+        });
+
+        UI.RegisterEvent(window, 'resize', function() {
+            UI.SetNavBarPosition();
+        });
+
+        UI.RegisterEvent("#saveConfig", 'click', function() {
+            PowerShellManager.DownloadCurrentScript();
+        });
+
+        $("#code-expandButton").on('click', function() {
+            ViewManager.ToggleCodeMinimiseFrame();
+        });
+
+        new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
+    },
+    OpenDialog: function(dialogId) {
+        var dialog = document.getElementById(dialogId);
+        var dialogComponent = new fabric.Dialog(dialog);
+        dialogComponent.open();
     },
     ReadNodeSettingResponse: function(nodeSetting) {
         var internalValue;
@@ -119,6 +198,18 @@ export default {
             }, this);
         }
         alert(newMessage);
+    },
+    SetNavBarPosition: function() {
+        var configButton = $("#GenerateConfig");
+        var configPosition = configButton.offset();
+
+        var scrollPosition = UI.GetScrollPosition();
+        var baseOffset = configButton.height() + configPosition.top;
+        if (scrollPosition < baseOffset) {
+            $("#navBox").css("top", 0);
+        } else {
+            $("#navBox").css("top", scrollPosition - baseOffset);
+        }
     },
     SetTemplateFromFilePicker: function(filepicker) {
         var reader = new FileReader();
