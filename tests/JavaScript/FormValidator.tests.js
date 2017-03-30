@@ -7,6 +7,8 @@ var PowerShellManager = require("../../src/scripts/PowerShellManager").default;
 var UI = require("../../src/scripts/UI").default;
 
 var ValidTemplate = require("./ExampleTemplates/ValidTemplate").default;
+var ValidNoCertificateData = require("./ExampleTemplates/ValidNoCertificateData").default;
+
 
 describe("FormValidator - Init method", function () {
     var sandbox;
@@ -325,5 +327,160 @@ describe("FormValidator - ValidateQuestion method", function() {
 
         assert(result === false);
         assert(alertMock.calledOnce);
+    });
+});
+
+describe("FormValidator - EnableQuestionValidation method", function() {
+    var sandbox;
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+    it("Should register the UI methods in the document.ready function", function () {
+        var eventMock = sandbox.stub(UI, "RegisterEvent").callsFake(function () { });
+
+        FormValidator.EnableQuestionValidation();
+        
+        assert(eventMock.calledOnce);
+    });
+});
+
+describe("FormValidator - ValidateConfigData method", function () {
+    var sandbox;
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(UI, "HideElement").callsFake(function() { });
+        sandbox.stub(UI, "ShowElement").callsFake(function() { });
+
+        global.DscStudio = JSON.parse(JSON.stringify(SettingsStore)); // Done to parse a new value, not a reference
+        global.DscStudio.CurrentTemplate = ValidTemplate;
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+    it("Should fail if the config data certificate path is empty", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return ""; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config data certificate path is not a valid path", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "invalid"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config data certificate path is a valid path but does not end in .cer", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\temp"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config data certificate thumbprint is empty", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\test.cer"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return ""; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config data certificate tumbprint is not valid", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "invalid"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "NotValid"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should pass if the template does not require certificate data", function () {
+        global.DscStudio.CurrentTemplate = ValidNoCertificateData;
+
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return ""; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return ""; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === true);
+    });
+
+    it("Should fail if the config mode mins value is not present", function () {
+        global.DscStudio.CurrentTemplate = ValidNoCertificateData;
+
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\test.cer"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return ""; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config mode mins value is less then 15", function () {
+        global.DscStudio.CurrentTemplate = ValidNoCertificateData;
+
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\test.cer"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "5"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should fail if the config mode mins value is not a number", function () {
+        global.DscStudio.CurrentTemplate = ValidNoCertificateData;
+
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\test.cer"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "two"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === false);
+    });
+
+    it("Should pass if the config data is all valid when included from the template", function () {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#CertPath").callsFake(function() { return "C:\\test.cer"; });
+        getValueStub.withArgs("#CertThumbprint").callsFake(function() { return "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; });
+        getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
+
+        var result = FormValidator.ValidateConfigData();
+
+        assert(result === true);
     });
 });

@@ -127,50 +127,52 @@ export default {
         return questionValid;
     },
     EnableQuestionValidation: function() {
-        var _this = this;
-        $("input[id^='question-']").on('focusout', function() {
+        UI.RegisterEvent("input[id^='question-']", "focusout", function() {
             var questionId = this.id.replace("question-", "").replace("-value","");
             var question = DscStudio.CurrentTemplate.questions.filter(function(item) {
                 return item.id == questionId;
             })[0];
-            _this.ValidateQuestion(question);
+            FormValidator.ValidateQuestion(question);
         });
     },
     ValidateConfigData: function() {
         var configValid = true;
-
+        
         if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
-            if ($("#CertPath").val() === null || $("#CertPath").val() === "" || $("#CertPath").val().match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(cer)$/g) === null) {
-                $("#CertPath-Error").show();
+            var certPath = UI.GetValue("#CertPath");
+            if (certPath === null || certPath === "" || certPath.match(/^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(cer)$/g) === null) {
+                UI.ShowElement("CertPath-Error");
                 configValid = false;
             } else {
-                $("#CertPath-Error").hide();
+                UI.HideElement("CertPath-Error");
             }
 
-            if ($("#CertThumbprint").val() === null || $("#CertThumbprint").val() === "" || $("#CertThumbprint").val().match(/^[A-Fa-f0-9]{40}/g) === null) {
-                $("#CertThumbprint-Error").show();
+            var certThumbprint = UI.GetValue("#CertThumbprint");
+            if (certThumbprint === null || certThumbprint === "" || certThumbprint.match(/^[A-Fa-f0-9]{40}/g) === null) {
+                UI.ShowElement("CertThumbprint-Error");
                 configValid = false;
             } else {
-                $("#CertThumbprint-Error").hide();
+                UI.HideElement("CertThumbprint-Error");
             }
         }
 
-        if ($("#ConfigModeMins").val() === null || $("#ConfigModeMins").val() === "" || isNaN($("#ConfigModeMins").val())) {
-            $("#ConfigModeMins-Error").show();
+        var configModeMins = UI.GetValue("#ConfigModeMins");
+        if (configModeMins === null || configModeMins === "" || isNaN(configModeMins)) {
+            UI.ShowElement("ConfigModeMins-Error");
             configValid = false;
         } else {
-            if ($("#ConfigModeMins").val() < 15) {
-                $("#ConfigModeMins-Error").show();
+            if (configModeMins < 15) {
+                UI.ShowElement("ConfigModeMins-Error");
                 configValid = false;
             } else {
-                $("#ConfigModeMins-Error").hide();
+                UI.HideElement("ConfigModeMins-Error");
             }
         }
 
         if (configValid === true) {
-            $("#configErrorFlag").hide();
+            UI.HideElement("configErrorFlag");
         } else {
-            $("#configErrorFlag").show();
+            UI.ShowElement("configErrorFlag");
         }
         return configValid;
     },
