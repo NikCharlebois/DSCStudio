@@ -19,6 +19,9 @@ export default {
         ConfigData: "configdata",
         Questionaire: "questionaire"
     },
+    AddClass: function(selector, className) {
+        $(selector).addClass(className);
+    },
     BuildQuestionUI: function(template) {
         TemplateUIBuilder.BuildPrimaryUI(template);
         TemplateUIBuilder.BuildQuestionUI(TemplateManager.GetQuestionGroups(template));
@@ -193,6 +196,9 @@ export default {
     },
     RegisterEvent: function(target, method, callback) {
         $(target).on(method, callback);
+    },
+    RemoveClass: function(selector, className) {
+        $(selector).removeClass(className);
     },
     RenderUISection: function(templateName, context, appendTo) {
         $("#nodeList").empty();

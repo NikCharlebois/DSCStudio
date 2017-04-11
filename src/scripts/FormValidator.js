@@ -1,8 +1,6 @@
 import $ from "jquery";
 import TemplateManager from "./TemplateManager";
 import PowerShellManager from "./PowerShellManager";
-import ViewManager from "./ViewManager";
-import DscNodeManager from "./DscNodeManager";
 import FormValidator from "./FormValidator";
 import UI from "./UI";
 import Strings from "./Strings";
@@ -248,26 +246,28 @@ export default {
         question.properties.forEach(function(element) {
             switch(element.type) {
                 case "text":
-                    var val = $("#complex-" + question.id + "-" + element.powershellName).val();
+                    var val = UI.GetValue(`#complex-${question.id}-${element.powershellName}`);
                     if (val === null || val === "" || val === undefined) {
-                        $("#complex-" + question.id + "-" + element.powershellName).addClass("ms-borderColor-red");
                         returnVal = false;
-                    } else {
-                        $("#complex-" + question.id + "-" + element.powershellName).removeClass("ms-borderColor-red");
-                    }
+                    } 
                     break;
                 case "number":
-                    var numval = $("#complex-" + question.id + "-" + element.powershellName).val();
+                    var numval = UI.GetValue(`#complex-${question.id}-${element.powershellName}`);
                     if (numval === null || numval === "" || numval === undefined || isNaN(numval)) {
-                        $("#complex-" + question.id + "-" + element.powershellName).addClass("ms-borderColor-red");
                         returnVal = false;
-                    } else {
-                        $("#complex-" + question.id + "-" + element.powershellName).removeClass("ms-borderColor-red");
                     }
                     break;
                 case "boolean":
 
                     break;
+            }
+            if (returnVal === true)
+            {
+                UI.RemoveClass(`#complex-${question.id}-${element.powershellName}`, "ms-borderColor-red");
+            }
+            else
+            {
+                UI.AddClass(`#complex-${question.id}-${element.powershellName}`, "ms-borderColor-red");
             }
         });
         return returnVal;

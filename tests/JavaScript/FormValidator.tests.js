@@ -8,7 +8,12 @@ var UI = require("../../src/scripts/UI").default;
 
 var ValidTemplate = require("./ExampleTemplates/ValidTemplate").default;
 var ValidNoCertificateData = require("./ExampleTemplates/ValidNoCertificateData").default;
-
+var HighMinimumNodeCount = require("./ExampleTemplates/HighMinimumNodeCount").default;
+var LowMaximumNodeCount = require("./ExampleTemplates/LowMaximumNodeCount").default;
+var NoMinimumNodeCount = require("./ExampleTemplates/NoMinimumNodeCount").default;
+var NoMaximumNodeCount = require("./ExampleTemplates/NoMaximumNodeCount").default;
+var NoNodeCounts = require("./ExampleTemplates/NoNodeCounts").default;
+var NodeOccurencesSample = require("./ExampleTemplates/NodeOccurencesSample").default;
 
 describe("FormValidator - Init method", function () {
     var sandbox;
@@ -480,6 +485,498 @@ describe("FormValidator - ValidateConfigData method", function () {
         getValueStub.withArgs("#ConfigModeMins").callsFake(function() { return "15"; });
 
         var result = FormValidator.ValidateConfigData();
+
+        assert(result === true);
+    });
+});
+
+describe("FormValidator - ValidateAllNodeData method", function() {
+    var sandbox;
+
+    beforeEach(function () {
+        global.DscStudio = JSON.parse(JSON.stringify(SettingsStore)); // Done to parse a new value, not a reference
+        sandbox = sinon.sandbox.create();
+
+        sandbox.stub(UI, "HideElement").callsFake(function() { });
+        sandbox.stub(UI, "ShowElement").callsFake(function() { });
+        sandbox.stub(UI, "EmptyObject").callsFake(function() { });
+        sandbox.stub(UI, "SetText").callsFake(function() { });
+        sandbox.stub(UI, "AppendText").callsFake(function() { });
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+    it("Should return false if no nodes are added", function() {
+        global.DscStudio.CurrentTemplate = ValidTemplate;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return false if the number of nodes is less than the minimum from the template", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode"
+        }];
+        global.DscStudio.CurrentTemplate = HighMinimumNodeCount;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return false if the number of nodes is more than the maximum from the template", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode"
+        },
+        {
+            Name: "TestNode"
+        },
+        {
+            Name: "TestNode"
+        }];
+        global.DscStudio.CurrentTemplate = LowMaximumNodeCount;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return true if there number of nodes is larger than the minimim, but less than the maximum", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        }];
+        global.DscStudio.CurrentTemplate = ValidTemplate;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === true);
+    });
+
+    it("Should return true if there number of nodes is larger than the minimim, and there is no maximum", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        }];
+        global.DscStudio.CurrentTemplate = NoMaximumNodeCount;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === true);
+    });
+
+    it("Should return true if there is no minimum, and the number of nodes is less than the maximim", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        }];
+        global.DscStudio.CurrentTemplate = NoMinimumNodeCount;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === true);
+    });
+
+    it("Should return true if there is at least one node and no minimum or maximum are defined", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: []
+        }];
+        global.DscStudio.CurrentTemplate = NoNodeCounts;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === true);
+    });
+
+    it("Should return false if the node counts are correct but there aren't enough nodes using a specific text/number property", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: ""
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        }];
+        global.DscStudio.CurrentTemplate = NodeOccurencesSample;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return false if the node counts are correct but there are too many nodes using a specific text/number property", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: ""
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        }];
+        global.DscStudio.CurrentTemplate = NodeOccurencesSample;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return false if the node counts are correct but there aren't enough nodes using a specific boolean property", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: ""
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        }];
+        global.DscStudio.CurrentTemplate = NodeOccurencesSample;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });
+
+    it("Should return false if the node counts are correct but there are too many nodes using a specific boolean property", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: ""
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        }];
+        global.DscStudio.CurrentTemplate = NodeOccurencesSample;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === false);
+    });   
+
+    it("Should return true if the node counts are correct and all node setting occurences are within ranges", function() {
+        global.DscStudio.Nodes = [{
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: "test"
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: "1"
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: true
+                }
+            ]
+        },
+        {
+            Name: "TestNode",
+            additionalProperties: [
+                {
+                    powershellName: "TextOption",
+                    value: ""
+                },
+                {
+                    powershellName: "NumberOption",
+                    value: ""
+                },
+                {
+                    powershellName: "BooleanOption",
+                    value: false
+                }
+            ]
+        }];
+        global.DscStudio.CurrentTemplate = NodeOccurencesSample;
+
+        var result = FormValidator.ValidateAllNodeData();
+
+        assert(result === true);
+    });   
+
+});
+
+describe("FormValidator - ValidateComplexTypeItem method", function() {
+    var sandbox;
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(UI, "AddClass").callsFake(function() { });
+        sandbox.stub(UI, "RemoveClass").callsFake(function() { });
+
+        global.DscStudio = JSON.parse(JSON.stringify(SettingsStore)); // Done to parse a new value, not a reference
+        global.DscStudio.CurrentTemplate = ValidTemplate;
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+    it("Should return false when a text value is empty", function() {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-text").callsFake(function() { return ""; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-number").callsFake(function() { return "1"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-boolean").callsFake(function() { return true; });
+        
+        var result = FormValidator.ValidateComplexTypeItem("ComplexTypeQuestion");
+
+        assert(result === false);
+    });
+
+    it("Should return false when a number value is empty", function() {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-text").callsFake(function() { return "valid"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-number").callsFake(function() { return ""; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-boolean").callsFake(function() { return true; });
+        
+        var result = FormValidator.ValidateComplexTypeItem("ComplexTypeQuestion");
+
+        assert(result === false);
+    });
+
+    it("Should return false when a number value is not a number", function() {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-text").callsFake(function() { return "valid"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-number").callsFake(function() { return "one"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-boolean").callsFake(function() { return true; });
+        
+        var result = FormValidator.ValidateComplexTypeItem("ComplexTypeQuestion");
+
+        assert(result === false);
+    });
+
+    it("Should return true when all values are valid", function() {
+        var getValueStub = sandbox.stub(UI, "GetValue");
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-text").callsFake(function() { return "valid"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-number").callsFake(function() { return "1"; });
+        getValueStub.withArgs("#complex-ComplexTypeQuestion-boolean").callsFake(function() { return true; });
+        
+        var result = FormValidator.ValidateComplexTypeItem("ComplexTypeQuestion");
 
         assert(result === true);
     });
