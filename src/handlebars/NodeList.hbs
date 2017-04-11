@@ -1,0 +1,16 @@
+{{#each this}} 
+<li class="ms-ListItem" tabindex="0"> 
+    <span class="ms-ListItem-primaryText">{{name}}</span> 
+    <span class="ms-ListItem-tertiaryText"> 
+        {{#each additionalProperties}}
+            {{displayName}}: {{value}}<br />
+        {{/each}}
+    </span> 
+    <div class="ms-ListItem-selectionTarget"></div> 
+    <div class="ms-ListItem-actions"> 
+        <div class="ms-ListItem-action">
+            <i class="ms-Icon ms-Icon--Delete deleteNode" data-nodename="{{name}}"></i>
+        </div> 
+    </div> 
+</li> 
+{{/each}}

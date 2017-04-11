@@ -1,0 +1,17 @@
+<div id="question-{{id}}" class="ms-TextField "
+    {{#if showForTrueResponseQuestion}}
+        data-showforresponse="question-{{showForTrueResponseQuestion}}"
+    {{/if}}
+>
+    <label class="ms-Label" for="question-{{id}}-value">{{title}}
+        {{#if helpText}}
+            {{> QuestionHelpText}}
+        {{/if}}
+    </label>
+    <select name="question-{{id}}-value" id="question-{{id}}-value" class="ms-TextField-field"> 
+        {{#each choices}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+    {{> QuestionValidationLabel}}
+</div>

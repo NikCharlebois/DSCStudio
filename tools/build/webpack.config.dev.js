@@ -4,6 +4,7 @@ import path from 'path'; // Provided by Node
 const projectRoot = path.join(__dirname, '..', '..');
 const sourceRoot = path.join(projectRoot, 'src');
 const scriptRoot = path.join(sourceRoot, 'scripts');
+const hbsRoot = path.join(sourceRoot, 'handlebars');
 const cssRoot = path.join(sourceRoot, 'css');
 
 export default {
@@ -28,7 +29,12 @@ export default {
                 test: /\.js$/,
                 include: [scriptRoot],
                 loaders: ['babel']
-            }            
+            },
+            {
+                test: /\.hbs$/,
+                include: [hbsRoot],
+                loaders: ['raw-loader']
+            }    
         ]
     },
     resolve: {

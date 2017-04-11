@@ -1,0 +1,14 @@
+<div class="ms-MessageBar ms-MessageBar--error" style="display: none;" id="question-{{id}}-error"> 
+    <div class="ms-MessageBar-content"> 
+        <div class="ms-MessageBar-icon"> 
+            <i class="ms-Icon ms-Icon--ErrorBadge"></i> 
+        </div> 
+        <div class="ms-MessageBar-text">
+{{#if validationMessage}}
+            {{validationMessage}}
+{{else}}
+            This field is required
+{{/if}}
+        </div> 
+    </div> 
+</div>

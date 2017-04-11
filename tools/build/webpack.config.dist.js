@@ -33,7 +33,12 @@ export default {
                 test: /\.js$/, 
                 include: scriptRoot, 
                 loaders: ['babel']
-            }
+            },
+            {
+                test: /\.hbs$/,
+                include: [hbsRoot],
+                loaders: ['raw-loader']
+            }   
         ]
     },
     resolve: {

@@ -1,0 +1,13 @@
+<div id="question-{{id}}" class="ms-TextField "
+    {{#if showForTrueResponseQuestion}}
+        data-showforresponse="question-{{showForTrueResponseQuestion}}"
+    {{/if}}
+>
+    <label class="ms-Label" for="question-{{id}}-value">{{title}}
+        {{#if helpText}}
+            {{> QuestionHelpText}}
+        {{/if}}
+    </label>
+    <input class="ms-TextField-field" type="text" id="question-{{id}}-value" name="question-{{id}}-value" value="{{defaultValue}}" /> 
+    {{> QuestionValidationLabel}}
+</div>

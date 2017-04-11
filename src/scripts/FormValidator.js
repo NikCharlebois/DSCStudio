@@ -118,9 +118,9 @@ export default {
                 break;
         }
         if (questionValid) {
-            UI.HideElement(`#question-${question.id}-error`);
+            UI.HideElement(`question-${question.id}-error`);
         } else {
-            UI.ShowElement(`#question-${question.id}-error`);
+            UI.ShowElement(`question-${question.id}-error`);
         }
         return questionValid;
     },
