@@ -44,6 +44,7 @@ export default {
         DscStudio.CurrentTemplate = template;
         UI.BuildQuestionUI(template);
         UI.SwitchView(UI.Views.Response);
+        UI.SwitchResponseTab(UI.ResponseTabs.ConfigData);
     },
     StoreQuestionResponses: function() {
         var responses = [];

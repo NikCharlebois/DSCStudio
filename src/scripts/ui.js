@@ -256,7 +256,7 @@ export default {
         }
     },
     SwitchResponseTab: function(tabName) {
-        switch(tabname) 
+        switch(tabName) 
         {
             case "configdata":
                 $("#configDataEditor").show();
@@ -273,7 +273,7 @@ export default {
                 $("#navBox").show();
                 break;
             default:
-                throw tabname + " is an unknown tab to switch this form to";
+                throw tabName + " is an unknown tab to switch this form to";
         }
     },
     SwitchView: function(viewName) {
