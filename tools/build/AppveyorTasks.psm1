@@ -27,7 +27,7 @@ function Start-InstallTasks
     # Stamp the build number of the JavaScript that is used later in the build
     $jsSettingsPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                                 -ChildPath "src\scripts\app.js"
-    (Get-Content $jsSettingsPath -Raw).Replace("0.0.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
+    (Get-Content $jsSettingsPath -Raw).Replace("0.0.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $jsSettingsPath
 }
 
 function Start-TestTasks
