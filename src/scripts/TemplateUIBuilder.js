@@ -1,6 +1,5 @@
 import $ from "jquery";
 import HandleBarManager from "./HandleBarManager";
-import ViewManager from "./ViewManager";
 import TemplateManager from "./TemplateManager";
 import FormValidator from "./FormValidator";
 import TemplateUIBuilder from "./TemplateUIBuilder";
@@ -71,7 +70,7 @@ export default {
                     case "complextype":
                         HandleBarManager.RenderHandleBar('ComplexTypeQuestion', question, '#templateQuestions');
                         $("#question-" + question.id + "-openbutton").click(function() {
-                            ViewManager.OpenDialog(this.id.replace("openbutton", "dialog"));
+                            UI.OpenDialog(this.id.replace("openbutton", "dialog"));
                         });
 
                         question.properties.forEach(function(property) {
@@ -188,7 +187,7 @@ export default {
                         } else {
                             $('*[data-showforresponse="' + this.id + '"]').hide(250);
                         }
-                        ViewManager.SetNavBarPosition();
+                        UI.SetNavBarPosition();
                     });
                 }
             });

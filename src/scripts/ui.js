@@ -6,7 +6,6 @@ import FormValidator from "./FormValidator";
 import Handlebars from "handlebars";
 import HandleBarManager from "./HandleBarManager";
 import PowerShellManager from "./PowerShellManager";
-import ViewManager from "./ViewManager";
 import UI from "./UI";
 import Strings from "./Strings";
 
@@ -153,7 +152,7 @@ export default {
         });
 
         $("#code-expandButton").on('click', function() {
-            ViewManager.ToggleCodeMinimiseFrame();
+            UI.ToggleCodeMinimiseFrame();
         });
 
         new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
@@ -342,6 +341,17 @@ export default {
                 break;
             default:
                 throw view + " is an unknown view to switch this form to";
+        }
+    },
+    ToggleCodeMinimiseFrame: function() {
+        if ($("#code-minimise-button").attr('class') == "ms-Icon ms-Icon--ChevronDown") {
+            // expand 
+            $("#code-minimise-button").attr('class', "ms-Icon ms-Icon--ChevronUp");
+            $("#scriptContentParent").attr('class', "code-expanded");
+        } else {
+            // collapse
+            $("#code-minimise-button").attr('class', "ms-Icon ms-Icon--ChevronDown");
+            $("#scriptContentParent").attr('class', "code-minimise");
         }
     },
     UpdateToggle: function(id) {

@@ -2,7 +2,6 @@ import $ from "jquery";
 
 import UI from "./UI";
 
-import ViewManager from "./ViewManager";
 import FormValidator from "./FormValidator";
 import TemplateManager from "./TemplateManager";
 import SettingsStore from "./SettingsStore";
