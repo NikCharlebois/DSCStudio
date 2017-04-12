@@ -23,6 +23,11 @@ function Start-InstallTasks
     $testHelperPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                                 -ChildPath "DscResource.Tests\TestHelper.psm1"
     Import-Module -Name $testHelperPath -Force
+
+    # Stamp the build number of the JavaScript that is used later in the build
+    $jsSettingsPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
+                                -ChildPath "src\scripts\app.js"
+    (Get-Content $jsSettingsPath -Raw).Replace("0.0.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
 }
 
 function Start-TestTasks
@@ -78,6 +83,7 @@ function Start-PackageTasks
     # Add the appropriate build number to the manifest and zip/publish everything to appveyor
     $manifest = Join-Path -Path $mainModulePath -ChildPath "DSCStudio.psd1"
     (Get-Content $manifest -Raw).Replace("0.1.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
+
     $zipFileName = "DscStudio_$($env:APPVEYOR_BUILD_VERSION).zip"
     New-Item -Path "$env:APPVEYOR_BUILD_FOLDER\output" -ItemType Directory
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\output\$zipFileName")

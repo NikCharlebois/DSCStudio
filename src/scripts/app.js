@@ -9,6 +9,7 @@ import HandleBarManager from "./HandleBarManager";
 
 
 $(document).ready(function() {
+    UI.SetText("#EngineVersion", DscStudio.EngineVersion);
     UI.SwitchView(UI.Views.Start);
     UI.Initialise();
     
