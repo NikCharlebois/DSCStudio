@@ -1,24 +1,23 @@
-import $ from "jquery";
 import HandleBarManager from "./HandleBarManager";
-import TemplateManager from "./TemplateManager";
 import FormValidator from "./FormValidator";
 import TemplateUIBuilder from "./TemplateUIBuilder";
 import UI from "./UI";
+import Strings from "./Strings";
 
 export default {
     BuildPrimaryUI: function(template) {
-        $("#templateNameHeader").text(template.metadata.title);
+        UI.SetText("#templateNameHeader",template.metadata.title);
         if (template.metadata.description !== null) {
-            $("#templateDescription").text(template.metadata.description);
-            $("#templateDescription").show();
+            UI.SetText("#templateDescription", template.metadata.description);
+            UI.ShowElement("templateDescription");
         } else {
-            $("#templateDescription").hide();    
+            UI.HideElement("templateDescription");
         }
 
         if (template.configDataSettings.certificateDetails === null || 
             template.configDataSettings.certificateDetails === true) {} else 
         {
-            $("#certificateDetails").remove();
+            UI.RemoveElement("#certificateDetails");
         } //TODO: Handle the "no secure password scenario here
     },
     BuildQuestionUI: function(questionGroups) {
@@ -37,13 +36,13 @@ export default {
                         break;
                     case "boolean":
                         HandleBarManager.RenderHandleBar('BooleanQuestion', question, '#templateQuestions');
-                        UI.UpdateToggle('question-' + question.id);
+                        UI.UpdateToggle(`question-${question.id}`);
                         switch (question.defaultValue) {
                             case "true":
-                                $("#question-" + question.id + " label").addClass("is-selected");
+                                UI.AddClass(`#question-${question.id} label`,"is-selected");
                                 break;
                             case "false":
-                                $("#question-" + question.id + " label").removeClass("is-selected");
+                                UI.RemoveClass(`#question-${question.id} label`,"is-selected");
                                 break;
                             default:
                                 break;
@@ -52,35 +51,40 @@ export default {
                     case "choice":
                         HandleBarManager.RenderHandleBar('ChoiceQuestion', question, '#templateQuestions');
                         if (question.defaultValue !== undefined) {
-                            $("#question-" + question.id + "-value").val(question.defaultValue);
+                            UI.SetValue(`#question-${question.id}-value`, question.defaultValue);
                         }
                         break;
                     case "textarray":
                         HandleBarManager.RenderHandleBar('TextArrayQuestion', question, '#templateQuestions');
-                        $("#question-" + question.id + " button.add").click(function() {
-                            var newValue = $("#" + this.id.replace("add", "newitem")).val();
-                            $("#" + this.id.replace("add", "value")).append("<option value=\"" + newValue + "\">" + newValue + "</option>");
-                            $("#" + this.id.replace("add", "newitem")).val("");
+                        UI.RegisterEvent(`#question-${question.id} button.add`, "click", function() {
+                            var newItemId = this.id.replace("add", "newitem");
+                            var valueId = this.id.replace("add", "value");
+                            var newValue = UI.GetValue(`#${newItemId}`);
+
+                            UI.AppendText(`#${valueId}`, `<option value="${newValue}">${newValue}</option>`);
+                            UI.SetValue(`#${newItemId}`, "");
                         });
-                        $("#question-" + question.id + " button.remove").click(function() {
-                            var current = $("#" + this.id.replace("remove", "value")).val();
-                            $("#" + this.id.replace("remove", "value")).children("option[value=\"" + current + "\"]").remove();
+
+                        UI.RegisterEvent(`#question-${question.id} button.remove`, "click", function() {
+                            var itemId = this.id.replace("remove", "value");
+                            var current = UI.GetValue(`#${itemId}`);
+                            UI.RemoveValueFromSelectList(`#${itemId}`,current);
                         });
                         break;
                     case "complextype":
                         HandleBarManager.RenderHandleBar('ComplexTypeQuestion', question, '#templateQuestions');
-                        $("#question-" + question.id + "-openbutton").click(function() {
+                        UI.RegisterEvent(`#question-${question.id}-openbutton`, "click", function() {
                             UI.OpenDialog(this.id.replace("openbutton", "dialog"));
                         });
 
                         question.properties.forEach(function(property) {
                             if (property.type === "boolean") {
-                                UI.UpdateToggle('complex-' + question.id + '-' + property.powershellName + "-toggle");
+                                UI.UpdateToggle(`complex-${question.id}-${property.powershellName}-toggle`);
                                 if (property.default !== undefined) {
                                     if (property.default === "true" || property.default === true) {
-                                        $("label[for='complex-" + question.id + "-" + property.powershellName + "-value']").addClass("is-selected");
+                                        UI.AddClass(`label[for='complex-${question.id}-${property.powershellName}-value']`,"is-selected");
                                     } else {
-                                        $("label[for='complex-" + question.id + "-" + property.powershellName + "-value']").removeClass("is-selected");
+                                        UI.RemoveClass(`label[for='complex-${question.id}-${property.powershellName}-value']`,"is-selected");
                                     }
                                 }
                             }
@@ -88,31 +92,31 @@ export default {
 
                         var validationResult = FormValidator.ValidateComplexTypeItem(question.id);
                         if (validationResult === false) {
-                            $("#complex-" + question.id + "-addbutton").attr("disabled", "disabled");
+                            UI.SetAttribute(`#complex-${question.id}-addbutton`, "disabled", "disabled");
                         } else {
-                            $("#complex-" + question.id + "-addbutton").removeAttr("disabled");      
+                            UI.RemoveAttribute(`#complex-${question.id}-addbutton`,"disabled");   
                         }
-
-                        $("#question-" + question.id + " input").on("keyup", function() {
-                            var currentDialogId = $(this).parents(".ms-Dialog").attr('id');
+                        
+                        UI.RegisterEvent(`#question-${question.id} input`, "keyup", function() {
+                            var currentDialogId = UI.GenericSelector(this).parents(".ms-Dialog").attr('id');
                             var questionId = currentDialogId.replace("question-","").replace("-dialog","");
                             var validationResult = FormValidator.ValidateComplexTypeItem(questionId);
                             if (validationResult === false) {
-                                $("#complex-" + questionId + "-addbutton").attr("disabled", "disabled");
+                                UI.SetAttribute(`#complex-${question.id}-addbutton`, "disabled", "disabled");
                             } else {
-                                $("#complex-" + questionId + "-addbutton").removeAttr("disabled");      
+                                UI.RemoveAttribute(`#complex-${question.id}-addbutton`,"disabled");   
                             }
                         });
 
                         TemplateUIBuilder.BuildComplexQuestionOutput(question.id);
 
-                        new fabric.Button(document.getElementById("complex-" + question.id + "-addbutton"), function(event) {
+                        new fabric.Button(document.getElementById(`complex-${question.id}-addbutton`), function(event) {
                             var id = event.currentTarget.id.replace("-addbutton", "").replace("complex-", "");
                             var validationResult = FormValidator.ValidateComplexTypeItem(id);
                             if (validationResult === false) {
-                                alert("The values you submitted were not valid. Please attempt to add this item again.");
+                                UI.SendAlert(Strings.ComplexTypeNotValid);
                             } else {
-                                var currentValue = JSON.parse($("#question-" + id + "-value").val());
+                                var currentValue = JSON.parse(UI.GetValue(`#question-${id}-value`));
                                 var newItem = {};
                                 var question = null;
                                 DscStudio.CurrentTemplate.questions.forEach(function(element) {
@@ -126,7 +130,7 @@ export default {
                                     switch(element.type) {
                                         case "text":
                                         case "number":
-                                            var propertyValue = $("#complex-" + id + "-" + element.powershellName).val();
+                                            var propertyValue = UI.GetValue(`#complex-${id}-${element.powershellName}`);
                                             newItem.AllResponses.push({
                                                 name: element.name,
                                                 powershellName: element.powershellName,
@@ -134,9 +138,9 @@ export default {
                                                 value: propertyValue
                                             });
                                             if (element.default !== undefined) {
-                                                $("#complex-" + id + "-" + element.powershellName).val(element.default);
+                                                UI.SetValue(`#complex-${id}-${element.powershellName}`, element.default);
                                             } else {
-                                                $("#complex-" + id + "-" + element.powershellName).val("");
+                                                UI.SetValue(`#complex-${id}-${element.powershellName}`, "");
                                             }
                                             break;
                                         case "boolean":
@@ -144,25 +148,25 @@ export default {
                                                 name: element.name,
                                                 powershellName: element.powershellName,
                                                 type: element.type,
-                                                value: $("label[for='complex-" + id + "-" + element.powershellName + "-value']").hasClass("is-selected")
+                                                value: UI.GenericSelector(`label[for='complex-${id}-${element.powershellName}-value']`).hasClass("is-selected")
                                             });
                                             if (element.default !== undefined && (element.default === true || element.default === "true")) {
-                                                $("label[for='complex-" + id + "-" + element.powershellName + "-value']").addClass("is-selected");
+                                                UI.AddClass(`label[for='complex-${id}-${element.powershellName}-value']`, "is-selected");
                                             } else {
-                                                $("label[for='complex-" + id + "-" + element.powershellName + "-value']").removeClass("is-selected");
+                                                UI.RemoveClass(`label[for='complex-${id}-${element.powershellName}-value']`, "is-selected");
                                             }
                                             break;
                                     }
                                 });
                                 currentValue.push(newItem);
                                 var newValue = JSON.stringify(currentValue);
-                                $("#question-" + id + "-value").val(newValue);
+                                UI.SetValue(`#question-${id}-value`, newValue);
                                 TemplateUIBuilder.BuildComplexQuestionOutput(question.id);
                             }
                         });
                         break;
                     default:
-                        alert("Field type '" + question.type + "'not supported");
+                        UI.SendAlert(Strings.ErrorQuestionTypeNotSupported, [question.type]);
                         break;
                 }
             });
@@ -175,17 +179,17 @@ export default {
             questionGroups[groupName].forEach(function(question) {
                 if (question.showForTrueResponseQuestion !== undefined) {
                     
-                    if ($("#question-" + question.showForTrueResponseQuestion + " label").hasClass("is-selected") === true) {
-                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').show(250);
+                    if (UI.GenericSelector(`#question-${question.showForTrueResponseQuestion} label`).hasClass("is-selected") === true) {
+                        UI.GenericSelector(`*[data-showforresponse="question-${question.showForTrueResponseQuestion}"]`).show(250);
                     } else {
-                        $('*[data-showforresponse="question-' + question.showForTrueResponseQuestion + '"]').hide(250);
+                        UI.GenericSelector(`*[data-showforresponse="question-${question.showForTrueResponseQuestion}"]`).hide(250);
                     }
                     
-                    $("#question-" + question.showForTrueResponseQuestion).click(function() {
-                        if ($(this).children("label").hasClass("is-selected") === true) {
-                            $('*[data-showforresponse="' + this.id + '"]').show(250);
+                    UI.RegisterEvent(`#question-${question.showForTrueResponseQuestion}`, "click", function() {
+                        if (UI.GenericSelector(this).children("label").hasClass("is-selected") === true) {
+                            UI.GenericSelector(`*[data-showforresponse="${this.id}"]`).show(250);
                         } else {
-                            $('*[data-showforresponse="' + this.id + '"]').hide(250);
+                            UI.GenericSelector(`*[data-showforresponse="${this.id}"]`).hide(250);
                         }
                         UI.SetNavBarPosition();
                     });
@@ -212,16 +216,16 @@ export default {
         });
     },
     BuildComplexQuestionOutput: function(questionId) {
-        var value = $("#question-" + questionId + "-value").val();
+        var value = UI.GetValue(`#question-${questionId}-value`);
         var currentObject = JSON.parse(value);
 
-        var resultsDisplayBox = $("#question-" + questionId + "-results");
+        var resultsDisplayBox = UI.GenericSelector(`#question-${questionId}-results`);
         resultsDisplayBox.empty();
 
         if (currentObject.length === 0) {
             resultsDisplayBox.append("<p>No items</p>");
         } else {
-            HandleBarManager.RenderHandleBar('ComplexQuestionDisplay', currentObject, '#question-' + questionId + '-results');
+            HandleBarManager.RenderHandleBar('ComplexQuestionDisplay', currentObject, `#question-${questionId}-results`);
         }
     }
 };

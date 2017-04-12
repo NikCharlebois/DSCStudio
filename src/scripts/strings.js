@@ -1,4 +1,5 @@
 export default {
+    ComplexTypeNotValid: "The values you submitted were not valid. Please attempt to add this item again.",
     ConfirmRemoveNode: "Are you sure you wish to remove '{0}'?",
     DefaultDownloadFileName: "DSCStudio.ps1",
     LabelOtherQuestionsCategory: "Other Questions",

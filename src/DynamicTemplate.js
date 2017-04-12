@@ -3,7 +3,7 @@ var DynamicTemplate = {
     "metadata": {
         "title": "DSC Studio Dev Mode Test Template",
         "description": "This template is loaded when DSC Studio is run in the developer engine mode, and includes samples of all question types for testing the UI independent of any individual template",
-        "configurationName": "DscStudioTest"
+        "configurationName": "ExampleConfig"
     },
     "configDataSettings": {
         "certificateDetails": true,

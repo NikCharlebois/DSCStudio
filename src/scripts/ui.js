@@ -77,6 +77,9 @@ export default {
     EmptyObject: function(selector) {
         $(selector).empty();
     },
+    GenericSelector: function(selector) {
+        return $(selector);
+    },
     GetScrollPosition: function () {
         if (typeof window.pageYOffset !== 'undefined' ) {
             // Most browsers
@@ -237,8 +240,17 @@ export default {
     RegisterEvent: function(target, method, callback) {
         $(target).on(method, callback);
     },
+    RemoveAttribute: function(selector, attribute) {
+        $(selector).removeAttr(attribute);
+    },
     RemoveClass: function(selector, className) {
         $(selector).removeClass(className);
+    },
+    RemoveElement: function(selector) {
+        $(selector).remove();
+    },
+    RemoveValueFromSelectList: function(listSelector,optionValue) {
+        $(listSelector).children(`option[value="${optionValue}"]`).remove();
     },
     RenderUISection: function(templateName, context, appendTo) {
         $("#nodeList").empty();
@@ -254,6 +266,9 @@ export default {
             }, this);
         }
         alert(newMessage);
+    },
+    SetAttribute: function(selector,attribute,value) {
+        $(selector).attr(attribute, value);
     },
     SetNavBarPosition: function() {
         var configButton = $("#GenerateConfig");
@@ -284,6 +299,9 @@ export default {
     },
     SetText: function(selector, text) {
         $(selector).text(text);
+    },
+    SetValue: function(selector,value) {
+        $(selector).val(value);
     },
     ShowElement: function(elementId) {
         $(`#${elementId}`).show();
