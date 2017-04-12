@@ -7,7 +7,6 @@ import Handlebars from "handlebars";
 import HandleBarManager from "./HandleBarManager";
 import PowerShellManager from "./PowerShellManager";
 import ViewManager from "./ViewManager";
-import StyleLoader from "./StyleLoader";
 import UI from "./UI";
 import Strings from "./Strings";
 
@@ -24,15 +23,21 @@ export default {
     AddClass: function(selector, className) {
         $(selector).addClass(className);
     },
+    AppendText: function(selector, text) {
+        $(selector).append(text);
+    },
+    ApplyStyles: function() {
+        $("h1").addClass("ms-font-su");
+        $("h2").addClass("ms-font-xxl");
+        $("h3").addClass("ms-font-xl");
+        $("p").addClass("ms-font-m");
+    },
     BuildQuestionUI: function(template) {
         TemplateUIBuilder.BuildPrimaryUI(template);
         TemplateUIBuilder.BuildQuestionUI(TemplateManager.GetQuestionGroups(template));
         TemplateUIBuilder.BuildNewNodeUI();
         FormValidator.EnableQuestionValidation();
         FormValidator.ValidateAllNodeData();
-    },
-    AppendText: function(selector, text) {
-        $(selector).append(text);
     },
     ClearNodeSettingsValues: function(NodeSettings) {
         NodeSettings.forEach(function(setting) {
@@ -98,6 +103,7 @@ export default {
         $(`#${elementId}`).hide();
     },
     Initialise: function() {
+        UI.ApplyStyles();
         UI.InitialiseEvents();
         UI.InitialiseFabricControls();
     },
@@ -330,7 +336,7 @@ export default {
                 $("#scriptContentParent").empty();
                 $("#scriptContentParent").html("<pre id=\"scriptContent\" class=\"brush: powershell\">" + PowerShellManager.CurrentScript + "</pre>");
 
-                StyleLoader.ApplyStyles();
+                UI.ApplyStyles();
 
                 SyntaxHighlighter.highlight();
                 break;

@@ -1,6 +1,5 @@
 import $ from "jquery";
 import HandleBarManager from "./HandleBarManager";
-import StyleLoader from "./StyleLoader";
 import ViewManager from "./ViewManager";
 import TemplateManager from "./TemplateManager";
 import FormValidator from "./FormValidator";
@@ -171,7 +170,7 @@ export default {
         });
 
         UI.InitialisePanels();
-        StyleLoader.ApplyStyles();
+        UI.ApplyStyles();
 
         Object.keys(questionGroups).forEach(function(groupName) {
             questionGroups[groupName].forEach(function(question) {

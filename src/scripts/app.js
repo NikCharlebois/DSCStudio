@@ -2,7 +2,6 @@ import $ from "jquery";
 
 import UI from "./UI";
 
-import StyleLoader from "./StyleLoader";
 import ViewManager from "./ViewManager";
 import FormValidator from "./FormValidator";
 import TemplateManager from "./TemplateManager";
@@ -11,8 +10,6 @@ import HandleBarManager from "./HandleBarManager";
 
 
 $(document).ready(function() {
-    StyleLoader.ApplyStyles();
-
     UI.SwitchView(UI.Views.Start);
     UI.Initialise();
     

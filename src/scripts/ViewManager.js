@@ -1,5 +1,4 @@
 import $ from "jquery";
-import StyleLoader from "./StyleLoader";
 import PowerShellManager from "./PowerShellManager";
 
 export default {
