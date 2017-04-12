@@ -94,9 +94,9 @@ export default {
                 break;
             case "textarray":
                 var hasItems = false;
-                UI.GetUIElements(`#question-${question.id}-value option`).forEach(function(item) {
+                UI.GetUIElements(`#question-${question.id}-value option`).each(function(item) {
                     hasItems = true;
-                }, this);
+                });
                 if (hasItems === false) {
                     questionValid = false;
                 }
@@ -126,7 +126,7 @@ export default {
     },
     EnableQuestionValidation: function() {
         UI.RegisterEvent("input[id^='question-']", "focusout", function() {
-            var questionId = this.id.replace("question-", "").replace("-value","");
+            var questionId = this.id.replace("question-", "").replace("-value","").replace("-newitem","");
             var question = DscStudio.CurrentTemplate.questions.filter(function(item) {
                 return item.id == questionId;
             })[0];

@@ -3,7 +3,6 @@ import $ from "jquery";
 import UI from "./UI";
 
 import StyleLoader from "./StyleLoader";
-import OfficeFabricManager from "./OfficeFabricManager";
 import ViewManager from "./ViewManager";
 import FormValidator from "./FormValidator";
 import TemplateManager from "./TemplateManager";
@@ -15,9 +14,8 @@ $(document).ready(function() {
     StyleLoader.ApplyStyles();
 
     UI.SwitchView(UI.Views.Start);
-    UI.InitialiseEvents();
+    UI.Initialise();
     
-    OfficeFabricManager.InitFixedControls();
     HandleBarManager.RegisterHelpers();
     FormValidator.InitForm();
     TemplateManager.Init();

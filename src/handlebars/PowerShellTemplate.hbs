@@ -1,0 +1,53 @@
+$configData = @{
+    AllNodes = @(
+        @{
+            NodeName="*"
+            {{#if UsesCertificate}}
+            CertificateFile = "{{CertificatePath}}"
+            Thumbprint = "{{CertificateThumbprint}}"
+            {{/if}}
+            {{#if AllowPlainTextPassword}}
+            PSDscAllowPlainTextPassword = $true
+            {{else}}
+            PSDscAllowPlainTextPassword = $false
+            {{/if}}
+        },
+        {{#each Nodes}}
+        @{
+            NodeName = "{{this.name}}"
+            {{#if AllowPlainTextPassword}}
+            PSDscAllowPlainTextPassword = $true
+            {{else}}
+            PSDscAllowPlainTextPassword = $false
+            {{/if}}
+            {{#each additionalProperties}}
+                {{#ifTypeIsText this.valueType}}
+            {{powershellName}} = "{{value}}"        
+                {{/ifTypeIsText}}
+                {{#ifTypeIsNumber this.valueType}}
+            {{powershellName}} = {{value}}
+                {{/ifTypeIsNumber}}
+                {{#ifTypeIsBoolean this.valueType}}
+            {{powershellName}} = ${{value}}
+                {{/ifTypeIsBoolean}}
+            {{/each}}
+        }
+        {{/each}}
+    )
+    NonNodeData = @{
+        DscStudio = @{
+        {{#each Questions}}
+            # {{Title}}
+            {{Id}} = {{ValueString}}
+        {{/each}}
+        }
+    }
+)
+
+{{#each ScriptOutput}}
+{{this}}
+{{/each}}
+
+{{ConfigurationName}} -ConfigurationData $configData
+Set-DscLocalConfigurationManager -Path .\\{{ConfigurationName}}
+Start-DscConfiguration -Path .\\{{ConfigurationName}}

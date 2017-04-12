@@ -29,7 +29,14 @@ export default {
     },
     RenderHandleBar: function(templateName, context, appendTo) {
         var template = Handlebars.compile(this[templateName]);
-        $(appendTo).append(template(context));
+        if (appendTo !== "")
+        {
+            $(appendTo).append(template(context));
+        }
+        else
+        {
+            return template(context);
+        }
     },
     NavigationLink: require('../handlebars/NavigationLink.hbs'),
     QuestionGroupHeader: require('../handlebars/QuestionGroupHeader.hbs'),
@@ -43,5 +50,6 @@ export default {
     ComplexQuestionDisplay: require('../handlebars/ComplexQuestionDisplay.hbs'),
     TextNodeOption: require('../handlebars/TextNodeOption.hbs'),
     NumberNodeOption: require('../handlebars/NumberNodeOption.hbs'),
-    BooleanNodeOption: require('../handlebars/BooleanNodeOption.hbs')
+    BooleanNodeOption: require('../handlebars/BooleanNodeOption.hbs'),
+    PowerShellTemplate: require('../handlebars/PowerShellTemplate.hbs')
 };

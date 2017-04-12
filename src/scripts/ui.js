@@ -6,6 +6,8 @@ import FormValidator from "./FormValidator";
 import Handlebars from "handlebars";
 import HandleBarManager from "./HandleBarManager";
 import PowerShellManager from "./PowerShellManager";
+import ViewManager from "./ViewManager";
+import StyleLoader from "./StyleLoader";
 import UI from "./UI";
 import Strings from "./Strings";
 
@@ -95,6 +97,10 @@ export default {
     HideElement: function(elementId) {
         $(`#${elementId}`).hide();
     },
+    Initialise: function() {
+        UI.InitialiseEvents();
+        UI.InitialiseFabricControls();
+    },
     InitialiseEvents: function() {
         UI.RegisterEvent('#templateSelector', 'change', function() {
             if (UI.SetTemplateFromFilePicker(this) === true) {
@@ -145,6 +151,35 @@ export default {
         });
 
         new fabric.Button(document.querySelector("#addNewNode"), DscNodeManager.AddNewNode);
+    },
+    InitialiseFabricControls: function() {
+        var CommandBarElements = UI.Document().querySelectorAll(".ms-CommandBar");
+        for(var commandBarCount = 0; commandBarCount < CommandBarElements.length; commandBarCount++) {
+            new fabric.CommandBar(CommandBarElements[commandBarCount]);
+        }
+
+        var ListElements = UI.Document().querySelectorAll(".ms-List");
+        for(var listElementsCount = 0; listElementsCount < ListElements.length; listElementsCount++) {
+            new fabric.List(ListElements[listElementsCount]);
+        }
+
+        var ToggleElements = UI.Document().querySelectorAll(".ms-Toggle");
+        for(var toggleElementsCount = 0; toggleElementsCount < ToggleElements.length; toggleElementsCount++) {
+            new fabric.Toggle(ToggleElements[toggleElementsCount]);
+        }
+    },
+    InitialisePanels: function() {
+        var panels = document.getElementsByClassName("ms-PanelExample");
+        for (var count = 0; count < panels.length; count++) {
+            UI.InitialisePanel(panels[count]);
+        }
+    },
+    InitialisePanel: function(container) {
+        var button = container.querySelector(".ms-Button");
+        var panel = container.querySelector(".ms-Panel");
+        button.addEventListener("click", function(i) {
+            new _fabric.Panel(panel);
+        });
     },
     IsElementVisible: function(selector) {
         return $(selector).is(':visible');
@@ -302,6 +337,9 @@ export default {
             default:
                 throw view + " is an unknown view to switch this form to";
         }
+    },
+    UpdateToggle: function(id) {
+        new fabric.Toggle(UI.Document().getElementById(id));
     },
     Window: function() {
         return window;

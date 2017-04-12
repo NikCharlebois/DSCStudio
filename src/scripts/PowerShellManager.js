@@ -1,6 +1,8 @@
 import $ from "jquery";
 import TemplateManager from "./TemplateManager";
 import DscNodeManager from "./DscNodeManager";
+import HandleBarManager from "./HandleBarManager";
+import UI from "./UI";
 
 export default {
     CurrentScript: "",
@@ -11,113 +13,90 @@ export default {
         saveAs(blob, this.SaveAsFileName);
     },
     UpdateCurrentScript: function() {
-        var configText = "";
-
-        // build the config data
-        
-        configText += "$configData = @{\r\n";
-        configText += "    AllNodes = @(\r\n";
-        configText += "        @{\r\n";
-        configText += "            NodeName = \"*\"\r\n";
-
-        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true) {
-            configText += "            CertificateFile = \"" + $("#CertPath").val() + "\"\r\n";
-            configText += "            Thumbprint = \"" + $("#CertThumbprint").val() + "\"\r\n";
-        } 
-        if (DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === undefined || DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === false) {
-            configText += "            PSDscAllowPlainTextPassword = $false\r\n";
+        var UseCertificate = false;
+        if (DscStudio.CurrentTemplate.configDataSettings.certificateDetails === undefined || DscStudio.CurrentTemplate.configDataSettings.certificateDetails === true)
+        {
+            UseCertificate = true;
         }
-        
-        configText += "        }";
-        if (DscStudio.Nodes.length === 0) {
-            configText += "\r\n";
-        } else {
-            DscStudio.Nodes.forEach(function(node) {
-                configText += ",\r\n";
-                configText += "        @{\r\n";
-                configText += "            NodeName = \"" + node.name + "\"\r\n";
-                if (DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === true) {
-                    configText += "            PSDscAllowPlainTextPassword = $true\r\n";
-                }
-                node.additionalProperties.forEach(function(prop) {
-                    switch(prop.valueType) {
-                        case "text":
-                            configText += "            " + prop.powershellName + " = \"" + prop.value + "\"\r\n";
-                            break;
-                        case "number":
-                            configText += "            " + prop.powershellName + " = " + prop.value + "\r\n";
-                            break;
-                        case "boolean":
-                            configText += "            " + prop.powershellName + " = $" + prop.value + "\r\n";
-                            break;
-                    }
-                });
-                configText += "        }";
-            });
-            configText += "\r\n";
-        }
-        configText += "    )\r\n";
-        configText += "    NonNodeData = @{\r\n";
-        configText += "        DscStudio = @{\r\n";
 
+        var AllowPlainTextPassword = true;
+        if (DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === undefined || DscStudio.CurrentTemplate.configDataSettings.allowPlainTextPassword === false)
+        {
+            AllowPlainTextPassword = false;
+        }
+
+        var questionAnswerArray = [];
         DscStudio.CurrentTemplate.questions.forEach(function(question) {
-            configText += "            # " + question.title + "\r\n";
+            var stringValue = "";
             switch (question.type) {
                 case "textarray":
-                    var values = DscStudio.Responses[question.id].split(';');
-                    var output = "@(";
-                    values.forEach(function(val) {
-                        if (output === "@(") {
-                            output += "\"" + val + "\"";
+                    stringValue = "@(";
+                    DscStudio.Responses[question.id].split(';').forEach(function(val) {
+                        if (stringValue === "@(") {
+                            stringValue += `"${val}"`;
                         } else {
-                            output += ", \"" + val + "\"";
+                            stringValue += `, "${val}"`;
                         }
                     });
-                    output += ")";
-                    configText += "            \"" + question.id + "\" = " + output + "\r\n";
+                    stringValue += ")";
                     break;
                 case "complextype":
                     var value = JSON.parse(DscStudio.Responses[question.id]);
-                    var complexoutput = "@(\r\n";
+                    stringValue = `@(
+`;
                     value.forEach(function(val) {
 
-                        if (complexoutput === "@(\r\n") {
-                            complexoutput += "                @{\r\n";
+                        if (stringValue === `@(
+`) {
+                            stringValue += `                @{
+`;
                         } else {
-                            complexoutput += ",\r\n                @{\r\n";
+                            stringValue += `,
+                @{
+`;
                         }
+
                         val.AllResponses.forEach(function(response) {
                             if (response.type === "boolean") {
-                                complexoutput += "                    " + response.powershellName + " = $" + response.value + "\r\n";
+                                stringValue += `                    ${response.powershellName} = $${response.value}
+`;
                             } else {
-                                complexoutput += "                    " + response.powershellName + " = \"" + response.value + "\"\r\n";
+                                stringValue += `                    ${response.powershellName} = "${response.value}"
+`;
                             }
                         });
-                        complexoutput += "                }";
+                        stringValue += "                }";
                     });
-                    complexoutput += "\r\n            )";
-                    configText += "            \"" + question.id + "\" = " + complexoutput + "\r\n";
+                    stringValue += `
+            )`;
                     break;
                 case "boolean":
-                    configText += "            \"" + question.id + "\" = $" + DscStudio.Responses[question.id] + "\r\n";
+                    stringValue = `$${DscStudio.Responses[question.id]}`;
                     break;
                 default:
-                    configText += "            \"" + question.id + "\" = \"" + DscStudio.Responses[question.id] + "\" \r\n";
+                    stringValue = `"${DscStudio.Responses[question.id]}"`;
                     break;
             }
+            var newObject = {
+                Title: question.title,
+                Id: question.id,
+                ValueString: stringValue
+            };
+            questionAnswerArray.push(newObject);
         });
-        configText += "        }\r\n";
-        configText += "    }\r\n";
-        configText += "}\r\n\r\n";
-
-        DscStudio.CurrentTemplate.ScriptOutput.forEach(function(line) {
-            configText += line + "\r\n";
-        });
-        configText += "\r\n";
         
-        configText += DscStudio.CurrentTemplate.metadata.configurationName + " -ConfigurationData $configData\r\n";
-        configText += "Set-DscLocalConfigurationManager -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
-        configText += "Start-DscConfiguration -Path .\\" + DscStudio.CurrentTemplate.metadata.configurationName + "\r\n";
+
+        var dataBinder = {
+            UseCertificate: UseCertificate,
+            CertificatePath: UI.GetValue("#CertPath"),
+            CertificateThumbprint: UI.GetValue("#CertThumbprint"),
+            AllowPlainTextPassword: AllowPlainTextPassword,
+            Nodes: DscStudio.Nodes,
+            Questions: questionAnswerArray,
+            ScriptOutput: DscStudio.CurrentTemplate.ScriptOutput,
+            ConfigurationName: DscStudio.CurrentTemplate.metadata.configurationName
+        };
+        var configText = HandleBarManager.RenderHandleBar("PowerShellTemplate", dataBinder, "");
 
         this.CurrentScript = configText;
     }

@@ -1,11 +1,11 @@
 import $ from "jquery";
 import HandleBarManager from "./HandleBarManager";
-import OfficeFabricManager from "./OfficeFabricManager";
 import StyleLoader from "./StyleLoader";
 import ViewManager from "./ViewManager";
 import TemplateManager from "./TemplateManager";
 import FormValidator from "./FormValidator";
 import TemplateUIBuilder from "./TemplateUIBuilder";
+import UI from "./UI";
 
 export default {
     BuildPrimaryUI: function(template) {
@@ -39,7 +39,7 @@ export default {
                         break;
                     case "boolean":
                         HandleBarManager.RenderHandleBar('BooleanQuestion', question, '#templateQuestions');
-                        OfficeFabricManager.UpdateToggle('question-' + question.id);
+                        UI.UpdateToggle('question-' + question.id);
                         switch (question.defaultValue) {
                             case "true":
                                 $("#question-" + question.id + " label").addClass("is-selected");
@@ -77,7 +77,7 @@ export default {
 
                         question.properties.forEach(function(property) {
                             if (property.type === "boolean") {
-                                OfficeFabricManager.UpdateToggle('complex-' + question.id + '-' + property.powershellName + "-toggle");
+                                UI.UpdateToggle('complex-' + question.id + '-' + property.powershellName + "-toggle");
                                 if (property.default !== undefined) {
                                     if (property.default === "true" || property.default === true) {
                                         $("label[for='complex-" + question.id + "-" + property.powershellName + "-value']").addClass("is-selected");
@@ -170,7 +170,7 @@ export default {
             });
         });
 
-        OfficeFabricManager.UpdatePanels();
+        UI.InitialisePanels();
         StyleLoader.ApplyStyles();
 
         Object.keys(questionGroups).forEach(function(groupName) {
