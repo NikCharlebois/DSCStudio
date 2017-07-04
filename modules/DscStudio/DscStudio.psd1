@@ -12,13 +12,13 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '0.1.0.0'
+ModuleVersion = '0.2.0.0'
 
 # ID used to uniquely identify this module
 GUID = '61ca27eb-33aa-4358-9b9a-f928b567661b'
 
 # Author of this module
-Author = 'Microsoft Corporation'
+Author = 'Brian Farnhill'
 
 # Company or vendor of this module
 CompanyName = 'Microsoft Corporation'

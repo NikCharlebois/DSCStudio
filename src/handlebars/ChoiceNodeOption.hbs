@@ -1,0 +1,8 @@
+<div id="nodeSetting-{{powershellName}}" class="ms-TextField"> 
+    <label class="ms-Label" for="nodeSetting-{{powershellName}}-value">{{displayName}}</label> 
+    <select name="nodeSetting-{{powershellName}}-value" id="nodeSetting-{{powershellName}}-value" class="ms-TextField-field"> 
+        {{#each choices}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+</div>

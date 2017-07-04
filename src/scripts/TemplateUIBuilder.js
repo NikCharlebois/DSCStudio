@@ -203,6 +203,9 @@ export default {
                 case "text":
                     HandleBarManager.RenderHandleBar('TextNodeOption', setting, '#additionalNodeDetails');
                     break;
+                case "choice":
+                    HandleBarManager.RenderHandleBar('ChoiceNodeOption', setting, '#additionalNodeDetails');
+                    break;
                 case "number":
                     HandleBarManager.RenderHandleBar('NumberNodeOption', setting, '#additionalNodeDetails');
                     break;

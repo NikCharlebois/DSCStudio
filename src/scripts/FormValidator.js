@@ -40,6 +40,7 @@ export default {
 
         if (submitAfterValidate === true && formValid === true) {
             TemplateManager.StoreQuestionResponses();
+            TemplateManager.StoreLCMSettings();
             PowerShellManager.UpdateCurrentScript();
             UI.SwitchView(UI.Views.Output);
         }
@@ -204,6 +205,7 @@ export default {
                             switch(nodeSetting.valueType) {
                                 case "text":
                                 case "number":
+                                case "choice":
                                     if (additionalProp.value.toString() !== null && additionalProp.value.toString() !== "") {
                                         occurences++;
                                     }

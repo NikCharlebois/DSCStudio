@@ -2,7 +2,7 @@ $configData = @{
     AllNodes = @(
         @{
             NodeName="*"
-            {{#if UsesCertificate}}
+            {{#if UseCertificate}}
             CertificateFile = "{{CertificatePath}}"
             Thumbprint = "{{CertificateThumbprint}}"
             {{/if}}
@@ -38,16 +38,39 @@ $configData = @{
         DscStudio = @{
         {{#each Questions}}
             # {{Title}}
-            {{Id}} = {{ValueString}}
+            {{Id}} = {{rawtext ValueString}}
         {{/each}}
         }
     }
 )
 
 {{#each ScriptOutput}}
-{{this}}
+{{rawtext this}}
 {{/each}}
 
-{{ConfigurationName}} -ConfigurationData $configData
+Configuration LCMSettings
+{
+    node $AllNodes.NodeName
+    {
+        LocalConfigurationManager
+        {
+            {{#if LcmSettings.RebootNodeIfNeeded}}
+            RebootNodeIfNeeded = $true
+            {{else}}
+            RebootNodeIfNeeded = $false
+            {{/if}}
+            ActionAfterReboot = "{{LcmSettings.ActionAfterReboot}}"
+            ConfigurationMode = "{{LcmSettings.ConfigurationMode}}"
+            ConfigurationModeFrequencyMins = {{LcmSettings.ConfigurationModeFrequencyMins}}
+            {{#if UseCertificate}}
+            CertificateID = "{{CertificateThumbprint}}"
+            {{/if}}
+        }
+    }
+}
+
+LCMSettings -ConfigurationData $configData
 Set-DscLocalConfigurationManager -Path .\\{{ConfigurationName}}
+
+{{ConfigurationName}} -ConfigurationData $configData
 Start-DscConfiguration -Path .\\{{ConfigurationName}}

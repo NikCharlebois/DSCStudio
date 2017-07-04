@@ -46,6 +46,16 @@ export default {
         UI.SwitchView(UI.Views.Response);
         UI.SwitchResponseTab(UI.ResponseTabs.ConfigData);
     },
+    StoreLCMSettings: function() {
+        DscStudio.LcmSettings = {
+            CertificatePath: UI.GetValue("#CertPath"),
+            CertificateThumbprint: UI.GetValue("#CertThumbprint"),
+            RebootNodeIfNeeded: UI.GenericSelector("#AutoReboot label").hasClass("is-selected"),
+            ActionAfterReboot: UI.GetValue("#ActionAfterReboot"),
+            ConfigurationMode: UI.GetValue("#LcmConfigMode"),
+            ConfigurationModeFrequencyMins: UI.GetValue("#ConfigModeMins")
+        };
+    },
     StoreQuestionResponses: function() {
         var responses = [];
         DscStudio.CurrentTemplate.questions.forEach(function(question) {

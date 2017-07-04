@@ -4,6 +4,7 @@ import path from 'path'; // Provided by Node
 const projectRoot = path.join(__dirname, '..', '..');
 const sourceRoot = path.join(projectRoot, 'src');
 const scriptRoot = path.join(sourceRoot, 'scripts');
+const hbsRoot = path.join(sourceRoot, 'handlebars');
 
 const GLOBALS = {
     'process.env.NODE_ENV': JSON.stringify('production')

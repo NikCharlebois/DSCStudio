@@ -5,7 +5,6 @@ const projectRoot = path.join(__dirname, '..', '..');
 const sourceRoot = path.join(projectRoot, 'src');
 const scriptRoot = path.join(sourceRoot, 'scripts');
 const hbsRoot = path.join(sourceRoot, 'handlebars');
-const cssRoot = path.join(sourceRoot, 'css');
 
 export default {
     debug: true,

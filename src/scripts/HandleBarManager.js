@@ -24,6 +24,9 @@ export default {
             }
             return options.inverse(this);
         });
+        Handlebars.registerHelper('rawtext', function(val) {
+            return new Handlebars.SafeString(val);
+        });
         Handlebars.registerPartial('QuestionHelpText', QuestionHelpText);
         Handlebars.registerPartial('QuestionValidationLabel', QuestionValidationLabel);
     },
@@ -51,5 +54,6 @@ export default {
     TextNodeOption: require('../handlebars/TextNodeOption.hbs'),
     NumberNodeOption: require('../handlebars/NumberNodeOption.hbs'),
     BooleanNodeOption: require('../handlebars/BooleanNodeOption.hbs'),
+    ChoiceNodeOption: require('../handlebars/ChoiceNodeOption.hbs'),
     PowerShellTemplate: require('../handlebars/PowerShellTemplate.hbs')
 };

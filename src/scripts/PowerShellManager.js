@@ -94,7 +94,8 @@ export default {
             Nodes: DscStudio.Nodes,
             Questions: questionAnswerArray,
             ScriptOutput: DscStudio.CurrentTemplate.ScriptOutput,
-            ConfigurationName: DscStudio.CurrentTemplate.metadata.configurationName
+            ConfigurationName: DscStudio.CurrentTemplate.metadata.configurationName,
+            LcmSettings: DscStudio.LcmSettings
         };
         var configText = HandleBarManager.RenderHandleBar("PowerShellTemplate", dataBinder, "");
 

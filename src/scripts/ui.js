@@ -43,6 +43,7 @@ export default {
             switch(setting.valueType) {
                 case "text":
                 case "number":
+                case "choice":
                     $("#nodeSetting-" + setting.powershellName + "-value").val("");
                     break;
                 case "boolean":
@@ -202,6 +203,7 @@ export default {
             switch(nodeSetting.valueType) {
                 case "text":
                 case "number":
+                case "choice":
                     return $("#nodeSetting-" + nodeSetting.powershellName + "-value").val();
                 case "boolean":
                     return $("#nodeSetting-" + nodeSetting.powershellName + " label").hasClass("is-selected");
