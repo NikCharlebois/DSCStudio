@@ -7,7 +7,7 @@ import QuestionValidationLabel from "../handlebars/QuestionValidationLabel.hbs";
 export default {
     RegisterHelpers: function() {
         Handlebars.registerHelper('ifTypeIsText', function(v1, options) {
-            if(v1 === "text") {
+            if(v1 === "text" || v1 === "choice") {
                 return options.fn(this);
             }
             return options.inverse(this);
